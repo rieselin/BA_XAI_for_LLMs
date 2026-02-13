@@ -1,0 +1,23 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../doc"
+%%% coding: utf-8
+%%% End:
+% !TEX TS-program = pdflatexmk
+% !TEX encoding = UTF-8 Unicode
+% !TEX root = ../doc.tex
+%\printbibliography
+\begingroup
+  \let\clearpage\relax
+  \let\cleardoublepage\relax
+  \bibliography{doc}
+  \bibliographystyle{deIEEEzhaw}
+\endgroup\listoffigures
+%
+%{
+%\renewcommand{\clearpage}{}
+%\begin{RaggedRight}
+%\bibliography{doc} 
+%\bibliographystyle{deIEEEzhaw}
+%\end{RaggedRight}
+%}\listoffigures

@@ -1,0 +1,46 @@
+\documentclass[a4paper, 11pt,abstract=on]{scrreprt}
+
+\input{preamble.tex}
+
+\title{Explainable AI for Large Language Models: Technical Explanation Methods and Their Impact on User Trust}
+\author{Linda Riesen}
+\date{\today}
+
+\begin{document}
+
+\includepdf{resources/titlepage} % TODO: replace this when all info is definitive
+
+% Titelseite nicht als erste Seite zählen
+\clearpage
+\setcounter{page}{1}
+
+
+\selectlanguage{english} 
+\begin{abstract}
+\input{parts/02_abstract}
+\end{abstract}
+\chapter*{Preface}
+\input{parts/03_foreword}
+\tableofcontents
+
+\chapter{Introduction}\label{ch:introduction}
+\input{parts/04_introduction}
+
+\chapter{Theoretical Background}\label{ch:theory}
+\input{parts/05_theoretical_background}
+
+\chapter{Methods and Implementation}\label{ch:methods}
+\input{parts/06_methods_and_implementation}
+
+\chapter{Results}\label{ch:results}
+\input{parts/07_results}
+
+\chapter{Discussion and Outlook}\label{ch:discussion}
+\input{parts/08_discussion_and_outlook}
+
+\chapter{References}
+\input{parts/09_references}
+\appendix
+\chapter{Appendix}\label{ch:anhang}
+\input{parts/10_appendix}
+\end{document}
