@@ -198,10 +198,10 @@ dateTime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 path = f"shap_graphs/{dateTime}/"
 os.makedirs(path, exist_ok=True)
 
-plot_shap_bar(sv,                        all_labels, f'SHAP – all words → "{RESPONSE_TEXT[:50]}…"', f"{path}shap_overall.png")
-plot_shap_bar(sv[:n_sys],                sys_labels,  "SHAP – System prompt words",                f"{path}shap_system.png")
-plot_shap_bar(sv[n_sys:n_sys+n_inst],    inst_labels, "SHAP – Instruction words",                  f"{path}shap_instruction.png")
-plot_shap_bar(sv[n_sys+n_inst:],         inp_labels,  "SHAP – Input words",                        f"{path}shap_input.png")
+plot_shap_bar(sv,                        all_labels, f'SHAP - all words → "{RESPONSE_TEXT[:50]}…"', f"{path}shap_overall.png")
+plot_shap_bar(sv[:n_sys],                sys_labels,  "SHAP - System prompt words",                f"{path}shap_system.png")
+plot_shap_bar(sv[n_sys:n_sys+n_inst],    inst_labels, "SHAP - Instruction words",                  f"{path}shap_instruction.png")
+plot_shap_bar(sv[n_sys+n_inst:],         inp_labels,  "SHAP - Input words",                        f"{path}shap_input.png")
 
 print("\nTop 15 most influential words:")
 order = np.argsort(np.abs(sv))[::-1]
