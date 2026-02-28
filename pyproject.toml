@@ -15,7 +15,9 @@ dependencies = [
     "matplotlib>=3.10.8,<4.0.0",
     "numpy>=2.4.2,<3.0.0",
     "shap (>=0.50.0,<0.51.0)",
-    "pydantic (>=2.12.5,<3.0.0)"
+    "pydantic (>=2.12.5,<3.0.0)",
+    "fastapi (>=0.134.0,<0.135.0)",
+    "uvicorn[standard] (>=0.41.0,<0.42.0)"
 ]
 
 [tool.poetry]
