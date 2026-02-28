@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Peek Inside the AI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf9f6;--white:#fff;--text:#1a1614;--muted:#6b6460;
+  --border:#e8e4df;--border2:#d4cec8;
+  --orange:#d4521a;--orange-l:#f4ede7;--orange-d:#a83c10;
+  --blue:#1a6bb5;--blue-l:#e7eef8;
+  --green:#15803d;--green-l:#dcfce7;
+  --amber:#92400e;--amber-l:#fef3c7;
+  --shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+  --radius:12px;--font:"DM Sans",sans-serif;--serif:"DM Serif Display",serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.6}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(250,249,246,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;height:60px}
+.nav-logo{font-family:var(--serif);font-size:20px;color:var(--text);text-decoration:none}
+.nav-logo em{color:var(--orange);font-style:italic}
+.nav-status{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.status-pip{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;transition:all .3s}
+.status-pip.ok{background:#22c55e;box-shadow:0 0 0 3px #dcfce7}
+.status-pip.err{background:#ef4444;box-shadow:0 0 0 3px #fee2e2}
+.config-btn{display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--border);color:var(--muted);font-family:var(--font);font-size:13px;font-weight:500;padding:6px 14px;border-radius:100px;cursor:pointer;transition:all .15s}
+.config-btn:hover{border-color:var(--border2);color:var(--text)}
+.config-btn.open{border-color:var(--orange);color:var(--orange);background:var(--orange-l)}
+
+/* CONFIG DRAWER */
+.config-drawer{
+  background:var(--white);border-bottom:1px solid var(--border);
+  overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1);
+}
+.config-drawer.open{max-height:300px}
+.config-inner{max-width:820px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:600px){.config-inner{grid-template-columns:1fr}}
+.config-field label{font-size:13px;font-weight:600;display:block;margin-bottom:5px}
+.config-field .config-hint{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.45}
+.config-field input{font-family:var(--font);font-size:14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);padding:9px 13px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+.config-field input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(212,82,26,.1)}
+
+/* HERO */
+.hero{max-width:820px;margin:0 auto;padding:72px 24px 56px;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--orange-l);color:var(--orange);font-size:13px;font-weight:600;letter-spacing:.04em;padding:5px 14px;border-radius:100px;margin-bottom:24px}
+.hero h1{font-family:var(--serif);font-size:clamp(36px,6vw,58px);line-height:1.1;letter-spacing:-.03em;margin-bottom:20px}
+.hero h1 em{color:var(--orange);font-style:italic}
+.hero p{font-size:18px;color:var(--muted);max-width:560px;margin:0 auto 36px;font-weight:300;line-height:1.7}
+.hero-cta{display:inline-block;background:var(--orange);color:white;font-family:var(--font);font-size:16px;font-weight:600;padding:14px 32px;border-radius:100px;text-decoration:none;transition:all .2s;box-shadow:0 4px 16px rgba(212,82,26,.3)}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(212,82,26,.35)}
+
+/* EXPLAINER */
+.explainer{background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 24px}
+.explainer-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:32px}
+.explainer-item{display:flex;gap:16px;align-items:flex-start}
+.explainer-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.explainer-icon.orange{background:var(--orange-l)}.explainer-icon.blue{background:var(--blue-l)}.explainer-icon.green{background:var(--green-l)}
+.explainer-item h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.explainer-item p{font-size:14px;color:var(--muted);line-height:1.55}
+
+/* APP */
+.app{max-width:820px;margin:0 auto;padding:60px 24px 80px}
+.step{margin-bottom:48px}
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--orange);color:white;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-num.done{background:var(--green)}
+.step-title{font-family:var(--serif);font-size:24px;letter-spacing:-.02em}
+.step-desc{font-size:14px;color:var(--muted);margin-top:2px}
+
+/* METHOD CARDS */
+.method-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.method-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.method-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.method-card.selected.cot-card{border-color:var(--orange);background:var(--orange-l)}
+.method-card.selected.shap-card{border-color:var(--blue);background:var(--blue-l)}
+.method-card .mc-icon{font-size:28px;margin-bottom:10px}
+.method-card h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.method-card p{font-size:13px;color:var(--muted);line-height:1.5}
+.mc-check{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--orange);color:white;font-size:12px;display:none;align-items:center;justify-content:center}
+.method-card.selected .mc-check{display:flex}
+.method-card.selected.shap-card .mc-check{background:var(--blue)}
+
+/* FORM CARD */
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.form-section{padding:22px 24px;border-bottom:1px solid var(--border)}
+.form-section:last-child{border-bottom:none}
+.field-label{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.field-hint{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.55}
+
+/* LOCKED SYSTEM PROMPT */
+.locked-prompt{
+  background:var(--bg);border:1.5px solid var(--border);border-radius:8px;
+  padding:11px 14px;font-size:13px;color:var(--muted);line-height:1.6;
+  font-style:italic;position:relative;
+}
+.lock-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--amber-l);color:var(--amber);
+  font-size:11px;font-weight:600;letter-spacing:.04em;
+  padding:3px 9px;border-radius:100px;font-style:normal;
+}
+.lock-badge[hidden]{display:none}
+#lockedSysPrompt[hidden]{display:none}
+
+/* TIP BOXES */
+.tip-box{display:flex;gap:10px;align-items:flex-start;background:var(--orange-l);border-radius:8px;padding:10px 14px;margin-top:12px}
+.tip-box.blue{background:var(--blue-l)}
+.tip-box.amber{background:var(--amber-l)}
+.tip-box p{font-size:13px;color:var(--muted);line-height:1.5}
+.tip-box strong{color:var(--text)}
+
+/* INFO CARDS (expandable SHAP explanation) */
+.info-card{background:var(--blue-l);border:1px solid rgba(26,107,181,.15);border-radius:8px;padding:14px 16px;margin-top:12px}
+.info-card h4{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:8px}
+.info-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.info-card p:last-child{margin-bottom:0}
+.info-card ul{padding-left:18px;margin:6px 0}
+.info-card ul li{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:3px}
+
+textarea,input[type="text"],input[type="number"]{
+  font-family:var(--font);font-size:14px;line-height:1.6;
+  background:var(--bg);border:1.5px solid var(--border);border-radius:8px;
+  color:var(--text);padding:10px 14px;width:100%;resize:vertical;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+}
+textarea:focus,input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(212,82,26,.1)}
+textarea{min-height:80px}
+input[type="number"]{width:130px}
+
+/* TOKEN SLIDER */
+.token-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.token-row input[type="range"]{flex:1;min-width:120px;accent-color:var(--orange)}
+.token-val{font-size:14px;font-weight:600;color:var(--orange);min-width:38px}
+
+.shap-field[hidden]{display:none}
+
+/* RUN BTN */
+.run-btn{background:var(--orange);color:white;font-family:var(--font);font-size:16px;font-weight:600;padding:15px 48px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(212,82,26,.3);display:inline-flex;align-items:center;gap:10px}
+.run-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 24px rgba(212,82,26,.35)}
+.run-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.run-btn.blue-btn{background:var(--blue);box-shadow:0 4px 16px rgba(26,107,181,.3)}
+.run-btn.blue-btn:hover:not(:disabled){box-shadow:0 6px 24px rgba(26,107,181,.35)}
+
+/* LOADING */
+#loadingSection{display:none}
+.loading-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:48px;text-align:center;box-shadow:var(--shadow)}
+.loading-spinner{width:40px;height:40px;margin:0 auto 20px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+.loading-spinner.blue{border-top-color:var(--blue)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-size:18px;font-weight:600;margin-bottom:8px}
+.loading-sub{font-size:14px;color:var(--muted)}
+.loading-bar-wrap{max-width:280px;margin:20px auto 0;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.loading-bar{height:100%;background:var(--orange);border-radius:2px;animation:loadPulse 1.5s ease-in-out infinite}
+.loading-bar.blue{background:var(--blue)}
+@keyframes loadPulse{0%{width:15%;margin-left:0}50%{width:40%;margin-left:30%}100%{width:15%;margin-left:85%}}
+
+/* RESULTS */
+#resultsSection{display:none}
+.result-step-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.cot-result{display:flex;flex-direction:column;gap:12px}
+.cot-step-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:var(--shadow);animation:slideUp .3s ease both}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.cot-step-num{width:28px;height:28px;border-radius:50%;background:var(--orange-l);color:var(--orange);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cot-step-text{font-size:15px;line-height:1.6;padding-top:2px}
+.cot-final{background:var(--orange);color:white;border-radius:12px;padding:20px 24px;margin-top:4px;animation:slideUp .3s ease .15s both}
+.cot-final-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-bottom:8px}
+.cot-final-text{font-size:18px;font-weight:500;line-height:1.5}
+
+/* SHAP results */
+.shap-response-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;box-shadow:var(--shadow)}
+.shap-response-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.shap-response-text{font-size:16px;line-height:1.8}
+
+.highlight-section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow)}
+.highlight-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.highlight-title{font-size:16px;font-weight:600}
+.highlight-subtitle{font-size:13px;color:var(--muted);margin-top:2px}
+.legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.legend-swatch{width:32px;height:14px;border-radius:3px}
+.highlight-body{padding:20px}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.section-label:first-child{margin-top:0}
+.word-line{font-size:15px;line-height:2.5}
+
+.w{display:inline;border-radius:4px;padding:2px 3px;cursor:default;position:relative}
+.w:hover .w-tooltip{opacity:1;transform:translateX(-50%) translateY(-4px)}
+.w-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(0);background:var(--text);color:white;font-size:11px;white-space:nowrap;padding:4px 8px;border-radius:5px;opacity:0;transition:all .15s;pointer-events:none;z-index:10}
+.w-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--text)}
+
+.charts-section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow)}
+.charts-header{padding:16px 20px;border-bottom:1px solid var(--border)}
+.charts-header h3{font-size:16px;font-weight:600}
+.charts-header p{font-size:13px;color:var(--muted);margin-top:2px}
+.chart-tabs{display:flex;gap:4px;padding:12px 20px 0}
+.chart-tab{padding:8px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:500;cursor:pointer;background:transparent;border:1px solid transparent;color:var(--muted);font-family:var(--font);transition:all .15s}
+.chart-tab:hover{color:var(--text)}
+.chart-tab.active{background:var(--white);color:var(--blue);border-color:var(--border);border-bottom-color:var(--white);position:relative;top:1px}
+.chart-body{padding:20px;border-top:1px solid var(--border)}
+.chart-body img{width:100%;border-radius:6px;display:block}
+
+.error-card{background:#fff5f5;border:1px solid #fecaca;border-radius:var(--radius);padding:24px;display:flex;gap:14px;align-items:flex-start}
+.error-title{font-weight:600;margin-bottom:4px;color:#dc2626}
+.error-msg{font-size:14px;color:var(--muted)}
+.reset-btn{background:var(--white);color:var(--text);border:1.5px solid var(--border);font-family:var(--font);font-size:14px;font-weight:500;padding:10px 24px;border-radius:100px;cursor:pointer;transition:all .15s;margin-top:24px}
+.reset-btn:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:13px;color:var(--muted)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><em>Peek</em> Inside the AI</a>
+  <button class="config-btn" id="configBtn" onclick="toggleConfig()">⚙ Config</button>
+  <div class="nav-status">
+    <div class="status-pip" id="statusPip"></div>
+    <span id="statusText">Checking…</span>
+  </div>
+</nav>
+
+<!-- CONFIG DRAWER -->
+<div class="config-drawer" id="configDrawer">
+  <div class="config-inner">
+    <div class="config-field">
+      <label for="cfgUrl">🔌 Backend URL</label>
+      <div class="config-hint">The address where your Python server is running. Default is localhost — change this if you're connecting to a remote machine or a different port.</div>
+      <input type="text" id="cfgUrl" value="http://localhost:8000" oninput="checkHealth()" />
+    </div>
+    <div class="config-field">
+      <label>ℹ️ How to start the server</label>
+      <div class="config-hint" style="margin-bottom:0">Run <code style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:12px">pip install -r requirements.txt</code> then <code style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:12px">python server.py</code> in your terminal. The server will start on port 8000 by default. Requires a CUDA GPU.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">🔬 Explainability Demo</div>
+  <h1>See <em>why</em> the AI says<br/>what it says</h1>
+  <p>Most AI LLMs are black boxes. This one isn't. Try two techniques that open up the model and show you what's really going on inside.</p>
+  <a class="hero-cta" onclick="resetToForm()">Try it yourself &rarr;</a>
+</section>
+
+<!-- EXPLAINER STRIP -->
+<section class="explainer">
+  <div class="explainer-inner">
+    <div class="explainer-item">
+      <div class="explainer-icon orange">🔗</div>
+      <div><h3>Chain-of-Thought</h3><p>Forces the LLM to show its reasoning step-by-step before giving a final answer — like asking someone to "show their work."</p></div>
+    </div>
+    <div class="explainer-item">
+      <div class="explainer-icon blue">📊</div>
+      <div><h3>SHAP Attribution</h3><p>Every word in your prompt gets a score for how much it shaped the response. Orange = pushed it forward. Blue = held it back.</p></div>
+    </div>
+    <div class="explainer-item">
+      <div class="explainer-icon green">🎛️</div>
+      <div><h3>You're in control</h3><p>Edit the instruction, question, and generation settings to see how changes ripple through to the LLM's behaviour.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+
+  <!-- STEP 1: Method -->
+  <div class="step" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div><div class="step-title">Choose your method</div><div class="step-desc">Pick how you want to look inside the LLM's thinking.</div></div>
+    </div>
+    <div class="method-cards">
+      <div class="method-card cot-card selected" id="cardCot" onclick="setMethod('cot')">
+        <div class="mc-check">✓</div>
+        <div class="mc-icon">🔗</div>
+        <h3>Chain-of-Thought</h3>
+        <p>The LLM reasons step-by-step and shows its logic before giving an answer. Results in seconds.</p>
+      </div>
+      <div class="method-card shap-card" id="cardShap" onclick="setMethod('shap')">
+        <div class="mc-check">✓</div>
+        <div class="mc-icon">📊</div>
+        <h3>SHAP Word Attribution</h3>
+        <p>Every word in your prompt lights up showing how much it influenced the output. <em>Takes a few minutes.</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Prompt -->
+  <div class="step" id="step2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div><div class="step-title">Write your prompt</div><div class="step-desc">These fields make up the full input the LLM sees. Change any of them.</div></div>
+    </div>
+    <div class="form-card">
+
+      <!-- System prompt: locked for CoT, shown as info for SHAP -->
+      <div class="form-section">
+        <div class="field-label">
+          🤖 System Prompt
+          <span class="lock-badge" id="lockBadge">🔒 fixed for this method</span>
+        </div>
+        <div class="field-hint" id="sysPrmptHint">The system prompt for Chain-of-Thought is fixed because it instructs the model to output structured JSON — changing it would break the response parser. You can see exactly what it says below.</div>
+        <!-- Locked display (CoT) -->
+        <div class="locked-prompt" id="lockedSysPrompt">
+          You are a bot that ONLY responds with an instance of JSON without any additional information. You have access to a JSON schema, which will determine how the JSON should be structured.
+        </div>
+        <!-- Editable (SHAP) -->
+        <textarea id="shapSystemPrompt" rows="3" class="shap-field" hidden>Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.</textarea>
+        <div class="tip-box shap-field" hidden style="margin-top:10px">
+          <span style="font-size:15px;flex-shrink:0">💡</span>
+          <p>With SHAP you can edit the system prompt and see which words in it most influenced the model's response.</p>
+        </div>
+      </div>
+
+      <!-- Instruction (both methods) -->
+      <div class="form-section">
+        <div class="field-label" id="instrLabel">📋 Instruction</div>
+        <div class="field-hint" id="instrHint">Tells the LLM <em>how</em> to respond — tone, style, approach — separate from what you're asking. Try changing this and see how it affects the reasoning steps or word attributions.</div>
+        <textarea id="instruction" rows="2">Think step by step and reason carefully.</textarea>
+        <div class="tip-box" id="instrTip">
+          <span style="font-size:15px;flex-shrink:0">💡</span>
+          <p><strong>Try this:</strong> Change the instruction to <em>"You are a pirate. Answer in pirate-speak."</em> and watch how the reasoning steps change their style while keeping the logic.</p>
+        </div>
+      </div>
+
+      <!-- Input / Task -->
+      <div class="form-section">
+        <div class="field-label" id="inputLabel">❓ Your Question</div>
+        <div class="field-hint" id="inputHint">What you're actually asking. This is what gets reasoned about step-by-step.</div>
+        <textarea id="inputText" rows="2">What is the main landmark of France and what is its capital?</textarea>
+      </div>
+
+      <!-- Max new tokens (both methods) -->
+      <div class="form-section">
+        <div class="field-label" id="tokensLabel">🎚️ Max Response Tokens</div>
+        <div class="field-hint" id="tokensHint">Controls how long the LLM's response can be. One token is roughly ¾ of a word — so 512 tokens ≈ around 380 words. More tokens allows for longer, more detailed reasoning but takes more time and memory.</div>
+        <div class="token-row">
+          <input type="range" id="maxTokensSlider" min="64" max="1024" step="64" value="512" oninput="syncTokens(this.value)" />
+          <span class="token-val" id="tokenValDisplay">512</span>
+          <span style="font-size:13px;color:var(--muted)">tokens</span>
+        </div>
+        <div class="tip-box amber" style="margin-top:12px" id="tokensTip">
+          <span style="font-size:15px;flex-shrink:0">⚠️</span>
+          <p id="tokensTipText"><strong>Chain-of-Thought tip:</strong> The JSON response needs enough tokens to finish all steps and close all brackets. If the output looks cut off, increase this value.</p>
+        </div>
+      </div>
+
+      <!-- SHAP samples (SHAP only) -->
+      <div class="form-section shap-field" id="fieldShapSamples" hidden>
+        <div class="field-label">⚙️ SHAP Samples</div>
+        <div class="field-hint">
+          SHAP works by repeatedly running the model with different words removed, then measuring how much the response changes. The number of samples controls how many of these "word-masking" passes are done.
+        </div>
+        <div class="info-card">
+          <h4>📐 How SHAP sampling works</h4>
+          <p>Imagine you have 20 words in your prompt. SHAP doesn't test every possible combination (that would be 2²⁰ = 1 million runs). Instead it uses a smart approximation: it randomly masks different subsets of words and observes how the model's confidence in its response changes.</p>
+          <p>Each "sample" is one such masked version of your prompt. The model runs once per sample, scores the response, and SHAP uses all those scores together to estimate each word's individual contribution.</p>
+          <ul>
+            <li><strong>64 samples</strong> — fast (~2–3 min), rough estimates, good for exploring</li>
+            <li><strong>128 samples</strong> — balanced (~5–7 min), reliable for most use cases</li>
+            <li><strong>256 samples</strong> — slow (~10–15 min), more stable scores</li>
+            <li><strong>512+ samples</strong> — very slow, useful for final/publication-quality results</li>
+          </ul>
+          <p>Longer prompts (more words) benefit more from higher sample counts, since there are more variables to estimate.</p>
+        </div>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:6px">Number of samples</div>
+            <div class="token-row">
+              <input type="range" id="shapSamplesSlider" min="16" max="512" step="16" value="128" oninput="syncShapSamples(this.value)" style="accent-color:var(--blue)" />
+              <span class="token-val" id="shapSamplesDisplay" style="color:var(--blue)">128</span>
+              <span style="font-size:13px;color:var(--muted)">samples</span>
+            </div>
+          </div>
+        </div>
+        <div class="tip-box blue" style="margin-top:12px">
+          <span style="font-size:15px;flex-shrink:0">⏱️</span>
+          <p><strong>Expect 3–15 minutes</strong> on a consumer GPU. The exact time depends on both the sample count and the length of your prompt — more words = more variables = longer per sample.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 3: Run -->
+  <div class="step" id="step3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div><div class="step-title">Run the analysis</div><div class="step-desc">Hit the button and your prompt is sent to the model.</div></div>
+    </div>
+    <div style="text-align:center">
+      <button class="run-btn" id="runBtn" onclick="run()">
+        <span>&#9654;</span><span id="runBtnText">Run Chain-of-Thought</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loadingSection">
+    <div class="loading-card">
+      <div class="loading-spinner" id="loadSpinner"></div>
+      <div class="loading-title" id="loadTitle">Generating chain-of-thought…</div>
+      <div class="loading-sub" id="loadSub">This usually takes 5–15 seconds</div>
+      <div class="loading-bar-wrap"><div class="loading-bar" id="loadBar"></div></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsSection">
+    <div class="result-step-header">
+      <div class="step-num done">✓</div>
+      <div><div class="step-title">Here's what happened</div><div class="step-desc" id="resultSubtitle">The LLM's reasoning, laid bare.</div></div>
+    </div>
+    <div id="resultsContent"></div>
+    <div style="text-align:center"><button class="reset-btn" onclick="resetToForm()">← Try another prompt</button></div>
+  </div>
+
+</div>
+
+<footer>Built with Llama 3.1 · Unsloth · SHAP · FastAPI &nbsp;|&nbsp; LLM Explainability Explorer</footer>
+
+<script>
+let method = 'cot';
+
+// ── Config drawer ─────────────────────────────────────────────────────────────
+function toggleConfig() {
+  const d = document.getElementById('configDrawer');
+  const b = document.getElementById('configBtn');
+  const open = d.classList.toggle('open');
+  b.classList.toggle('open', open);
+}
+
+// ── Health check ──────────────────────────────────────────────────────────────
+async function checkHealth() {
+  const url = document.getElementById('cfgUrl').value.trim();
+  const pip = document.getElementById('statusPip');
+  const txt = document.getElementById('statusText');
+  try {
+    const r = await fetch(url + '/health', { signal: AbortSignal.timeout(3000) });
+    if (r.ok) { pip.className = 'status-pip ok'; txt.textContent = 'Server connected'; }
+    else throw 0;
+  } catch {
+    pip.className = 'status-pip err';
+    txt.textContent = 'Server offline';
+  }
+}
+checkHealth();
+setInterval(checkHealth, 12000);
+
+// ── Slider sync ───────────────────────────────────────────────────────────────
+function syncTokens(v) {
+  document.getElementById('tokenValDisplay').textContent = v;
+}
+function syncShapSamples(v) {
+  document.getElementById('shapSamplesDisplay').textContent = v;
+}
+
+// ── Method toggle ─────────────────────────────────────────────────────────────
+function setMethod(m) {
+  method = m;
+  const isCot = m === 'cot';
+
+  document.getElementById('cardCot').classList.toggle('selected', isCot);
+  document.getElementById('cardShap').classList.toggle('selected', !isCot);
+  document.querySelectorAll('.shap-field').forEach(el => el.hidden = isCot);
+
+  // System prompt section
+  document.getElementById('lockedSysPrompt').hidden = !isCot;
+  document.getElementById('lockBadge').style.display = isCot ? 'inline-flex' : 'none';
+  document.getElementById('lockedSysPrompt').style.display = isCot ? 'block' : 'none';
+  document.getElementById('sysPrmptHint').textContent = isCot
+    ? "The system prompt for Chain-of-Thought is fixed because it instructs the model to output structured JSON — changing it would break the response parser. You can see exactly what it says below."
+    : "For SHAP you can edit the system prompt and see which words in it carried the most weight. The default works well, but try changing it.";
+
+  // Instruction
+  document.getElementById('instrHint').textContent = isCot
+    ? "Tells the LLM how to approach the reasoning — tone, style, level of detail. Try changing this and watch how the step explanations shift."
+    : "Tells the LLM how to write its response. With SHAP you'll see exactly which instruction words most influenced what it said.";
+
+  // Input
+  document.getElementById('inputLabel').textContent = isCot ? '❓ Your Question' : '❓ Your Input Text';
+  document.getElementById('inputHint').textContent = isCot
+    ? "What you're asking — the LLM will reason step-by-step to reach an answer."
+    : "The text you want attributed. After running, every word here (and in the other sections) will be highlighted by its influence on the response.";
+
+  // Default instruction
+  document.getElementById('instruction').value = isCot
+    ? 'Think step by step and reason carefully.'
+    : 'Answer like a human would in an engaging way';
+
+  // Tokens
+  const slider = document.getElementById('maxTokensSlider');
+  const tipTxt = document.getElementById('tokensTipText');
+  if (isCot) {
+    slider.min = 64; slider.max = 1024; slider.step = 64; slider.value = 512;
+    syncTokens(512);
+    document.getElementById('tokensHint').textContent = "Controls how long the LLM's response can be. One token is roughly ¾ of a word. For Chain-of-Thought the model needs enough tokens to write out all steps AND close the JSON structure — cutting this too short causes parse errors.";
+    tipTxt.innerHTML = '<strong>Chain-of-Thought tip:</strong> The JSON response needs enough tokens to finish all steps and close all brackets. If the output looks cut off or fails to parse, try increasing this.';
+  } else {
+    slider.min = 32; slider.max = 256; slider.step = 32; slider.value = 128;
+    syncTokens(128);
+    document.getElementById('tokensHint').textContent = "Controls how long the initial generated response is, before SHAP analysis begins. Keep this shorter for SHAP — a concise response is easier to attribute, and every extra token multiplies analysis time across all samples.";
+    tipTxt.innerHTML = '<strong>SHAP tip:</strong> Shorter responses are faster and easier to attribute. A 2–3 sentence answer (64–128 tokens) is usually ideal. The SHAP scores measure how much each word contributed to the model producing <em>that specific response</em>.';
+  }
+  document.getElementById('tokenValDisplay').textContent = slider.value;
+  document.getElementById('maxTokensSlider').style.accentColor = isCot ? 'var(--orange)' : 'var(--blue)';
+  document.getElementById('token-val-color').style.color = isCot ? 'var(--orange)' : 'var(--blue)';
+
+  // Run button
+  document.getElementById('runBtn').className = isCot ? 'run-btn' : 'run-btn blue-btn';
+  document.getElementById('runBtnText').textContent = isCot ? 'Run Chain-of-Thought' : 'Run SHAP Attribution';
+}
+
+// ── Run ───────────────────────────────────────────────────────────────────────
+async function run() {
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  showLoading();
+  const url = document.getElementById('cfgUrl').value.trim();
+  try {
+    const data = method === 'cot' ? await runCoT(url) : await runShap(url);
+    showResults(data);
+  } catch(err) {
+    showError(err.message || String(err));
+    btn.disabled = false;
+  }
+}
+
+async function runCoT(url) {
+  const r = await fetch(url + '/explain/cot', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      task: document.getElementById('inputText').value,
+      instruction: document.getElementById('instruction').value,
+      max_new_tokens: parseInt(document.getElementById('maxTokensSlider').value, 10),
+    }),
+  });
+  if (!r.ok) { const e = await r.json().catch(() => ({ detail: r.statusText })); throw new Error(e.detail || r.statusText); }
+  return { type: 'cot', ...(await r.json()) };
+}
+
+async function runShap(url) {
+  const r = await fetch(url + '/explain/shap', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system_prompt: document.getElementById('shapSystemPrompt').value,
+      instruction:   document.getElementById('instruction').value,
+      input_text:    document.getElementById('inputText').value,
+      n_shap_samples: parseInt(document.getElementById('shapSamplesSlider').value, 10),
+      max_new_tokens: parseInt(document.getElementById('maxTokensSlider').value, 10),
+    }),
+  });
+  if (!r.ok) { const e = await r.json().catch(() => ({ detail: r.statusText })); throw new Error(e.detail || r.statusText); }
+  return { type: 'shap', ...(await r.json()) };
+}
+
+// ── UI ────────────────────────────────────────────────────────────────────────
+function showLoading() {
+  ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('resultsSection').style.display = 'none';
+  document.getElementById('loadSpinner').className = method === 'cot' ? 'loading-spinner' : 'loading-spinner blue';
+  document.getElementById('loadBar').className = method === 'cot' ? 'loading-bar' : 'loading-bar blue';
+  document.getElementById('loadTitle').textContent = method === 'cot' ? 'Generating chain-of-thought…' : 'Running SHAP attribution…';
+  document.getElementById('loadSub').textContent = method === 'cot' ? 'This usually takes 5–15 seconds' : 'Running hundreds of model passes — grab a coffee ☕';
+  document.getElementById('loadingSection').style.display = 'block';
+  window.scrollTo({ top: document.getElementById('loadingSection').offsetTop - 80, behavior: 'smooth' });
+}
+
+function showResults(data) {
+  document.getElementById('loadingSection').style.display = 'none';
+  const rs = document.getElementById('resultsSection');
+  rs.style.display = 'block';
+  if (data.type === 'cot') renderCoT(data); else renderShap(data);
+  window.scrollTo({ top: rs.offsetTop - 80, behavior: 'smooth' });
+}
+
+function showError(msg) {
+  document.getElementById('loadingSection').style.display = 'none';
+  ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+  const rs = document.getElementById('resultsSection');
+  rs.style.display = 'block';
+  document.getElementById('resultSubtitle').textContent = 'Something went wrong.';
+  document.getElementById('resultsContent').innerHTML =
+    '<div class="error-card"><div style="font-size:22px;flex-shrink:0">⚠️</div><div><div class="error-title">Error from server</div><div class="error-msg">' + esc(msg) + '</div></div></div>';
+}
+
+function resetToForm() {
+  document.getElementById('resultsSection').style.display = 'none';
+  document.getElementById('runBtn').disabled = false;
+  ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+  window.scrollTo({ top: document.getElementById('app').offsetTop - 80, behavior: 'smooth' });
+}
+
+// ── Renderers ─────────────────────────────────────────────────────────────────
+function renderCoT(data) {
+  document.getElementById('resultSubtitle').textContent =
+    'The LLM worked through ' + data.steps.length + ' step' + (data.steps.length !== 1 ? 's' : '') + ' to reach its answer.';
+  const s = data.steps.map((s, i) =>
+    '<div class="cot-step-card" style="animation-delay:' + (i * 0.08) + 's"><div class="cot-step-num">' + (i + 1) + '</div><div class="cot-step-text">' + esc(s.explanation) + '</div></div>'
+  ).join('');
+  document.getElementById('resultsContent').innerHTML =
+    '<div class="cot-result">' + s +
+    '<div class="cot-final" style="animation-delay:' + (data.steps.length * 0.08) + 's"><div class="cot-final-label">Final Answer</div><div class="cot-final-text">' + esc(data.final_answer) + '</div></div></div>';
+}
+
+function renderShap(data) {
+  document.getElementById('resultSubtitle').textContent = "Every word in your prompt is highlighted by how much it shaped the LLM's response.";
+  const anns = data.word_annotations || [];
+  const sec = { system: [], instruction: [], input: [] };
+  anns.forEach(a => { if (sec[a.section]) sec[a.section].push(a); });
+
+  function whtml(words) {
+    if (!words.length) return '<em style="color:var(--muted)">—</em>';
+    const mx = Math.max(...words.map(w => Math.abs(w.shap_value)), 1e-9);
+    return words.map(w => {
+      const norm = w.shap_value / mx, abs = Math.abs(norm);
+      const label = w.shap_value > 1e-4
+        ? '+' + w.shap_value.toFixed(4) + ' — promotes response'
+        : w.shap_value < -1e-4
+        ? w.shap_value.toFixed(4) + ' — suppresses response'
+        : 'negligible influence';
+      let bg = 'transparent', col = 'inherit';
+      if (abs > 0.05) {
+        const a = Math.min(0.88, abs * 0.85 + 0.06);
+        if (norm > 0) { bg = 'rgba(212,82,26,' + a.toFixed(2) + ')'; col = a > 0.42 ? 'white' : 'inherit'; }
+        else { bg = 'rgba(26,107,181,' + a.toFixed(2) + ')'; col = a > 0.42 ? 'white' : 'inherit'; }
+      }
+      return '<span class="w" style="background:' + bg + ';color:' + col + '">' + esc(w.word) + '<span class="w-tooltip">' + esc(label) + '</span></span> ';
+    }).join('');
+  }
+
+  const hasInst = sec.instruction.length > 0;
+  const charts = [
+    { key: 'overall', label: 'Overall', img: data.overall_image },
+    { key: 'system', label: 'System prompt', img: data.system_image },
+    ...(hasInst ? [{ key: 'instruction', label: 'Instruction', img: data.instruction_image }] : []),
+    { key: 'input', label: 'Input', img: data.input_image },
+  ];
+
+  document.getElementById('resultsContent').innerHTML =
+    '<div class="shap-response-card"><div class="shap-response-label">🤖 LLM Response</div><div class="shap-response-text">' + esc(data.response_text) + '</div></div>' +
+    '<div class="highlight-section"><div class="highlight-header"><div><div class="highlight-title">Word influence map</div><div class="highlight-subtitle">Hover any word to see its exact SHAP score</div></div>' +
+    '<div class="legend"><div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(to right,rgba(212,82,26,.1),rgba(212,82,26,.88))"></div>Promotes</div>' +
+    '<div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(to right,rgba(26,107,181,.1),rgba(26,107,181,.88))"></div>Suppresses</div></div></div>' +
+    '<div class="highlight-body"><div class="section-label">System Prompt</div><div class="word-line">' + whtml(sec.system) + '</div>' +
+    (hasInst ? '<div class="section-label">Instruction</div><div class="word-line">' + whtml(sec.instruction) + '</div>' : '') +
+    '<div class="section-label">Your Input</div><div class="word-line">' + whtml(sec.input) + '</div></div></div>' +
+    '<div class="charts-section"><div class="charts-header"><h3>Attribution bar charts</h3><p>Top contributing words per section, sorted by absolute SHAP value.</p></div>' +
+    '<div class="chart-tabs">' + charts.map((c, i) => '<button class="chart-tab' + (i === 0 ? ' active' : '') + '" onclick="switchChart(\'' + c.key + '\',this)">' + c.label + '</button>').join('') + '</div>' +
+    '<div class="chart-body">' + charts.map((c, i) => '<img src="data:image/png;base64,' + c.img + '" id="chart-' + c.key + '" style="' + (i !== 0 ? 'display:none' : '') + '" />').join('') + '</div></div>';
+}
+
+function switchChart(which, btn) {
+  document.querySelectorAll('.chart-body img').forEach(img => img.style.display = 'none');
+  const el = document.getElementById('chart-' + which);
+  if (el) el.style.display = 'block';
+  document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Fix token val color reference after DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Add id to token val span for color switching
+  document.getElementById('tokenValDisplay').id = 'token-val-color';
+  document.getElementById('token-val-color').id = 'tokenValDisplay';
+});
+</script>
+</body>
+</html>
