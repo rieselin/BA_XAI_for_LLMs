@@ -181,18 +181,21 @@ def explain_cot(req: CoTRequest):
     model, tokenizer = get_model(instruct=True)
     schema = json.dumps(ChainOfThought.model_json_schema(), indent=2)
 
-    # Instruction goes into the user message so the system prompt stays intact
+    # Prime the assistant turn with the opening brace so the model continues
+    # the JSON directly rather than re-introducing it as a string.
     PROMPT = (
         "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n"
         f"{COT_SYSTEM_PROMPT}<|eot_id|>\n"
         "<|start_header_id|>user<|end_header_id|>\n"
         f"Instruction: {req.instruction}\n\n"
-        "Make sure to return ONLY an instance of the JSON, NOT the schema itself. "
-        "Do not add any additional information.\n\n"
+        "Return ONLY a valid JSON object matching the schema below. "
+        "Do NOT include the schema itself, any explanation, or any text outside the JSON object.\n\n"
         f"JSON schema:\n{schema}\n\nTask: {req.task}<|eot_id|>\n"
         "<|start_header_id|>assistant<|end_header_id|>\n"
+        "{"   # prime: model continues from here, preventing double-wrapping
     )
 
+    # Tokenize with the primed opening brace; we'll prepend it back to raw output
     inputs = tokenizer([PROMPT], return_tensors="pt").to("cuda")
     out = model.generate(
         **inputs,
@@ -202,28 +205,46 @@ def explain_cot(req: CoTRequest):
         repetition_penalty=1.2,
         do_sample=False,
     )
-    raw = tokenizer.decode(out[0, inputs["input_ids"].shape[1]:],
-                           skip_special_tokens=True).strip()
+    # The primed "{" is part of the prompt so we prepend it back
+    raw = "{" + tokenizer.decode(out[0, inputs["input_ids"].shape[1]:],
+                                 skip_special_tokens=True).strip()
 
-    # Stage 1: repair unclosed braces then parse
+    def _unwrap_if_double_encoded(candidate: ChainOfThought) -> ChainOfThought:
+        """If explanation[0] is itself valid JSON for our schema, use that instead."""
+        if candidate.steps and candidate.steps[0].explanation.strip().startswith("{"):
+            try:
+                inner = ChainOfThought.model_validate_json(
+                    repair_json(candidate.steps[0].explanation)
+                )
+                if inner.steps:
+                    return inner
+            except Exception:
+                pass
+        return candidate
+
+    def _make_response(cot: ChainOfThought) -> CoTResponse:
+        cot = _unwrap_if_double_encoded(cot)
+        return CoTResponse(
+            steps=[CoTStep(explanation=s.explanation) for s in cot.steps],
+            final_answer=cot.final_answer,
+            raw=raw,
+        )
+
+    # Stage 1: parse as-is (with brace repair)
     try:
-        cot = ChainOfThought.model_validate_json(repair_json(raw))
-        return CoTResponse(steps=[CoTStep(explanation=s.explanation) for s in cot.steps],
-                           final_answer=cot.final_answer, raw=raw)
+        return _make_response(ChainOfThought.model_validate_json(repair_json(raw)))
     except Exception:
         pass
 
-    # Stage 2: extract the first {...} substring and retry
+    # Stage 2: extract outermost {...} and retry
     try:
         start = raw.index("{")
         end   = raw.rindex("}") + 1
-        cot   = ChainOfThought.model_validate_json(repair_json(raw[start:end]))
-        return CoTResponse(steps=[CoTStep(explanation=s.explanation) for s in cot.steps],
-                           final_answer=cot.final_answer, raw=raw)
+        return _make_response(ChainOfThought.model_validate_json(repair_json(raw[start:end])))
     except Exception:
         pass
 
-    # Stage 3: synthetic fallback — always return something valid
+    # Stage 3: synthetic fallback — split raw text into steps so the frontend always works
     sentences = [s.strip() for s in raw.replace("\n", " ").split(".") if s.strip()]
     steps = [CoTStep(explanation=s + ".") for s in sentences[:-1]] if len(sentences) > 1 else [CoTStep(explanation=raw)]
     final = sentences[-1] if sentences else raw
