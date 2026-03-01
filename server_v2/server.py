@@ -267,6 +267,12 @@ def explain_shap(req: ShapRequest):
     )
 
     # 1. Generate response
+    # Strategy: generate up to 2× the requested budget so the model has room
+    # to finish naturally, then trim to the last complete sentence that fits
+    # within the token budget. This avoids mid-sentence cutoffs without relying
+    # on the base model following word-count instructions (it won't reliably).
+    hard_cap = req.max_new_tokens * 2
+
     prompt_for_gen = PROMPT_TEMPLATE.format(
         system_prompt=SHAP_SYSTEM_PROMPT,
         instruction=req.instruction,
@@ -276,7 +282,7 @@ def explain_shap(req: ShapRequest):
     gen_inputs = tokenizer([prompt_for_gen], return_tensors="pt").to("cuda")
     out = model.generate(
         **gen_inputs,
-        max_new_tokens=req.max_new_tokens,
+        max_new_tokens=hard_cap,
         eos_token_id=tokenizer.eos_token_id,
         pad_token_id=tokenizer.eos_token_id,
         repetition_penalty=1.3,
@@ -287,7 +293,33 @@ def explain_shap(req: ShapRequest):
     for marker in ["\n\n### Instruction:", "\n### Instruction:", "### Input:"]:
         if marker in raw_resp:
             raw_resp = raw_resp.split(marker)[0]
-    RESPONSE_TEXT = raw_resp.strip()
+    raw_resp = raw_resp.strip()
+
+    # Trim to the last complete sentence within req.max_new_tokens.
+    # Re-tokenise the full response word-by-word and walk back from the last
+    # sentence boundary that keeps us under budget.
+    import re as _re
+    def _trim_to_token_budget(text: str, budget: int) -> str:
+        # Split on sentence-ending punctuation, keeping the delimiter
+        sentences = _re.split(r"(?<=[.!?])\s+", text)
+        if not sentences:
+            return text
+        kept = []
+        for sent in sentences:
+            candidate = " ".join(kept + [sent])
+            n_tokens = tokenizer(candidate, return_tensors="pt")["input_ids"].shape[1]
+            if n_tokens <= budget:
+                kept.append(sent)
+            else:
+                break   # adding this sentence would exceed budget
+        if kept:
+            return " ".join(kept)
+        # Edge case: even the first sentence is too long — truncate at last word
+        # boundary within budget tokens instead of returning nothing
+        tokens = tokenizer(text, return_tensors="pt")["input_ids"][0][:budget]
+        return tokenizer.decode(tokens, skip_special_tokens=True).rsplit(" ", 1)[0]
+
+    RESPONSE_TEXT = _trim_to_token_budget(raw_resp, req.max_new_tokens)
 
     # 2. Build word features (system prompt also attributed)
     def tokenize_section(text, label):
