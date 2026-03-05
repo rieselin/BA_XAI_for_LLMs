@@ -1,0 +1,25 @@
+services:
+  llm-explainer:
+    build: .
+    image: llm-explainability-explorer
+    container_name: llm-explainer
+    ports:
+      - "8000:8000"
+    # Expose ALL available GPUs to the container
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # Cache Hugging Face model downloads between runs
+    volumes:
+      - hf-cache:/root/.cache/huggingface
+    environment:
+      - TORCHDYNAMO_DISABLE=1
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+volumes:
+  hf-cache:
