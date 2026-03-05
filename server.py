@@ -160,6 +160,14 @@ app.add_middleware(
     allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
 )
 
+# ← ADD IT HERE
+from fastapi.responses import FileResponse
+
+@app.get("/")
+def serve_frontend():
+    return FileResponse("index.html")
+
+
 
 @app.get("/health")
 def health():
