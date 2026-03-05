@@ -3,6 +3,7 @@ FastAPI backend for LLM Explainability Explorer
 Wraps: (1) Chain-of-Thought JSON generation  (2) SHAP word-level attribution
 """
 import os, json, base64, warnings
+import uvicorn
 from io import BytesIO
 
 os.environ["TORCHDYNAMO_DISABLE"] = "1"
@@ -404,7 +405,3 @@ def explain_shap(req: ShapRequest):
         word_annotations=annotations,
     )
 
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
