@@ -1,9 +1,16 @@
 """
 FastAPI backend for LLM Explainability Explorer
-Wraps: (1) Chain-of-Thought JSON generation  (2) SHAP word-level attribution
+Endpoints:
+  GET  /health
+  POST /explain/cot         – Chain-of-Thought JSON generation
+  POST /explain/shap        – SHAP word-level attribution + counter-reasoning
+  POST /explain/confidence  – Per-token confidence scoring
 """
-import os, json, base64, warnings
-import uvicorn
+import os
+import json
+import base64
+import threading
+import warnings
 from io import BytesIO
 
 os.environ["TORCHDYNAMO_DISABLE"] = "1"
@@ -14,34 +21,57 @@ torch._dynamo.config.suppress_errors = True
 torch._dynamo.config.disable = True
 
 import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel as PydanticBase
-from typing import Optional
+from fastapi.responses import FileResponse
+from pydantic import BaseModel as PydanticBase, field_validator
 
-# ── Fixed system prompts (not user-configurable) ──────────────────────────────
+# ── Environment config ────────────────────────────────────────────────────────
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "*")
+ALLOWED_ORIGINS: list[str] = (
+    ["*"] if _raw_origins.strip() == "*"
+    else [o.strip() for o in _raw_origins.split(",") if o.strip()]
+)
+
+# ── Fixed system prompts ──────────────────────────────────────────────────────
 COT_SYSTEM_PROMPT = (
     "You are a bot that ONLY responds with an instance of JSON without any "
     "additional information. You have access to a JSON schema, which will "
     "determine how the JSON should be structured."
 )
 
-SHAP_SYSTEM_PROMPT = (
+DEFAULT_SHAP_SYSTEM_PROMPT = (
     "Below is an instruction that describes a task, paired with an input that "
     "provides further context. Write a response that appropriately completes the request."
 )
 
-# ── Lazy model loader ─────────────────────────────────────────────────────────
-_model = None
-_tokenizer = None
+CONFIDENCE_SYSTEM_PROMPT = (
+    "You are a helpful assistant. Answer questions clearly and concisely."
+)
+
+# ── Input limits ──────────────────────────────────────────────────────────────
+MAX_TEXT_CHARS   = 2_000
+MAX_NEW_TOKENS   = 1_024
+MAX_SHAP_SAMPLES = 512
+
+# ── Thread-safe lazy model loader ─────────────────────────────────────────────
+_model      = None
+_tokenizer  = None
+_model_lock = threading.Lock()
+
 
 def get_model(instruct: bool = True):
+    """Load the model exactly once, thread-safely."""
     global _model, _tokenizer
-    model_name = (
-        "unsloth/Llama-3.1-8B-Instruct-bnb-4bit" if instruct
-        else "unsloth/Llama-3.1-8B-bnb-4bit"
-    )
-    if _model is None:
+    if _model is not None:
+        return _model, _tokenizer
+    with _model_lock:
+        if _model is not None:       # double-checked locking
+            return _model, _tokenizer
+        model_name = (
+            "unsloth/Llama-3.1-8B-Instruct-bnb-4bit" if instruct
+            else "unsloth/Llama-3.1-8B-bnb-4bit"
+        )
         from unsloth import FastLanguageModel
         _model, _tokenizer = FastLanguageModel.from_pretrained(
             model_name=model_name,
@@ -54,39 +84,97 @@ def get_model(instruct: bool = True):
     return _model, _tokenizer
 
 
-# ── Request / Response schemas ────────────────────────────────────────────────
+# ── Shared validator ──────────────────────────────────────────────────────────
+def _text_validator(v: str) -> str:
+    v = v.strip()
+    if not v:
+        raise ValueError("Field must not be empty.")
+    if len(v) > MAX_TEXT_CHARS:
+        raise ValueError(f"Field exceeds {MAX_TEXT_CHARS} character limit.")
+    return v
+
+
+# ── Schemas ───────────────────────────────────────────────────────────────────
+
 class CoTRequest(PydanticBase):
-    task: str
-    instruction: str = "Think step by step and reason carefully."
+    task:           str
+    instruction:    str = "Think step by step and reason carefully."
     max_new_tokens: int = 512
+
+    @field_validator("task", "instruction")
+    @classmethod
+    def _chk(cls, v): return _text_validator(v)
+
+    @field_validator("max_new_tokens")
+    @classmethod
+    def _cap(cls, v): return max(64, min(v, MAX_NEW_TOKENS))
 
 class CoTStep(PydanticBase):
     explanation: str
 
 class CoTResponse(PydanticBase):
-    steps: list[CoTStep]
+    steps:        list[CoTStep]
     final_answer: str
-    raw: str
+    raw:          str
+
 
 class ShapRequest(PydanticBase):
-    instruction: str = "Answer like a human would in an engaging way"
-    input_text: str
+    system_prompt:  str = DEFAULT_SHAP_SYSTEM_PROMPT
+    instruction:    str = "Answer like a human would in an engaging way"
+    input_text:     str
     n_shap_samples: int = 128
     max_new_tokens: int = 128
 
+    @field_validator("system_prompt", "instruction", "input_text")
+    @classmethod
+    def _chk(cls, v): return _text_validator(v)
+
+    @field_validator("n_shap_samples")
+    @classmethod
+    def _cap_s(cls, v): return max(16, min(v, MAX_SHAP_SAMPLES))
+
+    @field_validator("max_new_tokens")
+    @classmethod
+    def _cap_t(cls, v): return max(32, min(v, MAX_NEW_TOKENS))
+
 class WordAnnotation(PydanticBase):
-    word: str
+    word:       str
     shap_value: float
-    section: str   # "system" | "instruction" | "input"
+    section:    str   # "system" | "instruction" | "input"
 
 class ShapResponse(PydanticBase):
-    response_text: str
-    overall_image: str
-    system_image: str
+    response_text:     str
+    overall_image:     str
+    system_image:      str
     instruction_image: str
-    input_image: str
-    top_words: list[dict]
-    word_annotations: list[WordAnnotation]
+    input_image:       str
+    top_words:         list[dict]
+    word_annotations:  list[WordAnnotation]
+    reasoning:         str   # LLM counter-reasoning about the top attributions
+
+
+class ConfidenceRequest(PydanticBase):
+    instruction:    str = "Answer clearly and concisely."
+    input_text:     str
+    max_new_tokens: int = 256
+
+    @field_validator("instruction", "input_text")
+    @classmethod
+    def _chk(cls, v): return _text_validator(v)
+
+    @field_validator("max_new_tokens")
+    @classmethod
+    def _cap(cls, v): return max(32, min(v, MAX_NEW_TOKENS))
+
+class TokenConfidence(PydanticBase):
+    token:       str
+    probability: float   # 0–1
+
+class ConfidenceResponse(PydanticBase):
+    response_text:     str
+    mean_confidence:   float
+    min_confidence:    float
+    token_confidences: list[TokenConfidence]
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -118,7 +206,7 @@ def fig_to_b64(fig) -> str:
     return base64.b64encode(buf.read()).decode()
 
 
-def plot_shap_bar(shap_vals, labels, title) -> str:
+def plot_shap_bar(shap_vals: np.ndarray, labels: list[str], title: str) -> str:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -154,20 +242,42 @@ def plot_shap_bar(shap_vals, labels, title) -> str:
     return fig_to_b64(fig)
 
 
+def _instruct_generate(model, tokenizer, user_message: str, max_new_tokens: int = 400) -> str:
+    """Single-turn instruct generation helper used by confidence + SHAP reasoning."""
+    prompt = (
+        "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n"
+        f"{CONFIDENCE_SYSTEM_PROMPT}<|eot_id|>\n"
+        "<|start_header_id|>user<|end_header_id|>\n"
+        f"{user_message}<|eot_id|>\n"
+        "<|start_header_id|>assistant<|end_header_id|>\n"
+    )
+    enc = tokenizer([prompt], return_tensors="pt").to("cuda")
+    out = model.generate(
+        **enc,
+        max_new_tokens=max_new_tokens,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.eos_token_id,
+        repetition_penalty=1.2,
+        do_sample=False,
+    )
+    return tokenizer.decode(
+        out[0, enc["input_ids"].shape[1]:], skip_special_tokens=True
+    ).strip()
+
+
 # ── FastAPI app ───────────────────────────────────────────────────────────────
 app = FastAPI(title="LLM Explainability API")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
-# ← ADD IT HERE
-from fastapi.responses import FileResponse
 
 @app.get("/")
 def serve_frontend():
     return FileResponse("index.html")
-
 
 
 @app.get("/health")
@@ -175,23 +285,21 @@ def health():
     return {"status": "ok"}
 
 
+# ── Chain-of-Thought ──────────────────────────────────────────────────────────
 @app.post("/explain/cot", response_model=CoTResponse)
 def explain_cot(req: CoTRequest):
-    """Chain-of-Thought structured JSON generation."""
     from pydantic import BaseModel as _Base
 
     class Step(_Base):
         explanation: str
 
     class ChainOfThought(_Base):
-        steps: list[Step]
+        steps:        list[Step]
         final_answer: str
 
     model, tokenizer = get_model(instruct=True)
     schema = json.dumps(ChainOfThought.model_json_schema(), indent=2)
 
-    # Prime the assistant turn with the opening brace so the model continues
-    # the JSON directly rather than re-introducing it as a string.
     PROMPT = (
         "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n"
         f"{COT_SYSTEM_PROMPT}<|eot_id|>\n"
@@ -201,12 +309,11 @@ def explain_cot(req: CoTRequest):
         "Do NOT include the schema itself, any explanation, or any text outside the JSON object.\n\n"
         f"JSON schema:\n{schema}\n\nTask: {req.task}<|eot_id|>\n"
         "<|start_header_id|>assistant<|end_header_id|>\n"
-        "{"   # prime: model continues from here, preventing double-wrapping
+        "{"
     )
 
-    # Tokenize with the primed opening brace; we'll prepend it back to raw output
     inputs = tokenizer([PROMPT], return_tensors="pt").to("cuda")
-    out = model.generate(
+    out    = model.generate(
         **inputs,
         max_new_tokens=req.max_new_tokens,
         eos_token_id=tokenizer.eos_token_id,
@@ -214,12 +321,11 @@ def explain_cot(req: CoTRequest):
         repetition_penalty=1.2,
         do_sample=False,
     )
-    # The primed "{" is part of the prompt so we prepend it back
-    raw = "{" + tokenizer.decode(out[0, inputs["input_ids"].shape[1]:],
-                                 skip_special_tokens=True).strip()
+    raw = "{" + tokenizer.decode(
+        out[0, inputs["input_ids"].shape[1]:], skip_special_tokens=True
+    ).strip()
 
-    def _unwrap_if_double_encoded(candidate: ChainOfThought) -> ChainOfThought:
-        """If explanation[0] is itself valid JSON for our schema, use that instead."""
+    def _unwrap(candidate: ChainOfThought) -> ChainOfThought:
         if candidate.steps and candidate.steps[0].explanation.strip().startswith("{"):
             try:
                 inner = ChainOfThought.model_validate_json(
@@ -231,41 +337,41 @@ def explain_cot(req: CoTRequest):
                 pass
         return candidate
 
-    def _make_response(cot: ChainOfThought) -> CoTResponse:
-        cot = _unwrap_if_double_encoded(cot)
+    def _make(cot: ChainOfThought) -> CoTResponse:
+        cot = _unwrap(cot)
         return CoTResponse(
             steps=[CoTStep(explanation=s.explanation) for s in cot.steps],
             final_answer=cot.final_answer,
             raw=raw,
         )
 
-    # Stage 1: parse as-is (with brace repair)
     try:
-        return _make_response(ChainOfThought.model_validate_json(repair_json(raw)))
+        return _make(ChainOfThought.model_validate_json(repair_json(raw)))
     except Exception:
         pass
 
-    # Stage 2: extract outermost {...} and retry
     try:
-        start = raw.index("{")
-        end   = raw.rindex("}") + 1
-        return _make_response(ChainOfThought.model_validate_json(repair_json(raw[start:end])))
+        start = raw.index("{"); end = raw.rindex("}") + 1
+        return _make(ChainOfThought.model_validate_json(repair_json(raw[start:end])))
     except Exception:
         pass
 
-    # Stage 3: synthetic fallback — split raw text into steps so the frontend always works
     sentences = [s.strip() for s in raw.replace("\n", " ").split(".") if s.strip()]
-    steps = [CoTStep(explanation=s + ".") for s in sentences[:-1]] if len(sentences) > 1 else [CoTStep(explanation=raw)]
-    final = sentences[-1] if sentences else raw
-    return CoTResponse(steps=steps, final_answer=final, raw=raw)
+    steps     = (
+        [CoTStep(explanation=s + ".") for s in sentences[:-1]]
+        if len(sentences) > 1 else [CoTStep(explanation=raw)]
+    )
+    return CoTResponse(steps=steps, final_answer=sentences[-1] if sentences else raw, raw=raw)
 
 
+# ── SHAP + counter-reasoning ──────────────────────────────────────────────────
 @app.post("/explain/shap", response_model=ShapResponse)
 def explain_shap(req: ShapRequest):
-    """SHAP KernelExplainer word-level attribution."""
+    import re as _re
     import shap as _shap
 
-    model, tokenizer = get_model(instruct=False)
+    base_model,     base_tok     = get_model(instruct=False)
+    instruct_model, instruct_tok = get_model(instruct=True)
     MAX_SEQ = 8192
 
     PROMPT_TEMPLATE = (
@@ -275,113 +381,101 @@ def explain_shap(req: ShapRequest):
         "### Response:\n{response}"
     )
 
-    # 1. Generate response
-    # Strategy: generate up to 2× the requested budget so the model has room
-    # to finish naturally, then trim to the last complete sentence that fits
-    # within the token budget. This avoids mid-sentence cutoffs without relying
-    # on the base model following word-count instructions (it won't reliably).
-    hard_cap = req.max_new_tokens * 2
-
+    # 1. Generate base response
     prompt_for_gen = PROMPT_TEMPLATE.format(
-        system_prompt=SHAP_SYSTEM_PROMPT,
+        system_prompt=req.system_prompt,
         instruction=req.instruction,
         input=req.input_text,
         response="",
     )
-    gen_inputs = tokenizer([prompt_for_gen], return_tensors="pt").to("cuda")
-    out = model.generate(
+    gen_inputs = base_tok([prompt_for_gen], return_tensors="pt").to("cuda")
+    out = base_model.generate(
         **gen_inputs,
-        max_new_tokens=hard_cap,
-        eos_token_id=tokenizer.eos_token_id,
-        pad_token_id=tokenizer.eos_token_id,
+        max_new_tokens=req.max_new_tokens * 2,
+        eos_token_id=base_tok.eos_token_id,
+        pad_token_id=base_tok.eos_token_id,
         repetition_penalty=1.3,
         do_sample=False,
     )
-    raw_resp = tokenizer.decode(out[0, gen_inputs["input_ids"].shape[1]:],
-                                skip_special_tokens=True)
+    raw_resp = base_tok.decode(
+        out[0, gen_inputs["input_ids"].shape[1]:], skip_special_tokens=True
+    )
     for marker in ["\n\n### Instruction:", "\n### Instruction:", "### Input:"]:
         if marker in raw_resp:
             raw_resp = raw_resp.split(marker)[0]
     raw_resp = raw_resp.strip()
 
-    # Trim to the last complete sentence within req.max_new_tokens.
-    # Re-tokenise the full response word-by-word and walk back from the last
-    # sentence boundary that keeps us under budget.
-    import re as _re
-    def _trim_to_token_budget(text: str, budget: int) -> str:
-        # Split on sentence-ending punctuation, keeping the delimiter
+    def _trim_to_budget(text: str, budget: int) -> str:
         sentences = _re.split(r"(?<=[.!?])\s+", text)
-        if not sentences:
-            return text
         kept = []
         for sent in sentences:
             candidate = " ".join(kept + [sent])
-            n_tokens = tokenizer(candidate, return_tensors="pt")["input_ids"].shape[1]
-            if n_tokens <= budget:
+            if base_tok(candidate, return_tensors="pt")["input_ids"].shape[1] <= budget:
                 kept.append(sent)
             else:
-                break   # adding this sentence would exceed budget
+                break
         if kept:
             return " ".join(kept)
-        # Edge case: even the first sentence is too long — truncate at last word
-        # boundary within budget tokens instead of returning nothing
-        tokens = tokenizer(text, return_tensors="pt")["input_ids"][0][:budget]
-        return tokenizer.decode(tokens, skip_special_tokens=True).rsplit(" ", 1)[0]
+        tokens = base_tok(text, return_tensors="pt")["input_ids"][0][:budget]
+        return base_tok.decode(tokens, skip_special_tokens=True).rsplit(" ", 1)[0]
 
-    RESPONSE_TEXT = _trim_to_token_budget(raw_resp, req.max_new_tokens)
+    RESPONSE_TEXT = _trim_to_budget(raw_resp, req.max_new_tokens)
 
-    # 2. Build word features (system prompt also attributed)
+    # 2. Word features
     def tokenize_section(text, label):
         words = text.split()
         return words, [f"[{label}] {w}" for w in words]
 
-    sys_words,  sys_labels  = tokenize_section(SHAP_SYSTEM_PROMPT, "SYSTEM")
-    inst_words, inst_labels = tokenize_section(req.instruction,    "INSTRUCTION")
-    inp_words,  inp_labels  = tokenize_section(req.input_text,     "INPUT")
+    sys_words,  sys_labels  = tokenize_section(req.system_prompt, "SYSTEM")
+    inst_words, inst_labels = tokenize_section(req.instruction,   "INSTRUCTION")
+    inp_words,  inp_labels  = tokenize_section(req.input_text,    "INPUT")
     all_words  = sys_words  + inst_words  + inp_words
     all_labels = sys_labels + inst_labels + inp_labels
     n_features = len(all_words)
-    n_sys      = len(sys_words)
-    n_inst     = len(inst_words)
+    n_sys  = len(sys_words)
+    n_inst = len(inst_words)
     MASK_TOKEN = "[MASKED]"
 
     @torch.no_grad()
     def compute_log_prob(full_prompt: str) -> float:
-        enc_full    = tokenizer(full_prompt, return_tensors="pt",
-                                truncation=True, max_length=MAX_SEQ).to("cuda")
-        prompt_only = full_prompt.split("### Response:\n")[0] + "### Response:\n"
-        enc_prompt  = tokenizer(prompt_only, return_tensors="pt",
-                                truncation=True, max_length=MAX_SEQ).to("cuda")
-        prompt_len  = enc_prompt["input_ids"].shape[1]
-        input_ids   = enc_full["input_ids"]
-        labels      = input_ids.clone()
-        labels[:, :prompt_len] = -100
-        return -model(input_ids=input_ids, labels=labels).loss.item()
+        enc_full = base_tok(full_prompt, return_tensors="pt",
+                            truncation=True, max_length=MAX_SEQ).to("cuda")
+        ponly    = full_prompt.split("### Response:\n")[0] + "### Response:\n"
+        enc_p    = base_tok(ponly, return_tensors="pt",
+                            truncation=True, max_length=MAX_SEQ).to("cuda")
+        ids      = enc_full["input_ids"]
+        labels   = ids.clone()
+        labels[:, :enc_p["input_ids"].shape[1]] = -100
+        return -base_model(input_ids=ids, labels=labels).loss.item()
 
     def reconstruct_prompt(mask: np.ndarray) -> str:
         words  = [w if mask[i] == 1 else MASK_TOKEN for i, w in enumerate(all_words)]
-        sys_t  = " ".join(words[:n_sys])
-        inst_t = " ".join(words[n_sys : n_sys + n_inst])
-        inp_t  = " ".join(words[n_sys + n_inst :])
-        return (f"{sys_t}\n\n### Instruction:\n{inst_t}\n\n"
-                f"### Input:\n{inp_t}\n\n### Response:\n{RESPONSE_TEXT}")
+        return (
+            f"{' '.join(words[:n_sys])}\n\n"
+            f"### Instruction:\n{' '.join(words[n_sys:n_sys+n_inst])}\n\n"
+            f"### Input:\n{' '.join(words[n_sys+n_inst:])}\n\n"
+            f"### Response:\n{RESPONSE_TEXT}"
+        )
 
     def shap_predict(mask_matrix: np.ndarray) -> np.ndarray:
         return np.array([compute_log_prob(reconstruct_prompt(m)) for m in mask_matrix])
 
     # 3. SHAP
-    background = np.zeros((1, n_features))
-    test_input = np.ones((1, n_features))
-    explainer  = _shap.KernelExplainer(shap_predict, background)
-    sv         = explainer.shap_values(test_input, nsamples=req.n_shap_samples, silent=True)[0]
+    explainer = _shap.KernelExplainer(shap_predict, np.zeros((1, n_features)))
+    sv        = explainer.shap_values(
+        np.ones((1, n_features)), nsamples=req.n_shap_samples, silent=True
+    )[0]
 
     # 4. Top words
     order     = np.argsort(np.abs(sv))[::-1]
     top_words = []
     for i in order[:15]:
         v = sv[i]
-        direction = "promotes" if v > 1e-4 else ("suppresses" if v < -1e-4 else "negligible")
-        top_words.append({"label": all_labels[i], "value": float(v), "direction": direction})
+        top_words.append({
+            "label":     all_labels[i],
+            "value":     float(v),
+            "direction": "promotes" if v > 1e-4 else ("suppresses" if v < -1e-4 else "negligible"),
+        })
 
     # 5. Plots
     overall_img     = plot_shap_bar(sv,                     all_labels,  f'All words → "{RESPONSE_TEXT[:50]}…"')
@@ -389,11 +483,44 @@ def explain_shap(req: ShapRequest):
     instruction_img = plot_shap_bar(sv[n_sys:n_sys+n_inst], inst_labels, "Instruction words")
     input_img       = plot_shap_bar(sv[n_sys+n_inst:],      inp_labels,  "Input words")
 
-    # 6. Word annotations for inline rendering
+    # 6. Annotations
     annotations = []
     for i, (w, _) in enumerate(zip(all_words, all_labels)):
-        section = "system" if i < n_sys else ("instruction" if i < n_sys + n_inst else "input")
+        section = (
+            "system"      if i < n_sys
+            else "instruction" if i < n_sys + n_inst
+            else "input"
+        )
         annotations.append(WordAnnotation(word=w, shap_value=float(sv[i]), section=section))
+
+    # 7. Counter-reasoning via instruct model
+    promotes   = [tw for tw in top_words[:10] if tw["direction"] == "promotes"][:5]
+    suppresses = [tw for tw in top_words[:10] if tw["direction"] == "suppresses"][:5]
+
+    promote_str  = ", ".join(
+        f'"{tw["label"].split("] ")[-1]}" (+{abs(tw["value"]):.4f})' for tw in promotes
+    ) or "none identified"
+    suppress_str = ", ".join(
+        f'"{tw["label"].split("] ")[-1]}" (-{abs(tw["value"]):.4f})' for tw in suppresses
+    ) or "none identified"
+
+    reasoning_prompt = (
+        f"A SHAP analysis was run on the following AI exchange:\n"
+        f"  Input: \"{req.input_text}\"\n"
+        f"  Response: \"{RESPONSE_TEXT}\"\n\n"
+        f"Words that PROMOTED the response (made the model more confident in producing it):\n"
+        f"  {promote_str}\n\n"
+        f"Words that SUPPRESSED the response (made the model less confident):\n"
+        f"  {suppress_str}\n\n"
+        f"In 3–5 sentences, explain in plain language WHY these specific words likely had those "
+        f"effects. Consider what each word signals semantically, what patterns the model may have "
+        f"learned, and why those signals would push confidence in or against that direction. "
+        f"Be insightful and educational. Do not repeat the numerical scores."
+    )
+
+    reasoning = _instruct_generate(
+        instruct_model, instruct_tok, reasoning_prompt, max_new_tokens=300
+    )
 
     return ShapResponse(
         response_text=RESPONSE_TEXT,
@@ -403,5 +530,75 @@ def explain_shap(req: ShapRequest):
         input_image=input_img,
         top_words=top_words,
         word_annotations=annotations,
+        reasoning=reasoning,
     )
 
+
+# ── Confidence scoring ────────────────────────────────────────────────────────
+@app.post("/explain/confidence", response_model=ConfidenceResponse)
+def explain_confidence(req: ConfidenceRequest):
+    """
+    Generate a response and return per-token softmax probabilities.
+    High probability = the model was "sure" about that token;
+    low probability = it was uncertain, which often correlates with hallucination risk.
+    """
+    model, tokenizer = get_model(instruct=True)
+
+    prompt = (
+        "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n"
+        f"{CONFIDENCE_SYSTEM_PROMPT}<|eot_id|>\n"
+        "<|start_header_id|>user<|end_header_id|>\n"
+        f"Instruction: {req.instruction}\n\n"
+        f"Question: {req.input_text}<|eot_id|>\n"
+        "<|start_header_id|>assistant<|end_header_id|>\n"
+    )
+
+    inputs = tokenizer([prompt], return_tensors="pt").to("cuda")
+
+    with torch.no_grad():
+        out = model.generate(
+            **inputs,
+            max_new_tokens=req.max_new_tokens,
+            eos_token_id=tokenizer.eos_token_id,
+            pad_token_id=tokenizer.eos_token_id,
+            repetition_penalty=1.2,
+            do_sample=False,
+            output_scores=True,
+            return_dict_in_generate=True,
+        )
+
+    # out.sequences[0] includes the prompt; slice to get only generated tokens
+    generated_ids = out.sequences[0, inputs["input_ids"].shape[1]:]
+    # out.scores is a tuple of (1, vocab_size) tensors, one per step
+    scores = out.scores
+
+    token_confidences: list[TokenConfidence] = []
+    probs_list: list[float] = []
+
+    for token_id, score in zip(generated_ids, scores):
+        tid  = token_id.item()
+        # Stop at EOS
+        if tid == tokenizer.eos_token_id:
+            break
+        prob = torch.softmax(score[0], dim=-1)[tid].item()
+        text = tokenizer.decode([tid], skip_special_tokens=True)
+        # Skip empty/whitespace-only tokens that carry no semantic content
+        if not text:
+            continue
+        token_confidences.append(TokenConfidence(token=text, probability=prob))
+        probs_list.append(prob)
+
+    if not probs_list:
+        probs_list = [0.0]
+
+    return ConfidenceResponse(
+        response_text=tokenizer.decode(generated_ids, skip_special_tokens=True).strip(),
+        mean_confidence=float(np.mean(probs_list)),
+        min_confidence=float(np.min(probs_list)),
+        token_confidences=token_confidences,
+    )
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=False)

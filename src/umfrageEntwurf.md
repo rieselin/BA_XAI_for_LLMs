@@ -36,6 +36,13 @@ forschungsfragen:
 end umfrage
 
 
+<!-- check für arten des vertrauens recherche? -->
+<!-- mit auswahl von vorgefertigen fragen -->
+
+ <!-- evtl fragen alle (50%), oder auswahl an möglichkeiten oder andere reihenfolgen (andere 50% aufgeteilt) -->
+            <!-- bi dene wo alli 3 hend => welli methode het am meiste ghulfe (prioriesierung) -->
+            <!-- jeweils bilder von verschieden prompts mit unterschiedlicher sicherheit von model ca. 3-4 -->
+
 ``` mermaid 
 flowchart TD
     A([Start Umfrage]) --> B
@@ -68,13 +75,13 @@ flowchart TD
             L2 --> L3["`③ Social Trust (1–5)<br/><i>Würde Antwort weiterempfehlen</i>`"]
         end
 
-        <!-- check für arten des vertrauens recherche? -->
+        
 
         L3 --> N{"`Live LLM<br/>verfügbar?`"}
         N -- Ja --> O["`Eigene Frage stellen`"]
         N -- Nein --> P
 
-        <!-- mit auswahl von vorgefertigen fragen -->
+        
 
         subgraph TRUST2["`Vertrauen — 3 Dimensionen`"]
             O --> O1["`① Behavioral Trust (1–5)`"]
@@ -84,9 +91,7 @@ flowchart TD
 
         O3 --> P["`Kennst du XAI?<br/>(Explainable AI)`"]
 
-        <!-- evtl fragen alle (50%), oder auswahl an möglichkeiten oder andere reihenfolgen (andere 50% aufgeteilt) -->
-            <!-- bi dene wo alli 3 hend => welli methode het am meiste ghulfe (prioriesierung) -->
-            <!-- jeweils bilder von verschieden prompts mit unterschiedlicher sicherheit von model ca. 3-4 -->
+       
 
         P --> Q1["`XAI Methode 1 anzeigen`"]
 
