@@ -1,10 +1,10 @@
 """
-FastAPI backend for LLM Explainability Explorer
-Endpoints:
+FastAPI-Backend für den LLM-Erklärbarkeits-Explorer
+Endpunkte:
   GET  /health
-  POST /explain/cot         – Chain-of-Thought JSON generation
-  POST /explain/shap        – SHAP word-level attribution + counter-reasoning
-  POST /explain/confidence  – Per-token confidence scoring
+  POST /explain/cot         – Chain-of-Thought JSON-Generierung
+  POST /explain/shap        – SHAP-Wortattribution + KI-Gegenanalyse
+  POST /explain/confidence  – Token-Konfidenz-Bewertung
 """
 import os
 import json
@@ -26,14 +26,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel as PydanticBase, field_validator
 
-# ── Environment config ────────────────────────────────────────────────────────
+# ── Umgebungskonfiguration ────────────────────────────────────────────────────
 _raw_origins = os.environ.get("ALLOWED_ORIGINS", "*")
 ALLOWED_ORIGINS: list[str] = (
     ["*"] if _raw_origins.strip() == "*"
     else [o.strip() for o in _raw_origins.split(",") if o.strip()]
 )
 
-# ── Fixed system prompts ──────────────────────────────────────────────────────
+# ── Feste System-Prompts ──────────────────────────────────────────────────────
 COT_SYSTEM_PROMPT = (
     "You are a bot that ONLY responds with an instance of JSON without any "
     "additional information. You have access to a JSON schema, which will "
@@ -45,28 +45,28 @@ DEFAULT_SHAP_SYSTEM_PROMPT = (
     "provides further context. Write a response that appropriately completes the request."
 )
 
-CONFIDENCE_SYSTEM_PROMPT = (
+DEFAULT_CONFIDENCE_SYSTEM_PROMPT = (
     "You are a helpful assistant. Answer questions clearly and concisely."
 )
 
-# ── Input limits ──────────────────────────────────────────────────────────────
+# ── Eingabelimits ─────────────────────────────────────────────────────────────
 MAX_TEXT_CHARS   = 2_000
 MAX_NEW_TOKENS   = 1_024
 MAX_SHAP_SAMPLES = 512
 
-# ── Thread-safe lazy model loader ─────────────────────────────────────────────
+# ── Thread-sicherer Lazy-Model-Loader ─────────────────────────────────────────
 _model      = None
 _tokenizer  = None
 _model_lock = threading.Lock()
 
 
 def get_model(instruct: bool = True):
-    """Load the model exactly once, thread-safely."""
+    """Modell genau einmal laden, thread-sicher."""
     global _model, _tokenizer
     if _model is not None:
         return _model, _tokenizer
     with _model_lock:
-        if _model is not None:       # double-checked locking
+        if _model is not None:       # Double-Checked Locking
             return _model, _tokenizer
         model_name = (
             "unsloth/Llama-3.1-8B-Instruct-bnb-4bit" if instruct
@@ -84,13 +84,13 @@ def get_model(instruct: bool = True):
     return _model, _tokenizer
 
 
-# ── Shared validator ──────────────────────────────────────────────────────────
+# ── Gemeinsamer Validator ─────────────────────────────────────────────────────
 def _text_validator(v: str) -> str:
     v = v.strip()
     if not v:
-        raise ValueError("Field must not be empty.")
+        raise ValueError("Das Feld darf nicht leer sein.")
     if len(v) > MAX_TEXT_CHARS:
-        raise ValueError(f"Field exceeds {MAX_TEXT_CHARS} character limit.")
+        raise ValueError(f"Das Feld überschreitet das Limit von {MAX_TEXT_CHARS} Zeichen.")
     return v
 
 
@@ -98,7 +98,7 @@ def _text_validator(v: str) -> str:
 
 class CoTRequest(PydanticBase):
     task:           str
-    instruction:    str = "Think step by step and reason carefully."
+    instruction:    str = "Denke Schritt für Schritt und argumentiere sorgfältig."
     max_new_tokens: int = 512
 
     @field_validator("task", "instruction")
@@ -120,7 +120,7 @@ class CoTResponse(PydanticBase):
 
 class ShapRequest(PydanticBase):
     system_prompt:  str = DEFAULT_SHAP_SYSTEM_PROMPT
-    instruction:    str = "Answer like a human would in an engaging way"
+    instruction:    str = "Antworte so, wie ein Mensch es auf ansprechende Weise tun würde"
     input_text:     str
     n_shap_samples: int = 128
     max_new_tokens: int = 128
@@ -150,15 +150,16 @@ class ShapResponse(PydanticBase):
     input_image:       str
     top_words:         list[dict]
     word_annotations:  list[WordAnnotation]
-    reasoning:         str   # LLM counter-reasoning about the top attributions
+    reasoning:         str   # KI-Gegenanalyse der wichtigsten Attributionen
 
 
 class ConfidenceRequest(PydanticBase):
-    instruction:    str = "Answer clearly and concisely."
+    system_prompt:  str = DEFAULT_CONFIDENCE_SYSTEM_PROMPT  # jetzt vom Nutzer editierbar
+    instruction:    str = "Antworte klar und prägnant."
     input_text:     str
     max_new_tokens: int = 256
 
-    @field_validator("instruction", "input_text")
+    @field_validator("system_prompt", "instruction", "input_text")
     @classmethod
     def _chk(cls, v): return _text_validator(v)
 
@@ -177,7 +178,7 @@ class ConfidenceResponse(PydanticBase):
     token_confidences: list[TokenConfidence]
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# ── Hilfsfunktionen ───────────────────────────────────────────────────────────
 def repair_json(s: str) -> str:
     opening = {"{": "}", "[": "]"}
     closing = set("}]")
@@ -213,7 +214,7 @@ def plot_shap_bar(shap_vals: np.ndarray, labels: list[str], title: str) -> str:
 
     if len(shap_vals) == 0:
         fig, ax = plt.subplots(figsize=(6, 2))
-        ax.text(0.5, 0.5, "No data", ha="center")
+        ax.text(0.5, 0.5, "Keine Daten", ha="center")
         return fig_to_b64(fig)
 
     order = np.argsort(np.abs(shap_vals))[::-1]
@@ -233,7 +234,7 @@ def plot_shap_bar(shap_vals: np.ndarray, labels: list[str], title: str) -> str:
     ax.set_yticks(range(top_n))
     ax.set_yticklabels([labels[i] for i in idx], fontsize=8, color="#e2e8f0")
     ax.axvline(0, color="#4b5563", linewidth=0.8)
-    ax.set_xlabel("SHAP value  (orange promotes · blue suppresses)", color="#9ca3af", fontsize=9)
+    ax.set_xlabel("SHAP-Wert  (orange = fördert · blau = hemmt)", color="#9ca3af", fontsize=9)
     ax.set_title(title, color="#f1f5f9", fontsize=11, pad=10)
     for spine in ax.spines.values():
         spine.set_edgecolor("#374151")
@@ -242,11 +243,11 @@ def plot_shap_bar(shap_vals: np.ndarray, labels: list[str], title: str) -> str:
     return fig_to_b64(fig)
 
 
-def _instruct_generate(model, tokenizer, user_message: str, max_new_tokens: int = 400) -> str:
-    """Single-turn instruct generation helper used by confidence + SHAP reasoning."""
+def _instruct_generate(model, tokenizer, system_prompt: str, user_message: str, max_new_tokens: int = 400) -> str:
+    """Einzelner Instruct-Generierungsaufruf – genutzt für Konfidenz & SHAP-Gegenanalyse."""
     prompt = (
         "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n"
-        f"{CONFIDENCE_SYSTEM_PROMPT}<|eot_id|>\n"
+        f"{system_prompt}<|eot_id|>\n"
         "<|start_header_id|>user<|end_header_id|>\n"
         f"{user_message}<|eot_id|>\n"
         "<|start_header_id|>assistant<|end_header_id|>\n"
@@ -265,8 +266,8 @@ def _instruct_generate(model, tokenizer, user_message: str, max_new_tokens: int 
     ).strip()
 
 
-# ── FastAPI app ───────────────────────────────────────────────────────────────
-app = FastAPI(title="LLM Explainability API")
+# ── FastAPI-App ───────────────────────────────────────────────────────────────
+app = FastAPI(title="LLM-Erklärbarkeits-API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -345,17 +346,20 @@ def explain_cot(req: CoTRequest):
             raw=raw,
         )
 
+    # Versuch 1: direkte JSON-Validierung
     try:
         return _make(ChainOfThought.model_validate_json(repair_json(raw)))
     except Exception:
         pass
 
+    # Versuch 2: erstes vollständiges JSON-Objekt extrahieren
     try:
         start = raw.index("{"); end = raw.rindex("}") + 1
         return _make(ChainOfThought.model_validate_json(repair_json(raw[start:end])))
     except Exception:
         pass
 
+    # Fallback: Sätze als Schritte verwenden
     sentences = [s.strip() for s in raw.replace("\n", " ").split(".") if s.strip()]
     steps     = (
         [CoTStep(explanation=s + ".") for s in sentences[:-1]]
@@ -364,7 +368,7 @@ def explain_cot(req: CoTRequest):
     return CoTResponse(steps=steps, final_answer=sentences[-1] if sentences else raw, raw=raw)
 
 
-# ── SHAP + counter-reasoning ──────────────────────────────────────────────────
+# ── SHAP + Gegenanalyse ───────────────────────────────────────────────────────
 @app.post("/explain/shap", response_model=ShapResponse)
 def explain_shap(req: ShapRequest):
     import re as _re
@@ -381,7 +385,7 @@ def explain_shap(req: ShapRequest):
         "### Response:\n{response}"
     )
 
-    # 1. Generate base response
+    # 1. Basisantwort generieren
     prompt_for_gen = PROMPT_TEMPLATE.format(
         system_prompt=req.system_prompt,
         instruction=req.instruction,
@@ -416,12 +420,13 @@ def explain_shap(req: ShapRequest):
                 break
         if kept:
             return " ".join(kept)
+        # Fallback: auf Token-Ebene kürzen
         tokens = base_tok(text, return_tensors="pt")["input_ids"][0][:budget]
         return base_tok.decode(tokens, skip_special_tokens=True).rsplit(" ", 1)[0]
 
     RESPONSE_TEXT = _trim_to_budget(raw_resp, req.max_new_tokens)
 
-    # 2. Word features
+    # 2. Wort-Features aufbauen
     def tokenize_section(text, label):
         words = text.split()
         return words, [f"[{label}] {w}" for w in words]
@@ -460,13 +465,13 @@ def explain_shap(req: ShapRequest):
     def shap_predict(mask_matrix: np.ndarray) -> np.ndarray:
         return np.array([compute_log_prob(reconstruct_prompt(m)) for m in mask_matrix])
 
-    # 3. SHAP
+    # 3. SHAP berechnen
     explainer = _shap.KernelExplainer(shap_predict, np.zeros((1, n_features)))
     sv        = explainer.shap_values(
         np.ones((1, n_features)), nsamples=req.n_shap_samples, silent=True
     )[0]
 
-    # 4. Top words
+    # 4. Wichtigste Wörter ermitteln
     order     = np.argsort(np.abs(sv))[::-1]
     top_words = []
     for i in order[:15]:
@@ -477,13 +482,13 @@ def explain_shap(req: ShapRequest):
             "direction": "promotes" if v > 1e-4 else ("suppresses" if v < -1e-4 else "negligible"),
         })
 
-    # 5. Plots
-    overall_img     = plot_shap_bar(sv,                     all_labels,  f'All words → "{RESPONSE_TEXT[:50]}…"')
-    system_img      = plot_shap_bar(sv[:n_sys],             sys_labels,  "System prompt words")
-    instruction_img = plot_shap_bar(sv[n_sys:n_sys+n_inst], inst_labels, "Instruction words")
-    input_img       = plot_shap_bar(sv[n_sys+n_inst:],      inp_labels,  "Input words")
+    # 5. Diagramme erstellen
+    overall_img     = plot_shap_bar(sv,                     all_labels,  f'Alle Wörter → „{RESPONSE_TEXT[:50]}…"')
+    system_img      = plot_shap_bar(sv[:n_sys],             sys_labels,  "System-Prompt-Wörter")
+    instruction_img = plot_shap_bar(sv[n_sys:n_sys+n_inst], inst_labels, "Anweisungswörter")
+    input_img       = plot_shap_bar(sv[n_sys+n_inst:],      inp_labels,  "Eingabewörter")
 
-    # 6. Annotations
+    # 6. Annotationen aufbauen
     annotations = []
     for i, (w, _) in enumerate(zip(all_words, all_labels)):
         section = (
@@ -493,33 +498,36 @@ def explain_shap(req: ShapRequest):
         )
         annotations.append(WordAnnotation(word=w, shap_value=float(sv[i]), section=section))
 
-    # 7. Counter-reasoning via instruct model
+    # 7. Gegenanalyse über das Instruct-Modell generieren
     promotes   = [tw for tw in top_words[:10] if tw["direction"] == "promotes"][:5]
     suppresses = [tw for tw in top_words[:10] if tw["direction"] == "suppresses"][:5]
 
     promote_str  = ", ".join(
         f'"{tw["label"].split("] ")[-1]}" (+{abs(tw["value"]):.4f})' for tw in promotes
-    ) or "none identified"
+    ) or "keine identifiziert"
     suppress_str = ", ".join(
         f'"{tw["label"].split("] ")[-1]}" (-{abs(tw["value"]):.4f})' for tw in suppresses
-    ) or "none identified"
+    ) or "keine identifiziert"
 
     reasoning_prompt = (
-        f"A SHAP analysis was run on the following AI exchange:\n"
-        f"  Input: \"{req.input_text}\"\n"
-        f"  Response: \"{RESPONSE_TEXT}\"\n\n"
-        f"Words that PROMOTED the response (made the model more confident in producing it):\n"
+        f"Eine SHAP-Analyse wurde für den folgenden KI-Austausch durchgeführt:\n"
+        f"  Eingabe: \"{req.input_text}\"\n"
+        f"  Antwort: \"{RESPONSE_TEXT}\"\n\n"
+        f"Wörter, die die Antwort GEFÖRDERT haben (das Modell zuversichtlicher gemacht haben, sie zu produzieren):\n"
         f"  {promote_str}\n\n"
-        f"Words that SUPPRESSED the response (made the model less confident):\n"
+        f"Wörter, die die Antwort GEHEMMT haben (das Modell weniger zuversichtlich gemacht haben):\n"
         f"  {suppress_str}\n\n"
-        f"In 3–5 sentences, explain in plain language WHY these specific words likely had those "
-        f"effects. Consider what each word signals semantically, what patterns the model may have "
-        f"learned, and why those signals would push confidence in or against that direction. "
-        f"Be insightful and educational. Do not repeat the numerical scores."
+        f"Erkläre in 3–5 Sätzen in verständlicher Sprache, WARUM diese spezifischen Wörter wahrscheinlich "
+        f"diese Effekte hatten. Berücksichtige, was jedes Wort semantisch signalisiert, welche Muster das Modell "
+        f"möglicherweise gelernt hat, und warum diese Signale die Konfidenz in diese oder jene Richtung lenken. "
+        f"Sei aufschlussreich und lehrreich. Wiederhole nicht die numerischen Werte."
     )
 
     reasoning = _instruct_generate(
-        instruct_model, instruct_tok, reasoning_prompt, max_new_tokens=300
+        instruct_model, instruct_tok,
+        DEFAULT_CONFIDENCE_SYSTEM_PROMPT,  # Standard-System-Prompt für internen Analyseaufruf
+        reasoning_prompt,
+        max_new_tokens=300,
     )
 
     return ShapResponse(
@@ -534,19 +542,20 @@ def explain_shap(req: ShapRequest):
     )
 
 
-# ── Confidence scoring ────────────────────────────────────────────────────────
+# ── Konfidenz-Bewertung ───────────────────────────────────────────────────────
 @app.post("/explain/confidence", response_model=ConfidenceResponse)
 def explain_confidence(req: ConfidenceRequest):
     """
-    Generate a response and return per-token softmax probabilities.
-    High probability = the model was "sure" about that token;
-    low probability = it was uncertain, which often correlates with hallucination risk.
+    Generiert eine Antwort und gibt Softmax-Wahrscheinlichkeiten pro Token zurück.
+    Hohe Wahrscheinlichkeit = das Modell war bei diesem Token „sicher";
+    niedrige Wahrscheinlichkeit = es war unsicher, was oft mit Halluzinationsrisiko korreliert.
     """
     model, tokenizer = get_model(instruct=True)
 
+    # Vom Nutzer bereitgestellten System-Prompt verwenden (Fallback auf Standard)
     prompt = (
         "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n"
-        f"{CONFIDENCE_SYSTEM_PROMPT}<|eot_id|>\n"
+        f"{req.system_prompt}<|eot_id|>\n"
         "<|start_header_id|>user<|end_header_id|>\n"
         f"Instruction: {req.instruction}\n\n"
         f"Question: {req.input_text}<|eot_id|>\n"
@@ -567,9 +576,9 @@ def explain_confidence(req: ConfidenceRequest):
             return_dict_in_generate=True,
         )
 
-    # out.sequences[0] includes the prompt; slice to get only generated tokens
+    # out.sequences[0] enthält den Prompt; nur generierte Tokens extrahieren
     generated_ids = out.sequences[0, inputs["input_ids"].shape[1]:]
-    # out.scores is a tuple of (1, vocab_size) tensors, one per step
+    # out.scores ist ein Tupel von (1, vocab_size)-Tensoren, einen pro Schritt
     scores = out.scores
 
     token_confidences: list[TokenConfidence] = []
@@ -577,12 +586,12 @@ def explain_confidence(req: ConfidenceRequest):
 
     for token_id, score in zip(generated_ids, scores):
         tid  = token_id.item()
-        # Stop at EOS
+        # Bei EOS-Token stoppen
         if tid == tokenizer.eos_token_id:
             break
         prob = torch.softmax(score[0], dim=-1)[tid].item()
         text = tokenizer.decode([tid], skip_special_tokens=True)
-        # Skip empty/whitespace-only tokens that carry no semantic content
+        # Leere / rein aus Leerzeichen bestehende Tokens ohne semantischen Inhalt überspringen
         if not text:
             continue
         token_confidences.append(TokenConfidence(token=text, probability=prob))

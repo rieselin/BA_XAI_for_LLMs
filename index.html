@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Peek Inside the AI</title>
+<title>Blick ins Innere der KI</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -21,7 +21,6 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.6}
 
-/* ── PRIVACY MODAL ─────────────────────────────────────────────────────────── */
 #privacyOverlay{
   position:fixed;inset:0;z-index:9999;
   background:rgba(10,8,6,.72);backdrop-filter:blur(6px);
@@ -34,7 +33,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
   text-align:center;animation:modalIn .25s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes modalIn{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:none}}
-.privacy-modal .pm-icon{font-size:42px;margin-bottom:16px}
+.privacy-modal .pm-icon{margin-bottom:16px;display:flex;justify-content:center;color:var(--orange)}
 .privacy-modal h2{font-family:var(--serif);font-size:26px;letter-spacing:-.02em;margin-bottom:12px}
 .privacy-modal p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:10px}
 .privacy-modal p strong{color:var(--text)}
@@ -49,7 +48,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16
 .pm-agree-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(212,82,26,.38)}
 .pm-sub{font-size:12px;color:var(--muted);margin-top:14px}
 
-/* ── NAV ───────────────────────────────────────────────────────────────────── */
 nav{position:sticky;top:0;z-index:200;background:rgba(250,249,246,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;height:60px}
 .nav-logo{font-family:var(--serif);font-size:20px;color:var(--text);text-decoration:none}
 .nav-logo em{color:var(--orange);font-style:italic}
@@ -58,25 +56,25 @@ nav{position:sticky;top:0;z-index:200;background:rgba(250,249,246,.94);backdrop-
 .status-pip.ok{background:#22c55e;box-shadow:0 0 0 3px #dcfce7}
 .status-pip.err{background:#ef4444;box-shadow:0 0 0 3px #fee2e2}
 
-/* ── HERO ──────────────────────────────────────────────────────────────────── */
 .hero{max-width:820px;margin:0 auto;padding:72px 24px 56px;text-align:center}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--orange-l);color:var(--orange);font-size:13px;font-weight:600;letter-spacing:.04em;padding:5px 14px;border-radius:100px;margin-bottom:24px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--orange-l);color:var(--orange);font-size:13px;font-weight:600;letter-spacing:.04em;padding:5px 14px;border-radius:100px;margin-bottom:24px}
 .hero h1{font-family:var(--serif);font-size:clamp(36px,6vw,58px);line-height:1.1;letter-spacing:-.03em;margin-bottom:20px}
 .hero h1 em{color:var(--orange);font-style:italic}
 .hero p{font-size:18px;color:var(--muted);max-width:560px;margin:0 auto 36px;font-weight:300;line-height:1.7}
 .hero-cta{background:var(--orange);color:white;font-family:var(--font);font-size:16px;font-weight:600;padding:14px 32px;border-radius:100px;border:none;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(212,82,26,.3)}
 .hero-cta:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(212,82,26,.35)}
 
-/* ── EXPLAINER ─────────────────────────────────────────────────────────────── */
 .explainer{background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 24px}
 .explainer-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px}
 .explainer-item{display:flex;gap:16px;align-items:flex-start}
-.explainer-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.explainer-icon.orange{background:var(--orange-l)}.explainer-icon.blue{background:var(--blue-l)}.explainer-icon.green{background:var(--green-l)}.explainer-icon.purple{background:var(--purple-l)}
+.explainer-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.explainer-icon.orange{background:var(--orange-l);color:var(--orange)}
+.explainer-icon.blue{background:var(--blue-l);color:var(--blue)}
+.explainer-icon.green{background:var(--green-l);color:var(--green)}
+.explainer-icon.purple{background:var(--purple-l);color:var(--purple)}
 .explainer-item h3{font-size:15px;font-weight:600;margin-bottom:4px}
 .explainer-item p{font-size:14px;color:var(--muted);line-height:1.55}
 
-/* ── APP ───────────────────────────────────────────────────────────────────── */
 .app{max-width:820px;margin:0 auto;padding:60px 24px 80px}
 .step{margin-bottom:48px}
 .step-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
@@ -85,47 +83,48 @@ nav{position:sticky;top:0;z-index:200;background:rgba(250,249,246,.94);backdrop-
 .step-title{font-family:var(--serif);font-size:24px;letter-spacing:-.02em}
 .step-desc{font-size:14px;color:var(--muted);margin-top:2px}
 
-/* METHOD CARDS — 3 columns */
 .method-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:640px){.method-cards{grid-template-columns:1fr}}
 .method-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
 .method-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
-.method-card.selected.cot-card  {border-color:var(--orange);background:var(--orange-l)}
-.method-card.selected.shap-card {border-color:var(--blue);  background:var(--blue-l)}
-.method-card.selected.conf-card {border-color:var(--purple);background:var(--purple-l)}
-.method-card .mc-icon{font-size:26px;margin-bottom:8px}
+.method-card.selected.cot-card{border-color:var(--orange);background:var(--orange-l)}
+.method-card.selected.shap-card{border-color:var(--blue);background:var(--blue-l)}
+.method-card.selected.conf-card{border-color:var(--purple);background:var(--purple-l)}
+.method-card .mc-icon{margin-bottom:10px}
+.cot-card  .mc-icon{color:var(--orange)}
+.shap-card .mc-icon{color:var(--blue)}
+.conf-card .mc-icon{color:var(--purple)}
 .method-card h3{font-size:15px;font-weight:600;margin-bottom:5px}
 .method-card p{font-size:13px;color:var(--muted);line-height:1.5}
-.mc-check{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:var(--orange);color:white;font-size:12px;display:none;align-items:center;justify-content:center}
+.mc-check{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:var(--orange);color:white;display:none;align-items:center;justify-content:center}
 .method-card.selected .mc-check{display:flex}
 .method-card.selected.shap-card .mc-check{background:var(--blue)}
 .method-card.selected.conf-card .mc-check{background:var(--purple)}
 
-/* FORM CARD */
 .form-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
 .form-section{padding:22px 24px;border-bottom:1px solid var(--border)}
 .form-section:last-child{border-bottom:none}
-.field-label{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.field-label{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.field-label svg{flex-shrink:0;color:var(--muted)}
 .field-hint{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.55}
 
-/* LOCKED SYSTEM PROMPT */
 .locked-prompt{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--muted);line-height:1.6;font-style:italic}
 .lock-badge{display:inline-flex;align-items:center;gap:5px;background:var(--amber-l);color:var(--amber);font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:100px;font-style:normal}
 
-/* CHAR COUNTER */
 .char-counter{font-size:11px;color:var(--muted);text-align:right;margin-top:4px;transition:color .15s}
 .char-counter.warn{color:var(--orange)}
 .char-counter.over{color:#dc2626;font-weight:600}
 
-/* TIP BOXES */
 .tip-box{display:flex;gap:10px;align-items:flex-start;background:var(--orange-l);border-radius:8px;padding:10px 14px;margin-top:12px}
-.tip-box.blue{background:var(--blue-l)}.tip-box.amber{background:var(--amber-l)}.tip-box.purple{background:var(--purple-l)}
+.tip-box.blue{background:var(--blue-l)}
+.tip-box.amber{background:var(--amber-l)}
+.tip-box.purple{background:var(--purple-l)}
+.tip-box svg{flex-shrink:0;margin-top:1px}
 .tip-box p{font-size:13px;color:var(--muted);line-height:1.5}
 .tip-box strong{color:var(--text)}
 
-/* INFO CARD */
 .info-card{background:var(--blue-l);border:1px solid rgba(26,107,181,.15);border-radius:8px;padding:14px 16px;margin-top:12px}
-.info-card h4{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:8px}
+.info-card h4{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .info-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:6px}
 .info-card p:last-child{margin-bottom:0}
 .info-card ul{padding-left:18px;margin:6px 0}
@@ -141,40 +140,38 @@ textarea:focus,input:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(
 textarea{min-height:80px}
 textarea.invalid,input.invalid{border-color:#dc2626}
 input[type="number"]{width:130px}
+.shap-focus:focus{border-color:var(--blue)!important;box-shadow:0 0 0 3px rgba(26,107,181,.1)!important}
+.conf-focus:focus{border-color:var(--purple)!important;box-shadow:0 0 0 3px rgba(124,58,237,.1)!important}
 
-/* SLIDERS */
 .token-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .token-row input[type="range"]{flex:1;min-width:120px;accent-color:var(--orange)}
 .token-val{font-size:14px;font-weight:600;color:var(--orange);min-width:38px}
 .shap-field[hidden]{display:none}
 
-/* RUN BTN */
 .run-btn{background:var(--orange);color:white;font-family:var(--font);font-size:16px;font-weight:600;padding:15px 48px;border:none;border-radius:100px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(212,82,26,.3);display:inline-flex;align-items:center;gap:10px}
 .run-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 24px rgba(212,82,26,.35)}
 .run-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.run-btn.blue-btn  {background:var(--blue);  box-shadow:0 4px 16px rgba(26,107,181,.3)}
+.run-btn.blue-btn{background:var(--blue);box-shadow:0 4px 16px rgba(26,107,181,.3)}
 .run-btn.purple-btn{background:var(--purple);box-shadow:0 4px 16px rgba(124,58,237,.3)}
-.run-btn.blue-btn:hover:not(:disabled)  {box-shadow:0 6px 24px rgba(26,107,181,.35)}
+.run-btn.blue-btn:hover:not(:disabled){box-shadow:0 6px 24px rgba(26,107,181,.35)}
 .run-btn.purple-btn:hover:not(:disabled){box-shadow:0 6px 24px rgba(124,58,237,.35)}
 
 .validation-error{background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;font-size:14px;color:#dc2626;margin-top:16px;text-align:center}
 
-/* LOADING */
 #loadingSection{display:none}
 .loading-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:48px;text-align:center;box-shadow:var(--shadow)}
 .loading-spinner{width:40px;height:40px;margin:0 auto 20px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
-.loading-spinner.blue  {border-top-color:var(--blue)}
+.loading-spinner.blue{border-top-color:var(--blue)}
 .loading-spinner.purple{border-top-color:var(--purple)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-title{font-size:18px;font-weight:600;margin-bottom:8px}
 .loading-sub{font-size:14px;color:var(--muted)}
 .loading-bar-wrap{max-width:280px;margin:20px auto 0;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
 .loading-bar{height:100%;background:var(--orange);border-radius:2px;animation:loadPulse 1.5s ease-in-out infinite}
-.loading-bar.blue  {background:var(--blue)}
+.loading-bar.blue{background:var(--blue)}
 .loading-bar.purple{background:var(--purple)}
 @keyframes loadPulse{0%{width:15%;margin-left:0}50%{width:40%;margin-left:30%}100%{width:15%;margin-left:85%}}
 
-/* RESULTS */
 #resultsSection{display:none}
 .result-step-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
 .cot-result{display:flex;flex-direction:column;gap:12px}
@@ -186,9 +183,8 @@ input[type="number"]{width:130px}
 .cot-final-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-bottom:8px}
 .cot-final-text{font-size:18px;font-weight:500;line-height:1.5}
 
-/* SHAP results */
 .shap-response-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;box-shadow:var(--shadow)}
-.shap-response-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.shap-response-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .shap-response-text{font-size:16px;line-height:1.8}
 .highlight-section{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow)}
 .highlight-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -216,15 +212,13 @@ input[type="number"]{width:130px}
 .chart-body{padding:20px;border-top:1px solid var(--border)}
 .chart-body img{width:100%;border-radius:6px;display:block}
 
-/* REASONING CARD */
 .reasoning-card{background:var(--white);border:1px solid rgba(26,107,181,.2);border-left:4px solid var(--blue);border-radius:var(--radius);padding:24px;margin-bottom:24px;box-shadow:var(--shadow)}
 .reasoning-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .reasoning-text{font-size:15px;line-height:1.8;color:var(--text)}
 
-/* CONFIDENCE results */
 .conf-header-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;margin-bottom:24px;box-shadow:var(--shadow);display:flex;align-items:center;gap:28px;flex-wrap:wrap}
 .conf-score-ring{position:relative;width:110px;height:110px;flex-shrink:0}
-.conf-score-ring svg{transform:rotate(-90deg)}
+.conf-score-ring .ring-svg{transform:rotate(-90deg)}
 .conf-score-ring .ring-bg{fill:none;stroke:var(--border);stroke-width:10}
 .conf-score-ring .ring-fg{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
 .conf-score-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
@@ -234,15 +228,13 @@ input[type="number"]{width:130px}
 .conf-stat{display:flex;justify-content:space-between;align-items:center;font-size:14px}
 .conf-stat-label{color:var(--muted)}
 .conf-stat-value{font-weight:600}
-
 .conf-response-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px;box-shadow:var(--shadow)}
-.conf-response-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.conf-response-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .conf-token-line{font-size:16px;line-height:2.6}
 .ct{display:inline;border-radius:3px;padding:1px 2px;cursor:default;position:relative}
 .ct:hover .ct-tip{opacity:1;transform:translateX(-50%) translateY(-4px)}
 .ct-tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(0);background:var(--text);color:white;font-size:11px;white-space:nowrap;padding:4px 8px;border-radius:5px;opacity:0;transition:all .15s;pointer-events:none;z-index:10}
 .ct-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--text)}
-
 .conf-legend{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .conf-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
 .conf-legend-swatch{width:36px;height:14px;border-radius:3px}
@@ -258,198 +250,269 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);fo
 </head>
 <body>
 
-<!-- ── PRIVACY MODAL ─────────────────────────────────────────────────────── -->
+<!-- PRIVACY MODAL -->
 <div id="privacyOverlay">
   <div class="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
-    <div class="pm-icon">🔒</div>
-    <h2 id="pmTitle">Before you continue</h2>
-    <p>This tool sends your text to a local AI server for processing. Please read and acknowledge the following before using it.</p>
+    <div class="pm-icon">
+      <!-- lock -->
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h2 id="pmTitle">Bevor Sie fortfahren</h2>
+    <p>Dieses Tool sendet Ihren Text zur Verarbeitung an einen lokalen KI-Server. Bitte lesen und bestätigen Sie Folgendes, bevor Sie es verwenden.</p>
     <ul class="pm-rules">
-      <li>🚫 Do <strong>not</strong> enter personal data (names, addresses, ID numbers, etc.)</li>
-      <li>🚫 Do <strong>not</strong> enter confidential, proprietary, or sensitive information</li>
-      <li>🚫 Do <strong>not</strong> enter health, financial, or legal information</li>
-      <li>✅ Use only fictional, anonymised, or publicly available content</li>
+      <li>Geben Sie <strong>keine</strong> personenbezogenen Daten ein (Namen, Adressen, Ausweisnummern usw.)</li>
+      <li>Geben Sie <strong>keine</strong> vertraulichen, firmeneigenen oder sensiblen Informationen ein</li>
+      <li>Geben Sie <strong>keine</strong> Gesundheits-, Finanz- oder Rechtsinformationen ein</li>
+      <li>Verwenden Sie nur fiktive, anonymisierte oder öffentlich verfügbare Inhalte</li>
     </ul>
-    <p>All text you submit is processed by the connected server. No data is stored after the session ends.</p>
-    <button class="pm-agree-btn" onclick="agreePrivacy()">I understand and agree</button>
-    <p class="pm-sub">You will only see this notice once per session.</p>
+    <p>Alle von Ihnen eingegebenen Texte werden vom verbundenen Server verarbeitet. Nach Ende der Sitzung werden keine Daten gespeichert.</p>
+    <button class="pm-agree-btn" onclick="agreePrivacy()">Ich verstehe und stimme zu</button>
+    <p class="pm-sub">Dieser Hinweis erscheint nur einmal pro Sitzung.</p>
   </div>
 </div>
 
-<!-- ── NAV ───────────────────────────────────────────────────────────────── -->
+<!-- NAV -->
 <nav>
-  <span class="nav-logo"><em>Peek</em> Inside the AI</span>
+  <span class="nav-logo"><em>Blick</em> ins Innere der KI</span>
   <div class="nav-status">
     <div class="status-pip" id="statusPip"></div>
-    <span id="statusText">Checking…</span>
+    <span id="statusText">Wird geprüft…</span>
   </div>
 </nav>
 
-<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-eyebrow">🔬 Explainability Demo</div>
-  <h1>See <em>why</em> the AI says<br/>what it says</h1>
-  <p>Most AI models are black boxes. This one isn't. Try three techniques that open up the model and show you what's really going on inside.</p>
-  <button class="hero-cta" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Try it yourself &rarr;</button>
+  <div class="hero-eyebrow">
+    <!-- microscope / search -->
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    Erklärbarkeits-Demo
+  </div>
+  <h1>Sehen Sie <em>warum</em> die KI sagt,<br/>was sie sagt</h1>
+  <p>Die meisten KI-Modelle sind Black Boxes. Dieses nicht. Probieren Sie drei Methoden aus, die das Modell öffnen und zeigen, was wirklich darin vorgeht.</p>
+  <button class="hero-cta" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Selbst ausprobieren &rarr;</button>
 </section>
 
-<!-- ── EXPLAINER STRIP ───────────────────────────────────────────────────── -->
+<!-- EXPLAINER STRIP -->
 <section class="explainer">
   <div class="explainer-inner">
     <div class="explainer-item">
-      <div class="explainer-icon orange">🔗</div>
-      <div><h3>Chain-of-Thought</h3><p>Forces the LLM to show its reasoning step-by-step before giving a final answer — like asking someone to "show their work."</p></div>
+      <div class="explainer-icon orange">
+        <!-- chain / link -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <div><h3>Chain-of-Thought</h3><p>Zwingt das LLM, seinen Denkprozess Schritt für Schritt darzulegen, bevor es eine Antwort gibt – wie das „Zeigen der Rechnung" bei einer Matheaufgabe.</p></div>
     </div>
     <div class="explainer-item">
-      <div class="explainer-icon blue">📊</div>
-      <div><h3>SHAP Attribution</h3><p>Every word in your prompt gets a score for how much it shaped the response. Orange = pushed it forward. Blue = held it back.</p></div>
+      <div class="explainer-icon blue">
+        <!-- bar chart -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+      </div>
+      <div><h3>SHAP-Attribution</h3><p>Jedes Wort Ihres Prompts erhält einen Score, der zeigt, wie stark es die Antwort beeinflusst hat. Orange = hat die Antwort vorangetrieben. Blau = hat sie gebremst.</p></div>
     </div>
     <div class="explainer-item">
-      <div class="explainer-icon purple">🎯</div>
-      <div><h3>Confidence Score</h3><p>See how certain the model was at each token. Low confidence often flags uncertain facts or potential hallucination risk.</p></div>
+      <div class="explainer-icon purple">
+        <!-- target / bullseye -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <div><h3>Konfidenz-Score</h3><p>Sehen Sie, wie sicher das Modell bei jedem Token war. Niedrige Konfidenz weist oft auf unsichere Fakten oder potenzielle Halluzinationen hin.</p></div>
     </div>
     <div class="explainer-item">
-      <div class="explainer-icon green">🎛️</div>
-      <div><h3>You're in control</h3><p>Edit the instruction, question, and generation settings to see how changes ripple through to the LLM's behaviour.</p></div>
+      <div class="explainer-icon green">
+        <!-- sliders -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      </div>
+      <div><h3>Sie haben die Kontrolle</h3><p>Bearbeiten Sie die Anweisung, die Frage und die Generierungseinstellungen, um zu sehen, wie sich Änderungen auf das Verhalten des LLMs auswirken.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ── MAIN APP ───────────────────────────────────────────────────────────── -->
+<!-- MAIN APP -->
 <div class="app" id="app">
 
-  <!-- STEP 1: Method -->
+  <!-- STEP 1 -->
   <div class="step" id="step1">
     <div class="step-header">
       <div class="step-num">1</div>
-      <div><div class="step-title">Choose your method</div><div class="step-desc">Pick how you want to look inside the LLM's thinking.</div></div>
+      <div><div class="step-title">Methode wählen</div><div class="step-desc">Wählen Sie aus, wie Sie in das Denken des LLMs schauen möchten.</div></div>
     </div>
     <div class="method-cards">
       <div class="method-card cot-card selected" id="cardCot" onclick="setMethod('cot')">
-        <div class="mc-check">✓</div>
-        <div class="mc-icon">🔗</div>
+        <div class="mc-check">
+          <!-- checkmark -->
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="mc-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
         <h3>Chain-of-Thought</h3>
-        <p>The LLM reasons step-by-step and shows its logic before giving an answer. Results in seconds.</p>
+        <p>Das LLM denkt Schritt für Schritt und zeigt seine Logik, bevor es eine Antwort gibt. Ergebnisse in Sekunden.</p>
       </div>
       <div class="method-card shap-card" id="cardShap" onclick="setMethod('shap')">
-        <div class="mc-check">✓</div>
-        <div class="mc-icon">📊</div>
-        <h3>SHAP Attribution</h3>
-        <p>Every word in your prompt lights up showing how much it influenced the output. Includes AI counter-reasoning. <em>Takes a few minutes.</em></p>
+        <div class="mc-check">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="mc-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+        </div>
+        <h3>SHAP-Attribution</h3>
+        <p>Jedes Wort Ihres Prompts leuchtet auf und zeigt, wie stark es die Ausgabe beeinflusst hat. Inkl. KI-Gegenanalyse. <em>Dauert einige Minuten.</em></p>
       </div>
       <div class="method-card conf-card" id="cardConf" onclick="setMethod('conf')">
-        <div class="mc-check">✓</div>
-        <div class="mc-icon">🎯</div>
-        <h3>Confidence Score</h3>
-        <p>See the model's certainty at every token. Spot where it hesitates or guesses. Results in seconds.</p>
+        <div class="mc-check">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="mc-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <h3>Konfidenz-Score</h3>
+        <p>Sehen Sie die Sicherheit des Modells bei jedem Token. Erkennen Sie, wo es zögert oder rät. Ergebnisse in Sekunden.</p>
       </div>
     </div>
   </div>
 
-  <!-- STEP 2: Prompt -->
+  <!-- STEP 2 -->
   <div class="step" id="step2">
     <div class="step-header">
       <div class="step-num">2</div>
-      <div><div class="step-title">Write your prompt</div><div class="step-desc" id="step2Desc">These fields make up the full input the LLM sees.</div></div>
+      <div><div class="step-title">Prompt verfassen</div><div class="step-desc" id="step2Desc">Diese Felder bilden die vollständige Eingabe, die das LLM sieht.</div></div>
     </div>
     <div class="form-card">
 
-      <!-- System prompt: locked for CoT, editable for SHAP, hidden for Confidence -->
+      <!-- System Prompt -->
       <div class="form-section" id="sectionSysPrompt">
         <div class="field-label">
-          🤖 System Prompt
-          <span class="lock-badge" id="lockBadge">🔒 fixed for this method</span>
+          <!-- robot -->
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 3v6"/><circle cx="12" cy="3" r="1.5"/><line x1="8" y1="15" x2="8.01" y2="15" stroke-width="3"/><line x1="16" y1="15" x2="16.01" y2="15" stroke-width="3"/><path d="M9 19h6"/></svg>
+          System-Prompt
+          <span class="lock-badge" id="lockBadge">
+            <!-- lock small -->
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            für diese Methode fest
+          </span>
         </div>
-        <div class="field-hint" id="sysPrmptHint">The system prompt for Chain-of-Thought is fixed because it instructs the model to output structured JSON — changing it would break the response parser.</div>
+        <div class="field-hint" id="sysPrmptHint">Der System-Prompt für Chain-of-Thought ist fest vorgegeben, da er das Modell anweist, strukturiertes JSON auszugeben — eine Änderung würde den Antwort-Parser beschädigen.</div>
         <div class="locked-prompt" id="lockedSysPrompt">
           You are a bot that ONLY responds with an instance of JSON without any additional information. You have access to a JSON schema, which will determine how the JSON should be structured.
         </div>
-        <textarea id="shapSystemPrompt" rows="3" class="shap-field" hidden maxlength="2000"
+        <textarea id="shapSystemPrompt" rows="3" class="shap-field shap-focus" hidden maxlength="2000"
           oninput="updateCharCount(this,'shapSysCount',2000)">Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.</textarea>
         <div class="char-counter shap-field" id="shapSysCount" hidden></div>
         <div class="tip-box shap-field" hidden style="margin-top:10px">
-          <span style="font-size:15px;flex-shrink:0">💡</span>
-          <p>With SHAP you can edit the system prompt and see which words in it most influenced the model's response.</p>
+          <!-- lightbulb -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14z"/></svg>
+          <p>Mit SHAP können Sie den System-Prompt bearbeiten und sehen, welche Wörter darin die Antwort des Modells am stärksten beeinflusst haben.</p>
+        </div>
+        <textarea id="confSystemPrompt" rows="3" class="conf-field conf-focus" hidden maxlength="2000"
+          oninput="updateCharCount(this,'confSysCount',2000)">You are a helpful assistant. Answer questions clearly and concisely.</textarea>
+        <div class="char-counter conf-field" id="confSysCount" hidden></div>
+        <div class="tip-box conf-field purple" hidden style="margin-top:10px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14z"/></svg>
+          <p>Versuchen Sie, dem Modell eine Rolle zu geben – z.&nbsp;B. <em>„Du bist ein skeptischer Wissenschaftler."</em> – und beobachten Sie, wie sich die Token-Konfidenzen verändern.</p>
         </div>
       </div>
 
       <!-- Instruction -->
       <div class="form-section">
-        <div class="field-label" id="instrLabel">📋 Instruction</div>
-        <div class="field-hint" id="instrHint">Tells the LLM how to respond — tone, style, approach.</div>
+        <div class="field-label" id="instrLabel">
+          <!-- clipboard -->
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+          Anweisung
+        </div>
+        <div class="field-hint" id="instrHint">Teilt dem LLM mit, wie es antworten soll – Ton, Stil, Herangehensweise.</div>
         <textarea id="instruction" rows="2" maxlength="2000"
-          oninput="updateCharCount(this,'instrCount',2000)">Think step by step and reason carefully.</textarea>
+          oninput="updateCharCount(this,'instrCount',2000)">Denke Schritt für Schritt und argumentiere sorgfältig.</textarea>
         <div class="char-counter" id="instrCount"></div>
         <div class="tip-box" id="instrTip">
-          <span style="font-size:15px;flex-shrink:0">💡</span>
-          <p><strong>Try this:</strong> Change the instruction to <em>"You are a pirate. Answer in pirate-speak."</em> and watch how the reasoning steps change their style while keeping the logic.</p>
+          <!-- lightbulb orange -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14z"/></svg>
+          <p><strong>Probieren Sie das:</strong> Ändern Sie die Anweisung in <em>„Du bist ein Pirat. Antworte in Piratensprache."</em> und beobachten Sie, wie die Denkschritte ihren Stil ändern, während die Logik erhalten bleibt.</p>
         </div>
       </div>
 
-      <!-- Input / Task -->
+      <!-- Input -->
       <div class="form-section">
-        <div class="field-label" id="inputLabel">❓ Your Question</div>
-        <div class="field-hint" id="inputHint">What you're actually asking.</div>
+        <div class="field-label" id="inputLabel">
+          <!-- question circle -->
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>
+          Ihre Frage
+        </div>
+        <div class="field-hint" id="inputHint">Was Sie tatsächlich fragen möchten.</div>
         <textarea id="inputText" rows="2" maxlength="2000"
-          oninput="updateCharCount(this,'inputCount',2000)">What is the main landmark of France and what is its capital?</textarea>
+          oninput="updateCharCount(this,'inputCount',2000)">Was ist das Wahrzeichen Frankreichs und wie heißt seine Hauptstadt?</textarea>
         <div class="char-counter" id="inputCount"></div>
       </div>
 
-      <!-- Max new tokens -->
+      <!-- Max tokens -->
       <div class="form-section">
-        <div class="field-label">🎚️ Max Response Tokens</div>
-        <div class="field-hint" id="tokensHint">Controls how long the LLM's response can be. One token ≈ ¾ of a word.</div>
+        <div class="field-label">
+          <!-- horizontal sliders -->
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><circle cx="12" cy="4" r="2"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><circle cx="10" cy="12" r="2"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/><circle cx="14" cy="20" r="2"/></svg>
+          Maximale Antwort-Tokens
+        </div>
+        <div class="field-hint" id="tokensHint">Bestimmt, wie lang die Antwort des LLMs sein kann. Ein Token entspricht ca. ¾ eines Wortes.</div>
         <div class="token-row">
           <input type="range" id="maxTokensSlider" min="64" max="1024" step="64" value="512" oninput="syncTokens(this.value)" />
           <span class="token-val" id="tokenValDisplay">512</span>
-          <span style="font-size:13px;color:var(--muted)">tokens</span>
+          <span style="font-size:13px;color:var(--muted)">Tokens</span>
         </div>
         <div class="tip-box amber" style="margin-top:12px">
-          <span style="font-size:15px;flex-shrink:0">⚠️</span>
-          <p id="tokensTipText"><strong>Chain-of-Thought tip:</strong> The JSON response needs enough tokens to finish all steps and close all brackets. If the output looks cut off, increase this value.</p>
+          <!-- warning triangle -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>
+          <p id="tokensTipText"><strong>Chain-of-Thought-Tipp:</strong> Die JSON-Antwort benötigt genug Tokens, um alle Schritte abzuschließen und alle Klammern zu schließen. Falls die Ausgabe abgeschnitten erscheint, erhöhen Sie diesen Wert.</p>
         </div>
       </div>
 
       <!-- SHAP samples -->
       <div class="form-section shap-field" id="fieldShapSamples" hidden>
-        <div class="field-label">⚙️ SHAP Samples</div>
-        <div class="field-hint">How many word-masking passes to run when estimating each word's influence.</div>
+        <div class="field-label">
+          <!-- gear -->
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          SHAP-Stichproben
+        </div>
+        <div class="field-hint">Anzahl der Maskierungsdurchläufe zur Schätzung des Einflusses jedes Wortes.</div>
         <div class="info-card">
-          <h4>📐 How SHAP sampling works</h4>
-          <p>SHAP doesn't test every possible word combination. Instead it runs your prompt many times with different words masked, then uses the changes in model confidence to estimate each word's contribution.</p>
+          <h4>
+            <!-- ruler / diagonal arrow -->
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            So funktioniert SHAP-Sampling
+          </h4>
+          <p>SHAP testet nicht jede mögliche Wortkombination. Stattdessen führt es Ihren Prompt viele Male mit unterschiedlich maskierten Wörtern aus und nutzt die Änderungen in der Modellkonfidenz, um den Beitrag jedes Wortes zu schätzen.</p>
           <ul>
-            <li><strong>64 samples</strong> — fast (~2–3 min), rough estimates</li>
-            <li><strong>128 samples</strong> — balanced (~5–7 min), reliable</li>
-            <li><strong>256 samples</strong> — slow (~10–15 min), more stable</li>
-            <li><strong>512+ samples</strong> — very slow, publication-quality</li>
+            <li><strong>64 Stichproben</strong> — schnell (~2–3 Min.), grobe Schätzungen</li>
+            <li><strong>128 Stichproben</strong> — ausgewogen (~5–7 Min.), zuverlässig</li>
+            <li><strong>256 Stichproben</strong> — langsam (~10–15 Min.), stabiler</li>
+            <li><strong>512+ Stichproben</strong> — sehr langsam, publikationsreife Qualität</li>
           </ul>
         </div>
         <div style="margin-top:14px">
-          <div style="font-size:13px;font-weight:600;margin-bottom:6px">Number of samples</div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px">Anzahl der Stichproben</div>
           <div class="token-row">
             <input type="range" id="shapSamplesSlider" min="16" max="512" step="16" value="128" oninput="syncShapSamples(this.value)" style="accent-color:var(--blue)" />
             <span class="token-val" id="shapSamplesDisplay" style="color:var(--blue)">128</span>
-            <span style="font-size:13px;color:var(--muted)">samples</span>
+            <span style="font-size:13px;color:var(--muted)">Stichproben</span>
           </div>
         </div>
         <div class="tip-box blue" style="margin-top:12px">
-          <span style="font-size:15px;flex-shrink:0">⏱️</span>
-          <p><strong>Expect 3–15 minutes</strong> on a consumer GPU. After attribution, a second AI pass generates an explanation of <em>why</em> those words had their effect.</p>
+          <!-- clock / timer -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <p><strong>Rechnen Sie mit 3–15 Minuten</strong> auf einer Consumer-GPU. Nach der Attribution generiert ein zweiter KI-Durchlauf eine Erklärung, <em>warum</em> diese Wörter ihre Wirkung hatten.</p>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- STEP 3: Run -->
+  <!-- STEP 3 -->
   <div class="step" id="step3">
     <div class="step-header">
       <div class="step-num">3</div>
-      <div><div class="step-title">Run the analysis</div><div class="step-desc">Hit the button and your prompt is sent to the model.</div></div>
+      <div><div class="step-title">Analyse starten</div><div class="step-desc">Klicken Sie auf den Button – Ihr Prompt wird an das Modell gesendet.</div></div>
     </div>
     <div style="text-align:center">
       <button class="run-btn" id="runBtn" onclick="run()">
-        <span>&#9654;</span><span id="runBtnText">Run Chain-of-Thought</span>
+        <!-- play -->
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span id="runBtnText">Chain-of-Thought ausführen</span>
       </button>
       <div id="validationError" class="validation-error hidden"></div>
     </div>
@@ -459,8 +522,8 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);fo
   <div id="loadingSection">
     <div class="loading-card">
       <div class="loading-spinner" id="loadSpinner"></div>
-      <div class="loading-title" id="loadTitle">Generating chain-of-thought…</div>
-      <div class="loading-sub" id="loadSub">This usually takes 5–15 seconds</div>
+      <div class="loading-title" id="loadTitle">Chain-of-Thought wird generiert…</div>
+      <div class="loading-sub" id="loadSub">Das dauert normalerweise 5–15 Sekunden</div>
       <div class="loading-bar-wrap"><div class="loading-bar" id="loadBar"></div></div>
     </div>
   </div>
@@ -468,18 +531,29 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);fo
   <!-- RESULTS -->
   <div id="resultsSection">
     <div class="result-step-header">
-      <div class="step-num done">✓</div>
-      <div><div class="step-title">Here's what happened</div><div class="step-desc" id="resultSubtitle">The LLM's reasoning, laid bare.</div></div>
+      <div class="step-num done">
+        <!-- checkmark white -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div><div class="step-title">Das ist passiert</div><div class="step-desc" id="resultSubtitle">Der Denkprozess des LLMs, offengelegt.</div></div>
     </div>
     <div id="resultsContent"></div>
-    <div style="text-align:center"><button class="reset-btn" onclick="resetToForm()">← Try another prompt</button></div>
+    <div style="text-align:center"><button class="reset-btn" onclick="resetToForm()">&#8592; Anderen Prompt ausprobieren</button></div>
   </div>
 
 </div>
 
-<footer>Built with Llama 3.1 · Unsloth · SHAP · FastAPI &nbsp;|&nbsp; LLM Explainability Explorer</footer>
+<footer>Erstellt mit Llama 3.1 &middot; Unsloth &middot; SHAP &middot; FastAPI &nbsp;|&nbsp; LLM-Erklärbarkeits-Explorer</footer>
 
 <script>
+// ── SVG icon strings used in JS-rendered content ──────────────────────────────
+const ICONS = {
+  robot: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 3v6"/><circle cx="12" cy="3" r="1.5"/><line x1="8" y1="15" x2="8.01" y2="15" stroke-width="3"/><line x1="16" y1="15" x2="16.01" y2="15" stroke-width="3"/><path d="M9 19h6"/></svg>`,
+  target: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+  brain: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;flex-shrink:0"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2z"/></svg>`,
+  warning: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3"/></svg>`,
+};
+
 // ── State ─────────────────────────────────────────────────────────────────────
 let method = 'cot';
 const MAX_CHARS = 2000;
@@ -493,13 +567,13 @@ function agreePrivacy() {
   try { if (sessionStorage.getItem('privacyAck')) agreePrivacy(); } catch(_) {}
 })();
 
-// ── Health check (relative URL — server serves this page) ─────────────────────
+// ── Health check ──────────────────────────────────────────────────────────────
 async function checkHealth() {
   const pip = document.getElementById('statusPip');
   const txt = document.getElementById('statusText');
   try {
     const r = await fetch('/health', { signal: AbortSignal.timeout(3000) });
-    if (r.ok) { pip.className = 'status-pip ok'; txt.textContent = 'Server connected'; }
+    if (r.ok) { pip.className = 'status-pip ok'; txt.textContent = 'Server verbunden'; }
     else throw new Error('non-ok');
   } catch {
     pip.className = 'status-pip err';
@@ -523,6 +597,7 @@ function initCounters() {
     ['instruction',      'instrCount',   MAX_CHARS],
     ['inputText',        'inputCount',   MAX_CHARS],
     ['shapSystemPrompt', 'shapSysCount', MAX_CHARS],
+    ['confSystemPrompt', 'confSysCount', MAX_CHARS],
   ].forEach(([id, cid, max]) => {
     const el = document.getElementById(id);
     if (el) updateCharCount(el, cid, max);
@@ -531,7 +606,7 @@ function initCounters() {
 document.addEventListener('DOMContentLoaded', initCounters);
 
 // ── Slider sync ───────────────────────────────────────────────────────────────
-function syncTokens(v)      { document.getElementById('tokenValDisplay').textContent   = v; }
+function syncTokens(v)      { document.getElementById('tokenValDisplay').textContent    = v; }
 function syncShapSamples(v) { document.getElementById('shapSamplesDisplay').textContent = v; }
 
 // ── Method toggle ─────────────────────────────────────────────────────────────
@@ -545,72 +620,77 @@ function setMethod(m) {
   document.getElementById('cardShap').classList.toggle('selected', isShap);
   document.getElementById('cardConf').classList.toggle('selected', isConf);
 
-  // SHAP-only fields
   document.querySelectorAll('.shap-field').forEach(el => el.hidden = !isShap);
+  document.querySelectorAll('.conf-field').forEach(el => el.hidden = !isConf);
 
-  // System prompt section visibility
-  const sysSection = document.getElementById('sectionSysPrompt');
-  sysSection.style.display = isConf ? 'none' : '';
-  if (!isConf) {
-    document.getElementById('lockedSysPrompt').hidden  = !isCot;
-    document.getElementById('lockBadge').style.display = isCot ? 'inline-flex' : 'none';
-    document.getElementById('sysPrmptHint').textContent = isCot
-      ? "The system prompt for Chain-of-Thought is fixed because it instructs the model to output structured JSON — changing it would break the response parser."
-      : "For SHAP you can edit the system prompt and see which words carried the most weight.";
-  }
+  document.getElementById('sectionSysPrompt').style.display = '';
+  document.getElementById('lockedSysPrompt').hidden  = !isCot;
+  document.getElementById('lockBadge').style.display = isCot ? 'inline-flex' : 'none';
 
-  // Instruction
+  document.getElementById('sysPrmptHint').textContent = isCot
+    ? "Der System-Prompt für Chain-of-Thought ist fest vorgegeben, da er das Modell anweist, strukturiertes JSON auszugeben — eine Änderung würde den Antwort-Parser beschädigen."
+    : isShap
+    ? "Bei SHAP können Sie den System-Prompt bearbeiten und sehen, welche Wörter das größte Gewicht hatten."
+    : "Legt die Rolle und das Verhalten der KI vor jeder Benutzereingabe fest. Eine Änderung beeinflusst direkt, welche Tokens das Modell generiert — und wie sicher es dabei ist.";
+
   const instrEl = document.getElementById('instruction');
-  instrEl.value = isCot  ? 'Think step by step and reason carefully.'
-                : isShap ? 'Answer like a human would in an engaging way'
-                :          'Answer clearly and concisely.';
+  instrEl.value = isCot  ? 'Denke Schritt für Schritt und argumentiere sorgfältig.'
+                : isShap ? 'Antworte so, wie ein Mensch es auf ansprechende Weise tun würde'
+                :          'Antworte klar und prägnant.';
+  instrEl.className = isShap ? 'shap-focus' : isConf ? 'conf-focus' : '';
   updateCharCount(instrEl, 'instrCount', MAX_CHARS);
 
   document.getElementById('instrHint').textContent = isCot
-    ? "Tells the LLM how to approach the reasoning — tone, style, level of detail."
+    ? "Teilt dem LLM mit, wie es den Denkprozess angehen soll – Ton, Stil, Detailtiefe."
     : isShap
-    ? "Tells the LLM how to write its response. With SHAP you'll see exactly which instruction words most influenced what it said."
-    : "Tells the LLM how to structure its answer. Changing this will affect which tokens are generated — and their confidence.";
+    ? "Teilt dem LLM mit, wie es seine Antwort formulieren soll. Mit SHAP sehen Sie genau, welche Anweisungswörter den größten Einfluss hatten."
+    : "Teilt dem LLM mit, wie es seine Antwort strukturieren soll. Eine Änderung beeinflusst, welche Tokens generiert werden — und deren Konfidenz.";
 
   document.getElementById('instrTip').style.display = isConf ? 'none' : '';
 
-  // Input
-  document.getElementById('inputLabel').textContent = (isCot || isConf) ? '❓ Your Question' : '❓ Your Input Text';
-  document.getElementById('inputHint').textContent = isCot
-    ? "What you're asking — the LLM will reason step-by-step to reach an answer."
-    : isShap
-    ? "The text you want attributed. Every word will be highlighted by its influence on the response."
-    : "What you're asking. The model will answer and you'll see exactly how confident it was at each word.";
+  const inputEl    = document.getElementById('inputText');
+  inputEl.className = isShap ? 'shap-focus' : isConf ? 'conf-focus' : '';
 
-  // Tokens slider
+  // Preserve the SVG icon when swapping label text
+  const inputLabel = document.getElementById('inputLabel');
+  const savedSvg   = inputLabel.querySelector('svg');
+  inputLabel.textContent = '';
+  if (savedSvg) inputLabel.appendChild(savedSvg);
+  inputLabel.appendChild(document.createTextNode((isCot || isConf) ? ' Ihre Frage' : ' Ihr Eingabetext'));
+
+  document.getElementById('inputHint').textContent = isCot
+    ? "Was Sie fragen — das LLM wird Schritt für Schritt zur Antwort denken."
+    : isShap
+    ? "Der Text, den Sie analysieren möchten. Jedes Wort wird nach seinem Einfluss auf die Antwort hervorgehoben."
+    : "Was Sie fragen. Das Modell antwortet und Sie sehen genau, wie sicher es bei jedem Wort war.";
+
   const slider = document.getElementById('maxTokensSlider');
   const tokVal = document.getElementById('tokenValDisplay');
   const tipTxt = document.getElementById('tokensTipText');
 
   if (isCot) {
     slider.min = 64;  slider.max = 1024; slider.step = 64; slider.value = 512; syncTokens(512);
-    document.getElementById('tokensHint').textContent = "Controls how long the response can be. Chain-of-Thought needs enough tokens to write all steps AND close the JSON structure.";
-    tipTxt.innerHTML = '<strong>Chain-of-Thought tip:</strong> If the output looks cut off or fails to parse, try increasing this.';
+    document.getElementById('tokensHint').textContent = "Bestimmt, wie lang die Antwort sein kann. Chain-of-Thought benötigt genug Tokens, um alle Schritte zu schreiben UND die JSON-Struktur zu schließen.";
+    tipTxt.innerHTML = '<strong>Chain-of-Thought-Tipp:</strong> Falls die Ausgabe abgeschnitten erscheint oder nicht geparst werden kann, erhöhen Sie diesen Wert.';
     slider.style.accentColor = 'var(--orange)'; tokVal.style.color = 'var(--orange)';
   } else if (isShap) {
     slider.min = 32;  slider.max = 256;  slider.step = 32; slider.value = 128; syncTokens(128);
-    document.getElementById('tokensHint').textContent = "Controls how long the initial generated response is, before SHAP analysis begins. Shorter = faster analysis.";
-    tipTxt.innerHTML = '<strong>SHAP tip:</strong> A 2–3 sentence answer (64–128 tokens) is ideal. Every extra token multiplies analysis time.';
+    document.getElementById('tokensHint').textContent = "Bestimmt, wie lang die anfängliche generierte Antwort ist, bevor die SHAP-Analyse beginnt. Kürzer = schnellere Analyse.";
+    tipTxt.innerHTML = '<strong>SHAP-Tipp:</strong> Eine 2–3-seitige Antwort (64–128 Tokens) ist ideal. Jeder zusätzliche Token vervielfacht die Analysezeit.';
     slider.style.accentColor = 'var(--blue)'; tokVal.style.color = 'var(--blue)';
   } else {
     slider.min = 64;  slider.max = 512;  slider.step = 64; slider.value = 256; syncTokens(256);
-    document.getElementById('tokensHint').textContent = "Controls how long the model's answer can be. Longer responses give more token-level confidence data to explore.";
-    tipTxt.innerHTML = '<strong>Confidence tip:</strong> A medium-length response (128–256 tokens) gives a good spread of confidence data without being overwhelming.';
+    document.getElementById('tokensHint').textContent = "Bestimmt, wie lang die Antwort des Modells sein kann. Längere Antworten liefern mehr Token-Konfidenzdaten zum Erkunden.";
+    tipTxt.innerHTML = '<strong>Konfidenz-Tipp:</strong> Eine mittellange Antwort (128–256 Tokens) liefert eine gute Verteilung der Konfidenzdaten, ohne überwältigend zu sein.';
     slider.style.accentColor = 'var(--purple)'; tokVal.style.color = 'var(--purple)';
   }
 
-  // Run button
   const runBtn = document.getElementById('runBtn');
   runBtn.className = isCot ? 'run-btn' : isShap ? 'run-btn blue-btn' : 'run-btn purple-btn';
   document.getElementById('runBtnText').textContent = isCot
-    ? 'Run Chain-of-Thought'
-    : isShap ? 'Run SHAP Attribution'
-    : 'Run Confidence Analysis';
+    ? 'Chain-of-Thought ausführen'
+    : isShap ? 'SHAP-Attribution ausführen'
+    : 'Konfidenz-Analyse ausführen';
 
   setValidationError('');
 }
@@ -626,33 +706,45 @@ function validateInputs() {
   const instr = document.getElementById('instruction').value.trim();
   const input = document.getElementById('inputText').value.trim();
   if (!instr) {
-    setValidationError('Please fill in the Instruction field.');
+    setValidationError('Bitte füllen Sie das Anweisungsfeld aus.');
     document.getElementById('instruction').classList.add('invalid');
     return false;
   }
   if (!input) {
-    setValidationError('Please fill in the question / input field.');
+    setValidationError('Bitte füllen Sie das Frage- / Eingabefeld aus.');
     document.getElementById('inputText').classList.add('invalid');
     return false;
   }
   if (instr.length > MAX_CHARS || input.length > MAX_CHARS) {
-    setValidationError('One or more fields exceeds the 2,000 character limit.');
+    setValidationError('Ein oder mehrere Felder überschreiten das Limit von 2.000 Zeichen.');
     return false;
   }
   if (method === 'shap') {
     const sys = document.getElementById('shapSystemPrompt').value.trim();
     if (!sys) {
-      setValidationError('Please fill in the System Prompt field.');
+      setValidationError('Bitte füllen Sie das System-Prompt-Feld aus.');
       document.getElementById('shapSystemPrompt').classList.add('invalid');
       return false;
     }
     if (sys.length > MAX_CHARS) {
-      setValidationError('System Prompt exceeds the 2,000 character limit.');
+      setValidationError('Der System-Prompt überschreitet das Limit von 2.000 Zeichen.');
+      return false;
+    }
+  }
+  if (method === 'conf') {
+    const sys = document.getElementById('confSystemPrompt').value.trim();
+    if (!sys) {
+      setValidationError('Bitte füllen Sie das System-Prompt-Feld aus.');
+      document.getElementById('confSystemPrompt').classList.add('invalid');
+      return false;
+    }
+    if (sys.length > MAX_CHARS) {
+      setValidationError('Der System-Prompt überschreitet das Limit von 2.000 Zeichen.');
       return false;
     }
   }
   setValidationError('');
-  ['instruction', 'inputText', 'shapSystemPrompt'].forEach(id =>
+  ['instruction', 'inputText', 'shapSystemPrompt', 'confSystemPrompt'].forEach(id =>
     document.getElementById(id)?.classList.remove('invalid')
   );
   return true;
@@ -710,6 +802,7 @@ async function runShap() {
 
 async function runConf() {
   const data = await apiFetch('/explain/confidence', {
+    system_prompt:  document.getElementById('confSystemPrompt').value.trim(),
     instruction:    document.getElementById('instruction').value.trim(),
     input_text:     document.getElementById('inputText').value.trim(),
     max_new_tokens: parseInt(document.getElementById('maxTokensSlider').value, 10),
@@ -725,12 +818,12 @@ function showLoading() {
   document.getElementById('loadSpinner').className = 'loading-spinner' + (cls ? ' '+cls : '');
   document.getElementById('loadBar').className     = 'loading-bar'     + (cls ? ' '+cls : '');
   document.getElementById('loadTitle').textContent =
-    method === 'cot'  ? 'Generating chain-of-thought…'    :
-    method === 'shap' ? 'Running SHAP attribution…'        :
-                        'Analysing token confidence…';
+    method === 'cot'  ? 'Chain-of-Thought wird generiert…' :
+    method === 'shap' ? 'SHAP-Attribution wird berechnet…' :
+                        'Token-Konfidenz wird analysiert…';
   document.getElementById('loadSub').textContent =
-    method === 'shap' ? 'Running hundreds of model passes — grab a coffee ☕' :
-                        'This usually takes 5–15 seconds';
+    method === 'shap' ? 'Hunderte Modelldurchläufe laufen — holen Sie sich einen Kaffee' :
+                        'Das dauert normalerweise 5–15 Sekunden';
   document.getElementById('loadingSection').style.display = 'block';
   window.scrollTo({ top: document.getElementById('loadingSection').offsetTop - 80, behavior: 'smooth' });
 }
@@ -750,10 +843,10 @@ function showError(msg) {
   ['step1','step2','step3'].forEach(id => document.getElementById(id).classList.remove('hidden'));
   const rs = document.getElementById('resultsSection');
   rs.style.display = 'block';
-  document.getElementById('resultSubtitle').textContent = 'Something went wrong.';
+  document.getElementById('resultSubtitle').textContent = 'Etwas ist schiefgelaufen.';
   document.getElementById('resultsContent').innerHTML =
-    '<div class="error-card"><div style="font-size:22px;flex-shrink:0">⚠️</div>' +
-    '<div><div class="error-title">Error from server</div>' +
+    '<div class="error-card">' + ICONS.warning +
+    '<div><div class="error-title">Fehler vom Server</div>' +
     '<div class="error-msg">' + esc(msg) + '</div></div></div>';
 }
 
@@ -767,7 +860,7 @@ function resetToForm() {
 // ── CoT renderer ──────────────────────────────────────────────────────────────
 function renderCoT(data) {
   document.getElementById('resultSubtitle').textContent =
-    'The LLM worked through ' + data.steps.length + ' step' + (data.steps.length !== 1 ? 's' : '') + ' to reach its answer.';
+    'Das LLM hat ' + data.steps.length + ' Schritt' + (data.steps.length !== 1 ? 'e' : '') + ' durchlaufen, um zur Antwort zu gelangen.';
   const steps = data.steps.map((s, i) =>
     '<div class="cot-step-card" style="animation-delay:' + (i * 0.08) + 's">' +
     '<div class="cot-step-num">' + (i + 1) + '</div>' +
@@ -776,14 +869,14 @@ function renderCoT(data) {
   document.getElementById('resultsContent').innerHTML =
     '<div class="cot-result">' + steps +
     '<div class="cot-final" style="animation-delay:' + (data.steps.length * 0.08) + 's">' +
-    '<div class="cot-final-label">Final Answer</div>' +
+    '<div class="cot-final-label">Endgültige Antwort</div>' +
     '<div class="cot-final-text">' + esc(data.final_answer) + '</div></div></div>';
 }
 
 // ── SHAP renderer ─────────────────────────────────────────────────────────────
 function renderShap(data) {
   document.getElementById('resultSubtitle').textContent =
-    "Every word in your prompt is highlighted by how much it shaped the LLM's response.";
+    "Jedes Wort in Ihrem Prompt ist danach hervorgehoben, wie stark es die Antwort des LLMs beeinflusst hat.";
 
   const anns = data.word_annotations || [];
   const sec  = { system: [], instruction: [], input: [] };
@@ -795,9 +888,9 @@ function renderShap(data) {
     return words.map(w => {
       const norm  = w.shap_value / mx;
       const abs   = Math.abs(norm);
-      const label = w.shap_value >  1e-4 ? '+' + w.shap_value.toFixed(4) + ' — promotes response'  :
-                    w.shap_value < -1e-4 ?       w.shap_value.toFixed(4) + ' — suppresses response' :
-                    'negligible influence';
+      const label = w.shap_value >  1e-4 ? '+' + w.shap_value.toFixed(4) + ' — fördert Antwort' :
+                    w.shap_value < -1e-4 ?       w.shap_value.toFixed(4) + ' — hemmt Antwort'    :
+                    'vernachlässigbarer Einfluss';
       let bg = 'transparent', col = 'inherit';
       if (abs > 0.05) {
         const a = Math.min(0.88, abs * 0.85 + 0.06);
@@ -811,37 +904,34 @@ function renderShap(data) {
 
   const hasInst = sec.instruction.length > 0;
   const charts  = [
-    { key: 'overall',     label: 'Overall',       img: data.overall_image },
-    { key: 'system',      label: 'System prompt', img: data.system_image  },
-    ...(hasInst ? [{ key: 'instruction', label: 'Instruction', img: data.instruction_image }] : []),
-    { key: 'input',       label: 'Input',         img: data.input_image   },
+    { key: 'overall',     label: 'Gesamt',        img: data.overall_image },
+    { key: 'system',      label: 'System-Prompt', img: data.system_image  },
+    ...(hasInst ? [{ key: 'instruction', label: 'Anweisung', img: data.instruction_image }] : []),
+    { key: 'input',       label: 'Eingabe',        img: data.input_image   },
   ];
 
   document.getElementById('resultsContent').innerHTML =
-    // Response
     '<div class="shap-response-card">' +
-      '<div class="shap-response-label">🤖 LLM Response</div>' +
+      '<div class="shap-response-label">' + ICONS.robot + ' LLM-Antwort</div>' +
       '<div class="shap-response-text">' + esc(data.response_text) + '</div>' +
     '</div>' +
-    // Word map
     '<div class="highlight-section">' +
       '<div class="highlight-header">' +
-        '<div><div class="highlight-title">Word influence map</div>' +
-        '<div class="highlight-subtitle">Hover any word to see its exact SHAP score</div></div>' +
+        '<div><div class="highlight-title">Worteinfluss-Karte</div>' +
+        '<div class="highlight-subtitle">Fahren Sie über ein Wort, um seinen genauen SHAP-Score zu sehen</div></div>' +
         '<div class="legend">' +
-          '<div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(to right,rgba(212,82,26,.1),rgba(212,82,26,.88))"></div>Promotes</div>' +
-          '<div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(to right,rgba(26,107,181,.1),rgba(26,107,181,.88))"></div>Suppresses</div>' +
+          '<div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(to right,rgba(212,82,26,.1),rgba(212,82,26,.88))"></div>Fördert</div>' +
+          '<div class="legend-item"><div class="legend-swatch" style="background:linear-gradient(to right,rgba(26,107,181,.1),rgba(26,107,181,.88))"></div>Hemmt</div>' +
         '</div>' +
       '</div>' +
       '<div class="highlight-body">' +
-        '<div class="section-label">System Prompt</div><div class="word-line">' + whtml(sec.system) + '</div>' +
-        (hasInst ? '<div class="section-label">Instruction</div><div class="word-line">' + whtml(sec.instruction) + '</div>' : '') +
-        '<div class="section-label">Your Input</div><div class="word-line">' + whtml(sec.input) + '</div>' +
+        '<div class="section-label">System-Prompt</div><div class="word-line">' + whtml(sec.system) + '</div>' +
+        (hasInst ? '<div class="section-label">Anweisung</div><div class="word-line">' + whtml(sec.instruction) + '</div>' : '') +
+        '<div class="section-label">Ihre Eingabe</div><div class="word-line">' + whtml(sec.input) + '</div>' +
       '</div>' +
     '</div>' +
-    // Charts
     '<div class="charts-section">' +
-      '<div class="charts-header"><h3>Attribution bar charts</h3><p>Top contributing words per section, sorted by absolute SHAP value.</p></div>' +
+      '<div class="charts-header"><h3>Attributions-Balkendiagramme</h3><p>Wichtigste beitragende Wörter pro Abschnitt, sortiert nach absolutem SHAP-Wert.</p></div>' +
       '<div class="chart-tabs">' +
         charts.map((c, i) =>
           '<button class="chart-tab' + (i === 0 ? ' active' : '') + '" onclick="switchChart(\'' + c.key + '\',this)">' + c.label + '</button>'
@@ -850,14 +940,13 @@ function renderShap(data) {
       '<div class="chart-body">' +
         charts.map((c, i) =>
           '<img src="data:image/png;base64,' + c.img + '" id="chart-' + c.key + '"' +
-          (i !== 0 ? ' style="display:none"' : '') + ' alt="SHAP bar chart – ' + c.label + '" />'
+          (i !== 0 ? ' style="display:none"' : '') + ' alt="SHAP-Balkendiagramm – ' + c.label + '" />'
         ).join('') +
       '</div>' +
     '</div>' +
-    // Counter-reasoning
     (data.reasoning ?
       '<div class="reasoning-card">' +
-        '<div class="reasoning-label">🧠 Why these words? — AI counter-reasoning</div>' +
+        '<div class="reasoning-label">' + ICONS.brain + ' Warum diese Wörter? — KI-Gegenanalyse</div>' +
         '<div class="reasoning-text">' + esc(data.reasoning) + '</div>' +
       '</div>'
     : '');
@@ -874,30 +963,27 @@ function switchChart(which, btn) {
 // ── Confidence renderer ───────────────────────────────────────────────────────
 function renderConf(data) {
   document.getElementById('resultSubtitle').textContent =
-    "The model's certainty at each token — lower confidence can flag uncertain facts or hallucination risk.";
+    "Die Sicherheit des Modells bei jedem Token — niedrige Konfidenz kann auf unsichere Fakten oder Halluzinationsrisiko hinweisen.";
 
   const meanPct = Math.round(data.mean_confidence * 100);
   const minPct  = Math.round(data.min_confidence  * 100);
   const toks    = data.token_confidences || [];
 
-  // Confidence colour: green (high) → amber → red (low)
   function confColor(p) {
-    if (p >= 0.75) return 'rgba(21,128,61,'  + (0.15 + p * 0.55).toFixed(2) + ')';  // green
-    if (p >= 0.45) return 'rgba(146,64,14,'  + (0.12 + p * 0.55).toFixed(2) + ')';  // amber
-    return               'rgba(220,38,38,'   + (0.15 + (1-p) * 0.6).toFixed(2) + ')'; // red
+    if (p >= 0.75) return 'rgba(21,128,61,'  + (0.15 + p * 0.55).toFixed(2) + ')';
+    if (p >= 0.45) return 'rgba(146,64,14,'  + (0.12 + p * 0.55).toFixed(2) + ')';
+    return               'rgba(220,38,38,'   + (0.15 + (1-p) * 0.6).toFixed(2) + ')';
   }
   function confTextColor(p) {
     const a = p >= 0.75 ? 0.15 + p * 0.55 : p >= 0.45 ? 0.12 + p * 0.55 : 0.15 + (1-p) * 0.6;
     return a > 0.45 ? 'white' : 'inherit';
   }
 
-  // SVG ring for the mean score
   const r = 44, cx = 55, cy = 55;
   const circ = 2 * Math.PI * r;
   const dash = (meanPct / 100) * circ;
   const ringColor = meanPct >= 75 ? 'var(--green)' : meanPct >= 45 ? '#f59e0b' : '#ef4444';
 
-  // Token-coloured response
   const tokenHtml = toks.map(tc => {
     const p   = tc.probability;
     const pct = Math.round(p * 100);
@@ -905,15 +991,14 @@ function renderConf(data) {
     const col = confTextColor(p);
     return '<span class="ct" style="background:' + bg + ';color:' + col + '">' +
            esc(tc.token) +
-           '<span class="ct-tip">' + pct + '% confidence</span>' +
+           '<span class="ct-tip">' + pct + '% Konfidenz</span>' +
            '</span>';
   }).join('');
 
   document.getElementById('resultsContent').innerHTML =
-    // Score ring + stats
     '<div class="conf-header-card">' +
       '<div class="conf-score-ring">' +
-        '<svg width="110" height="110" viewBox="0 0 110 110">' +
+        '<svg class="ring-svg" width="110" height="110" viewBox="0 0 110 110">' +
           '<circle class="ring-bg" cx="' + cx + '" cy="' + cy + '" r="' + r + '"/>' +
           '<circle class="ring-fg" cx="' + cx + '" cy="' + cy + '" r="' + r + '"' +
           ' stroke="' + ringColor + '"' +
@@ -922,24 +1007,23 @@ function renderConf(data) {
         '</svg>' +
         '<div class="conf-score-label">' +
           '<span class="conf-score-pct" style="color:' + ringColor + '">' + meanPct + '%</span>' +
-          '<span class="conf-score-sub">avg conf.</span>' +
+          '<span class="conf-score-sub">Ø Konfidenz</span>' +
         '</div>' +
       '</div>' +
       '<div class="conf-stats">' +
-        '<div style="font-family:var(--serif);font-size:20px;margin-bottom:12px">Token Confidence</div>' +
-        '<div class="conf-stat"><span class="conf-stat-label">Mean confidence</span><span class="conf-stat-value" style="color:' + ringColor + '">' + meanPct + '%</span></div>' +
-        '<div class="conf-stat"><span class="conf-stat-label">Minimum confidence</span><span class="conf-stat-value" style="color:#ef4444">' + minPct + '%</span></div>' +
-        '<div class="conf-stat"><span class="conf-stat-label">Tokens analysed</span><span class="conf-stat-value">' + toks.length + '</span></div>' +
+        '<div style="font-family:var(--serif);font-size:20px;margin-bottom:12px">Token-Konfidenz</div>' +
+        '<div class="conf-stat"><span class="conf-stat-label">Mittlere Konfidenz</span><span class="conf-stat-value" style="color:' + ringColor + '">' + meanPct + '%</span></div>' +
+        '<div class="conf-stat"><span class="conf-stat-label">Minimale Konfidenz</span><span class="conf-stat-value" style="color:#ef4444">' + minPct + '%</span></div>' +
+        '<div class="conf-stat"><span class="conf-stat-label">Analysierte Tokens</span><span class="conf-stat-value">' + toks.length + '</span></div>' +
       '</div>' +
     '</div>' +
-    // Token view
     '<div class="conf-response-card">' +
-      '<div class="conf-response-label">🎯 Response — coloured by confidence</div>' +
+      '<div class="conf-response-label">' + ICONS.target + ' Antwort — nach Konfidenz eingefärbt</div>' +
       '<div class="conf-token-line">' + tokenHtml + '</div>' +
       '<div class="conf-legend">' +
-        '<div class="conf-legend-item"><div class="conf-legend-swatch" style="background:linear-gradient(to right,rgba(21,128,61,.2),rgba(21,128,61,.85))"></div>High confidence (≥75%)</div>' +
-        '<div class="conf-legend-item"><div class="conf-legend-swatch" style="background:linear-gradient(to right,rgba(146,64,14,.2),rgba(146,64,14,.75))"></div>Medium (45–75%)</div>' +
-        '<div class="conf-legend-item"><div class="conf-legend-swatch" style="background:linear-gradient(to right,rgba(220,38,38,.2),rgba(220,38,38,.85))"></div>Low confidence (&lt;45%)</div>' +
+        '<div class="conf-legend-item"><div class="conf-legend-swatch" style="background:linear-gradient(to right,rgba(21,128,61,.2),rgba(21,128,61,.85))"></div>Hohe Konfidenz (&ge;75%)</div>' +
+        '<div class="conf-legend-item"><div class="conf-legend-swatch" style="background:linear-gradient(to right,rgba(146,64,14,.2),rgba(146,64,14,.75))"></div>Mittel (45–75%)</div>' +
+        '<div class="conf-legend-item"><div class="conf-legend-swatch" style="background:linear-gradient(to right,rgba(220,38,38,.2),rgba(220,38,38,.85))"></div>Niedrige Konfidenz (&lt;45%)</div>' +
       '</div>' +
     '</div>';
 }
