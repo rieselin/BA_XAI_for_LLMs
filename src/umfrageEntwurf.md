@@ -1,12 +1,5 @@
 # Flowchart umfrage: 
 
-<!-- check für arten des vertrauens recherche? -->
-<!-- mit auswahl von vorgefertigen fragen -->
-
- <!-- evtl fragen alle (50%), oder auswahl an möglichkeiten oder andere reihenfolgen (andere 50% aufgeteilt) -->
-            <!-- bi dene wo alli 3 hend => welli methode het am meiste ghulfe (prioriesierung) -->
-            <!-- jeweils bilder von verschieden prompts mit unterschiedlicher sicherheit von model ca. 3-4 -->
-
 ``` mermaid 
 flowchart TD
     A([Start Umfrage]) --> B
