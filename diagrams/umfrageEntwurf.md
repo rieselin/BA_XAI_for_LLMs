@@ -2,99 +2,87 @@
 
 ``` mermaid 
 flowchart TD
-    A([Start Umfrage]) --> B
+    A([Start Survey]) --> B
 
     subgraph BG["`Person Background`"]
-        B[Altersgruppe] --> C[Gender]
-        C --> D[Beruftitel / Berufsgruppe]
-        D --> E[Branche]
+        B[Age Group] --> C[Gender]
+        C --> D[Job Title / Professional Group]
+        D --> E[Industry]
     end
 
-    E --> F{"`Kennst du<br/>AI / LLMs?<br/>e.g. ChatGPT, Claude...`"}
-    F -- Nein --> Z2([Ende Umfrage])
-    F -- Ja --> G{"`Hast du schon mal<br/>ein LLM benutzt?`"}
+    E --> F{"`Do you know<br/>AI / LLMs?<br/>e.g. ChatGPT, Claude...`"}
+    F -- No --> Z2([End Survey])
+    F -- Yes --> G{"`Have you ever<br/>used an LLM?`"}
 
-    G -- Nein --> H["`Warum nicht?<br/>(Multiple Choice + Andere)`"]
+    G -- No --> H["`Why not?<br/>(Multiple Choice + Other)`"]
     H --> Z2
 
-    G -- Ja --> I["`Welche LLMs hast du benutzt?<br/>(Mehrfachauswahl möglich)<br/>• ChatGPT<br/> • Claude<br/> • LLaMA<br/> • Andere`"]
+    G -- Yes --> I["`Which LLMs have you used?<br/>(Multiple selection possible)<br/>• ChatGPT<br/> • Claude<br/> • LLaMA<br/> • Other`"]
 
-    I --> J["`Wie schätzt du dein Wissen<br/>über LLMs ein?<br/>1 = K.A, 5 = Experte`"]
+    I --> J["`How would you rate your knowledge<br/>about LLMs?<br/>1 = No idea, 5 = Expert`"]
 
-    J --> K["`Welche dieser Tools sind<br/>eine Form von KI?<br/>(AI ≠ LLM <br/>Bewusstsein prüfen)`"]
+    J --> K["`Which of these tools are<br/>a form of AI?<br/>(AI ≠ LLM <br/>Check awareness)`"]
 
     %% ✅ Quality Screenout
-    K --> K_CHECK{"`Qualitätscheck:<br/>Analoge Uhr gewählt?`"}
-    K_CHECK -- Ja --> Z2
-    K_CHECK -- Nein --> L
+    K --> K_CHECK{"`Quality check:<br/>Selected analog clock?`"}
+    K_CHECK -- Yes --> Z2
+    K_CHECK -- No --> L
 
-    subgraph RESEARCH["`Forschungsfragen`"]
-        L["`LLM-Antworten bewerten<br/>(Alltags- & <br/>Gesundheitsfragen,<br/>auch faktisch falsche<br/>Antworten)`"]
+    subgraph RESEARCH["`Research Questions`"]
+        L["`Evaluate LLM responses`"]
 
-        subgraph TRUST1["`Vertrauen — 3 Dimensionen`"]
-            L --> L1["`① Behavioral Trust (1–5)<br/><i>Würde Antwort ohne Prüfung verwenden</i>`"]
-            L1 --> L2["`② Perceived Accuracy (1–5)<br/><i>Halte Antwort für faktisch korrekt</i>`"]
-            L2 --> L3["`③ Social Trust (1–5)<br/><i>Würde Antwort weiterempfehlen</i>`"]
+        subgraph TRUST1["`Trust`"]
+            L --> L1["Evaluate Trust"]
         end
 
-        L3 --> O3
+        L1 --> P["`Do you know XAI?<br/>(Explainable AI)`"]
 
-        O3 --> P["`Kennst du XAI?<br/>(Explainable AI)`"]
+        %% ✅ Randomized Assignment
+        P --> RAND{"`Randomization<br/>XAI Groups`"}
+        RAND -- "50%: all methods" --> Q1
+        RAND -- "17%: only method 1" --> Q1
+        RAND -- "17%: only method 2" --> Q2
+        RAND -- "16%: only method 3" --> Q3
 
-        %% ✅ Randomisierte Zuweisung
-        P --> RAND{"`Randomisierung<br/>XAI-Gruppen`"}
-        RAND -- "50%: alle Methoden" --> Q1
-        RAND -- "17%: nur Methode 1" --> Q1
-        RAND -- "17%: nur Methode 2" --> Q2
-        RAND -- "16%: nur Methode 3" --> Q3
+        %% Method 1
+        Q1["`Show XAI Method COT`"]
 
-        %% Methode 1
-        Q1["`XAI Methode 1 anzeigen`"]
-
-        subgraph TRUST_XAI1["`Vertrauen nach Methode 1`"]
-            Q1 --> Q1A["`① Behavioral Trust (1–5)`"]
-            Q1A --> Q1B["`② Perceived Accuracy (1–5)`"]
-            Q1B --> Q1C["`③ Social Trust (1–5)`"]
+        subgraph TRUST_XAI1["`Trust after Method COT`"]
+            Q1 --> Q1A["`Evaluate Trust`"]
         end
 
-        %% Methode 2
-        Q1C --> Q2["`XAI Methode 2 anzeigen`"]
+        %% Method 2
+        Q1A --> Q2["`Show XAI Method SHAP`"]
 
-        subgraph TRUST_XAI2["`Vertrauen nach Methode 2`"]
-            Q2 --> Q2A["`① Behavioral Trust (1–5)`"]
-            Q2A --> Q2B["`② Perceived Accuracy (1–5)`"]
-            Q2B --> Q2C["`③ Social Trust (1–5)`"]
+        subgraph TRUST_XAI2["`Trust after Method SHAP`"]
+            Q2 --> Q2A["`Evaluate Trust`"]
         end
 
-        %% Methode 3
-        Q2C --> Q3["`XAI Methode 3 anzeigen`"]
+        %% Method 3
+        Q2A --> Q3["`Show XAI Method 3`"]
 
-        subgraph TRUST_XAI3["`Vertrauen nach Methode 3`"]
-            Q3 --> Q3A["`① Behavioral Trust (1–5)`"]
-            Q3A --> Q3B["`② Perceived Accuracy (1–5)`"]
-            Q3B --> Q3C["`③ Social Trust (1–5)`"]
+        subgraph TRUST_XAI3["`Trust after Method CONF`"]
+            Q3 --> Q3A["`Evaluate Trust`"]
         end
 
-        %% Wenn nur einzelne Methode → direkt weiter
-        Q1C --> R
-        Q2C --> R
-        Q3C --> R
+        %% If only one method → continue directly
+        Q1A --> R
+        Q2A --> R
+        Q3A --> R
 
-        R{"`Format der<br/>Erklärung<br/>(zufällig)`"}
-        R -- Video --> S["`Video über<br/>LLM-Funktionsweise`"]
-        R -- Text --> T["`Text-Erklärung über<br/>LLM-Funktionsweise`"]
+        R{"`Format of the<br/>Explanation<br/>(random)`"}
+        R -- Video --> S["`Video about<br/>how LLMs work`"]
+        R -- Text --> T["`Text explanation about<br/>how LLMs work`"]
 
-        subgraph TRUST_FINAL["`Vertrauen nach Video/Text — 3 Dimensionen`"]
-            S --> U1["`① Behavioral Trust (1–5)`"]
+        subgraph TRUST_FINAL["`Trust after Video/Text`"]
+            S --> U1["`Evaluate Trust`"]
             T --> U1
-            U1 --> U2["`② Perceived Accuracy (1–5)`"]
-            U2 --> U3["`③ Social Trust (1–5)`"]
         end
 
-        U3 --> V["`Reflexion<br/>Hat sich dein Vertrauen <br/>durch die Erklärungen<br/> verändert?<br/>(Ja / Nein / Unsicher)<br/>→ falls Ja: Was hat <br/>sich verändert?<br/>(offenes Textfeld)`"]
+        U1 --> V["`Reflection<br/>Has your trust<br/>changed due to the explanations?<br/>(Yes / No / Unsure)<br/>→ if Yes: What changed?<br/>(open text field)`"]
     end
 
-    V --> Z2([Ende Umfrage])
+    V --> Z2([End Survey])
 
     style BG fill:#e8f4f8,stroke:#4a90d9,color:#000
     style RESEARCH fill:#f0f8e8,stroke:#5aaa35,color:#000
