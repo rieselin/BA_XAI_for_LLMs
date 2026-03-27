@@ -1,40 +1,4 @@
-Flowchart umfrage: 
-
-Person backgound: Altersgruppe u (Gender?) u Berufssektor u Berufsgruppe
-
-Check: do you know what AI LLM is? (here add beispiele) => if no => end of umfrage
-Check: have used llm before => if not why? (multiple choice + other) => end of umfrage
-    if yes => which ones? (multiple choice + several answers possible)
-        - claude
-        - chat gpt
-        - llama
-        - ...
-        - other + angabe in textfeld
-how would you rate your knowledge on how llms work (1 no idea, 5 = i have extensive knowledge)
-
-    other AI beispiele => ask to select which of these are a kind of AI (figure out if aware that ai != llm)
-
-
-need to know for antwort einordnung:
-    Person background
-    AI / LLM knowledge
-
-
-forschungsfragen: 
-    show several outputs from an llm (answering alltagsfragen? answering krankheitsfragen?)
-        also add obviously factually wrong ones
-    ask user to rate how much they trust that answer is factually correct 
-    - if possible: llm einbinden damit user direkt frage stellen kann + trust bewerten lassen
-
-    ask about knowledge of xai
-
-    show xai outputs and ask about trust again
-    - show output of different XAI methods 
-
-    show video? show text explanation ? on how llms work
-    - ask about trust again
-end umfrage
-
+# Flowchart umfrage: 
 
 <!-- check für arten des vertrauens recherche? -->
 <!-- mit auswahl von vorgefertigen fragen -->
@@ -66,8 +30,13 @@ flowchart TD
 
     J --> K["`Welche dieser Tools sind<br/>eine Form von KI?<br/>(AI ≠ LLM <br/>Bewusstsein prüfen)`"]
 
+    %% ✅ Quality Screenout
+    K --> K_CHECK{"`Qualitätscheck:<br/>Analoge Uhr gewählt?`"}
+    K_CHECK -- Ja --> Z2
+    K_CHECK -- Nein --> L
+
     subgraph RESEARCH["`Forschungsfragen`"]
-        K --> L["`LLM-Antworten bewerten<br/>(Alltags- & <br/>Gesundheitsfragen,<br/>auch faktisch falsche<br/>Antworten)`"]
+        L["`LLM-Antworten bewerten<br/>(Alltags- & <br/>Gesundheitsfragen,<br/>auch faktisch falsche<br/>Antworten)`"]
 
         subgraph TRUST1["`Vertrauen — 3 Dimensionen`"]
             L --> L1["`① Behavioral Trust (1–5)<br/><i>Würde Antwort ohne Prüfung verwenden</i>`"]
@@ -75,25 +44,19 @@ flowchart TD
             L2 --> L3["`③ Social Trust (1–5)<br/><i>Würde Antwort weiterempfehlen</i>`"]
         end
 
-        
-
-        L3 --> N{"`Live LLM<br/>verfügbar?`"}
-        N -- Ja --> O["`Eigene Frage stellen`"]
-        N -- Nein --> P
-
-        
-
-        subgraph TRUST2["`Vertrauen — 3 Dimensionen`"]
-            O --> O1["`① Behavioral Trust (1–5)`"]
-            O1 --> O2["`② Perceived Accuracy (1–5)`"]
-            O2 --> O3["`③ Social Trust (1–5)`"]
-        end
+        L3 --> O3
 
         O3 --> P["`Kennst du XAI?<br/>(Explainable AI)`"]
 
-       
+        %% ✅ Randomisierte Zuweisung
+        P --> RAND{"`Randomisierung<br/>XAI-Gruppen`"}
+        RAND -- "50%: alle Methoden" --> Q1
+        RAND -- "17%: nur Methode 1" --> Q1
+        RAND -- "17%: nur Methode 2" --> Q2
+        RAND -- "16%: nur Methode 3" --> Q3
 
-        P --> Q1["`XAI Methode 1 anzeigen`"]
+        %% Methode 1
+        Q1["`XAI Methode 1 anzeigen`"]
 
         subgraph TRUST_XAI1["`Vertrauen nach Methode 1`"]
             Q1 --> Q1A["`① Behavioral Trust (1–5)`"]
@@ -101,6 +64,7 @@ flowchart TD
             Q1B --> Q1C["`③ Social Trust (1–5)`"]
         end
 
+        %% Methode 2
         Q1C --> Q2["`XAI Methode 2 anzeigen`"]
 
         subgraph TRUST_XAI2["`Vertrauen nach Methode 2`"]
@@ -109,6 +73,7 @@ flowchart TD
             Q2B --> Q2C["`③ Social Trust (1–5)`"]
         end
 
+        %% Methode 3
         Q2C --> Q3["`XAI Methode 3 anzeigen`"]
 
         subgraph TRUST_XAI3["`Vertrauen nach Methode 3`"]
@@ -117,7 +82,12 @@ flowchart TD
             Q3B --> Q3C["`③ Social Trust (1–5)`"]
         end
 
-        Q3C --> R{"`Format der<br/>Erklärung<br/>(zufällig)`"}
+        %% Wenn nur einzelne Methode → direkt weiter
+        Q1C --> R
+        Q2C --> R
+        Q3C --> R
+
+        R{"`Format der<br/>Erklärung<br/>(zufällig)`"}
         R -- Video --> S["`Video über<br/>LLM-Funktionsweise`"]
         R -- Text --> T["`Text-Erklärung über<br/>LLM-Funktionsweise`"]
 
@@ -128,7 +98,7 @@ flowchart TD
             U2 --> U3["`③ Social Trust (1–5)`"]
         end
 
-        U3 --> V["`Reflexion<br/>Hat sich dein Vertrauen <br/>durchdie Erklärungen<br/> verändert?<br/>(Ja / Nein / Unsicher)<br/>→ falls Ja/Nein: Was hat <br/>sich verändert?<br/>(offenes Textfeld)`"]
+        U3 --> V["`Reflexion<br/>Hat sich dein Vertrauen <br/>durch die Erklärungen<br/> verändert?<br/>(Ja / Nein / Unsicher)<br/>→ falls Ja: Was hat <br/>sich verändert?<br/>(offenes Textfeld)`"]
     end
 
     V --> Z2([Ende Umfrage])
@@ -136,7 +106,6 @@ flowchart TD
     style BG fill:#e8f4f8,stroke:#4a90d9,color:#000
     style RESEARCH fill:#f0f8e8,stroke:#5aaa35,color:#000
     style TRUST1 fill:#fff8e1,stroke:#f9a825,color:#000
-    style TRUST2 fill:#fff8e1,stroke:#f9a825,color:#000
     style TRUST_XAI1 fill:#fce4ec,stroke:#e91e63,color:#000
     style TRUST_XAI2 fill:#fce4ec,stroke:#e91e63,color:#000
     style TRUST_XAI3 fill:#fce4ec,stroke:#e91e63,color:#000
