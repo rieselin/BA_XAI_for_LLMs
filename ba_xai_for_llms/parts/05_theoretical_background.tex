@@ -1,0 +1,113 @@
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../doc"
+%%% coding: utf-8
+%%% End:
+% !TEX TS-program = pdflatexmk
+% !TEX encoding = UTF-8 Unicode
+% !TEX root = ../doc.tex
+
+\section{From Artificial Intelligence to Large Language Models}
+
+The term \textit{Artificial Intelligence} (AI) refers broadly to the field of computer science concerned with building systems that can perform tasks which would ordinarily require human intelligence, such as recognizing patterns, drawing inferences, or generating language \cite{stoffelbauer_how_2023}. Within this field, \textit{Machine Learning} (ML) denotes a subset of approaches in which systems are not explicitly programmed with rules but instead learn to perform tasks by identifying statistical regularities in data. \textit{Deep Learning} is a further specialization within machine learning that relies on artificial neural networks composed of many layers, enabling systems to learn highly abstract representations from raw input such as text, images, or audio.
+
+\textit{Large Language Models} (LLMs) are a class of deep learning systems trained on vast corpora of text with the objective of modeling the probability distribution over sequences of tokens. In practical terms, this means that an LLM learns to predict, given a preceding sequence of words, which words are most likely to follow. Through training on text at an enormous scale, LLMs acquire broad linguistic competence as well as a form of implicit factual and procedural knowledge encoded in their parameters. Well-known examples include OpenAI's ChatGPT\cite{noauthor_chatgpt_nodate}, Anthropic's Claude\cite{noauthor_claude_nodate}, and Meta's Llama family of models\cite{noauthor_meta-llamallama-31-8b_2024}.\cite{stoffelbauer_how_2023}
+
+\section{The LLM Pipeline}
+
+Understanding how LLMs are built and deployed is relevant context for evaluating their outputs and the role of explainability. The lifecycle of an LLM can be divided into three phases: pre-deployment, inference, and post-deployment.
+
+\subsection{Pre-Deployment: Training and Preparation}
+
+The foundation of any LLM is a base model trained on a large corpus of text through a process known as pre-training. During this phase, the model learns to predict tokens by exposure to billions of examples, with the training data typically subject to filtering and curation to remove toxic content, low-quality sources, and material with copyright concerns. The result is a model with broad general knowledge but no particular disposition toward helpfulness or safety.
+
+To address this, base models undergo a second phase of training known as alignment. The most widely used technique is Reinforcement Learning from Human Feedback (RLHF), in which human raters evaluate model outputs according to criteria such as helpfulness, safety, and honesty. The model is then updated to produce outputs that receive higher ratings. Related approaches include Constitutional AI, in which the model is trained against a set of explicit principles, and Supervised Fine-Tuning (SFT), in which curated examples of desirable behavior, including instances of admitting uncertainty or declining to answer, are used to shape the model's response style. Together, these alignment techniques encourage the model to express calibrated uncertainty and avoid fabricating information.
+
+For use cases requiring access to current or verified information, models may additionally be trained to invoke external tools such as web search, code execution environments, or retrieval-augmented generation (RAG) systems that inject relevant documents into the model's context at inference time.
+
+\subsection{Inference: Processing and Generation}
+
+When a user submits a query, the input passes through several processing steps before a response is generated. Safety classifiers scan the input for harmful, inappropriate, or adversarial content. A system prompt, typically invisible to the end user, provides the model with behavioral instructions including accuracy guidelines, formatting preferences, and tool usage policies.
+
+If retrieval systems are configured, relevant documents may be fetched and appended to the model's context prior to generation. The model then generates a response autoregressively, producing one token at a time based on its training, the system prompt, any retrieved context, and the user's input. After generation, the output passes through a second layer of safety and content filters before being delivered to the user.
+
+\subsection{Post-Deployment: Monitoring and Improvement}
+
+Once deployed, LLMs are subject to ongoing monitoring. User feedback signals such as thumbs-up and thumbs-down ratings, regeneration requests, and abuse reports are collected and analyzed. This data feeds back into subsequent training iterations through processes such as red-teaming, A/B testing, and additional RLHF cycles, enabling the model to improve over time. This continuous feedback loop means that the behavior of a deployed LLM is not static but evolves with successive model versions.
+
+\section{Problems with LLM Outputs: Hallucination and Dishonesty}
+
+Despite the sophistication of modern training pipelines, LLMs remain susceptible to producing outputs that are factually incorrect. The literature distinguishes two related but distinct failure modes. The first is \textit{dishonesty}, in which a model generates statements that contradict knowledge it has demonstrably acquired during training. The second is \textit{hallucination}, in which the model fabricates information entirely, producing content that is not grounded in any source it was trained on \cite{wu_usable_2025}. Both failure modes are problematic for users who cannot easily distinguish between a confident and accurate response and a confident but incorrect one.
+
+These limitations are particularly consequential in high-stakes domains such as medicine and law, where decisions based on incorrect information may carry serious personal consequences. They also motivate the need for methods that make model behavior more transparent and interpretable, allowing users to calibrate their trust in model outputs rather than treating them as uniformly reliable.
+
+\section{Explainable AI for Large Language Models}
+
+\subsection{Why Explainability is Needed}
+
+Explainable AI (XAI) refers to a collection of methods and techniques that aim to make the behavior of AI systems more interpretable to human users. The core motivation for XAI is that many state-of-the-art AI models, and LLMs in particular, operate as black boxes: they accept inputs and produce outputs without providing any account of the internal reasoning that connects the two \cite{bilal_llms_2025}. This opacity makes it difficult for users to assess when a model's outputs can be trusted, to identify the conditions under which errors are likely, or to hold the system accountable for its predictions. Developing XAI methods that address these concerns is therefore essential both for building appropriate user trust and for enabling more responsible deployment of AI systems in consequential settings \cite{bilal_llms_2025}.
+
+\subsection{Categories of XAI Methods for LLMs}
+
+As illustrated in Figure~\ref{fig:xai_categories}, XAI methods for LLMs can be organized into three broad categories \cite{bilal_llms_2025}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/xaicategories.png}
+    \caption{XAI Categories \cite{bilal_llms_2025}}
+    \label{fig:xai_categories}
+\end{figure}
+
+\textit{Post-hoc explanations} are generated after a model has produced its output and aim to explain that output by analyzing the relationship between inputs and predictions. Rather than modifying the model itself, these methods treat the model as a fixed system and apply external analysis techniques to interpret its behavior. Prominent examples include SHAP (SHapley Additive exPlanations) \cite{lundberg_unified_2017} and LIME (Local Interpretable Model-agnostic Explanations), both of which assign importance scores to input features to indicate their contribution to a given output.
+
+\textit{Intrinsic interpretability} refers to approaches that design or constrain the model itself to be inherently more transparent. This includes architectures with transparent internal structure as well as attention-based interpretability methods that examine the weights assigned by the model's attention mechanism to different parts of the input. Chain-of-Thought (CoT) prompting, which instructs the model to articulate its reasoning steps before arriving at a conclusion, can also be understood as a form of intrinsic interpretability insofar as the reasoning process is made visible as part of the model's output \cite{wu_usable_2025}.
+
+\textit{Human-centered explanations} are natural language explanations generated by LLMs themselves, either through self-explanation or through the use of a separate model tasked with explaining the outputs of another. These include narrative-based explanations and approaches that leverage the language generation capabilities of LLMs to produce accessible, user-friendly accounts of model behavior \cite{bilal_llms_2025}. The central challenge in this category is that the generated explanation is itself an LLM output and therefore subject to the same reliability limitations as the original response.
+
+A notable gap in the existing literature is that most XAI research focuses on technical audiences. There is limited empirical evidence on which explanation types are most effective for lay users interacting with LLMs in everyday contexts \cite{wu_usable_2025}.
+
+\subsection{Selected XAI Methods}
+
+Based on the taxonomy described above, three methods were selected for this study, one from each major category. The selection criteria were: coverage of distinct explanation paradigms, feasibility of implementation, and accessibility to non-expert users.
+
+\textbf{SHAP and Counterfactual Reasoning} represent the post-hoc explanation category. SHAP, introduced by Lundberg and Lee \cite{lundberg_unified_2017}, is grounded in Shapley values from cooperative game theory. It decomposes a model's output into contributions attributable to each input feature, providing a principled and consistent attribution method. In this study, SHAP is applied at the token level to highlight which parts of a prompt most strongly influenced the model's response. This is complemented by counterfactual reasoning, which presents users with a modified version of the input alongside the resulting change in output, offering an intuitive causal account of model behavior.
+
+\textbf{Chain-of-Thought (CoT) prompting} represents the intrinsic interpretability category. By including an explicit instruction in the system prompt for the model to reason through its answer step by step before providing a conclusion, CoT makes the model's intermediate reasoning visible as part of the response itself. This approach requires no post-hoc analysis and produces explanations in natural language, making it particularly suited to lay audiences \cite{wu_usable_2025}.
+
+\textbf{Confidence indication} represents the uncertainty quantification dimension of XAI. Confidence scores communicate the model's estimated certainty in its output, either derived from token-level probability distributions or expressed through calibrated natural language hedging. Research suggests that aligning expressed confidence with actual response quality is a non-trivial problem, and that miscalibrated confidence can lead users to over-trust or under-trust model outputs \cite{tao_when_2024}. Including this method allows the study to examine whether explicit uncertainty communication affects user trust independently of the content of the explanation.
+
+\section{Trust in AI Systems}
+
+\subsection{Defining Trust}
+\label{sec:trust_theory}
+
+Trust is a multidimensional construct that has been studied across philosophy, cognitive science, and human-computer interaction. At its core, trust involves a willingness to accept vulnerability based on positive expectations about another agent's behavior \cite{jones_concept_2002}. In the context of AI systems, trust can be understood as a user's disposition to rely on the system's outputs, shaped by beliefs about the system's competence, reliability, and intentions \cite{falcone_social_2001}.
+
+For the purposes of this study, the operationalization of trust draws on a framework that distinguishes four theoretical dimensions \cite{castelfranchi_trust_2001}\cite{falcone_social_2001}\cite{jones_concept_2002}: trust in the environment and the sociotechnical infrastructure in which the system operates, trust in the AI agent itself and any mediating agents involved in producing its outputs, trust in the system as an interaction partner, and trust in the system as an authoritative source of information. These dimensions together capture the layered nature of the trust relationship between a user and an LLM, spanning infrastructure-level reliability, agent-level competence and intention, and the social and epistemic weight a user assigns to the system's outputs. From this theoretical foundation, a five-item measurement instrument was derived for use in the empirical study, which is described in detail in Section~\ref{sec:trust_instrument}.
+
+\subsection{Trust in the Context of LLMs}
+
+The fluency and apparent confidence of LLM outputs creates a particular risk of miscalibrated trust. Users who are not familiar with the failure modes of LLMs may attribute a level of reliability to model outputs that is not warranted by the model's actual accuracy \cite{schwartz_enhancing_2023}. Conversely, users who become aware of hallucination through negative experiences may develop excessive skepticism that prevents them from benefiting from the model's genuine capabilities.
+
+Research on sycophancy in LLMs illustrates a further complication: models trained to be agreeable and conversationally pleasant may produce outputs that increase user trust precisely by telling users what they want to hear, independent of factual accuracy \cite{sun_be_2026}. This dynamic makes it especially important to develop tools that help users form well-grounded assessments of model reliability rather than relying on surface features of the interaction such as fluency or tone.
+
+XAI methods represent one promising avenue for supporting better-calibrated trust. By making aspects of model behavior visible, such as which inputs drove a response, how certain the model is, or what reasoning it followed, XAI has the potential to help users identify outputs that warrant closer scrutiny. Whether this potential is realized in practice, and which explanation types are most effective for general users, remains an open empirical question that this study addresses.
+
+\subsection{Addressing Trust Through XAI Methods}
+
+As illustrated in Figure~\ref{fig:xaiTrustworthyness}, the taxonomy proposed by Wu et al. \cite{wu_usable_2025} maps explainability techniques to specific trustworthiness dimensions of LLMs, including security, privacy, fairness, toxicity, and truthfulness. This mapping provides a principled basis for selecting XAI methods that target the trust concerns most relevant to lay users interacting with general-purpose LLMs.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/trustworthynessExplanations.png}
+    \caption{Taxonomy of explanation techniques for trustworthiness aspects of LLMs. \cite{wu_usable_2025}}
+    \label{fig:xaiTrustworthyness}
+\end{figure}
+
+The three methods selected for this study each address distinct dimensions of the trust relationship described in Section~\ref{sec:trust_theory}. SHAP-based attribution and counterfactual reasoning target trust at the level of the AI agent and its outputs: by making visible which parts of a prompt drove a given response, and by illustrating how alternative inputs would have changed that response, these methods support the user's ability to assess the reliability and competence of the system. They are particularly suited to addressing concerns about hallucination and ungrounded outputs, where users benefit from understanding the evidential basis of a response \cite{wu_usable_2025}.
+
+Chain-of-Thought prompting addresses trust at the level of the system as an interaction partner. By externalizing the model's intermediate reasoning steps, CoT makes the inferential process legible and allows users to identify where a reasoning chain may have gone astray. This approach aligns with the intrinsic interpretability category of XAI and supports calibrated trust by providing users with a basis for evaluating the plausibility of the model's conclusions rather than accepting them on the basis of surface fluency alone \cite{wu_usable_2025}.
+
+Confidence indication addresses the epistemic dimension of trust, namely the degree to which users treat the system as an authoritative source of information. Explicitly communicating the model's uncertainty, whether through calibrated probability scores or hedged natural language formulations, provides users with a direct signal that can modulate reliance. Research suggests that this dimension is particularly important given the tendency of LLMs to produce fluent but overconfident outputs that can mislead users who lack the domain knowledge to independently verify claims \cite{tao_when_2024}.
+
+Together, these three methods offer complementary coverage of the trust dimensions identified in the theoretical framework, and their differential effects on user trust constitute the primary empirical question of this study.

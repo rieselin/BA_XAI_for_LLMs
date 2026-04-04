@@ -10,6 +10,12 @@ This chapter describes the research design and implementation steps taken to emp
     \label{fig:methodology_overview}
 \end{figure}
 
+
+ TODO 
+=> evtl dokumentationspart weglah?
+
+prototyp implementation für umfrage beschreiben => evtl dann: wie es dann für umfrageteilnehmer aussah siehe anhang
+
 \section{Model and Method Selection}
 \label{sec:modelandmethod}
 
@@ -86,6 +92,8 @@ Figure~\ref{fig:survey_flow} provides a complete overview of the survey flow. Th
     \caption{Survey Flow}
     \label{fig:survey_flow}
 \end{figure}
+
+The complete survey instrument, including all questions and branching logic, is reproduced in Appendix~\ref{appendix:survey}.
 \subsubsection{Background and Screening}
 
 The survey opens by collecting basic demographic information, including age group, gender, job title and occupational group, and industry. This is followed by two branching filter questions. Participants who indicate that they are not aware of AI or LLMs, with ChatGPT, Claude, and similar systems given as examples, are routed out of the survey, as are participants who have never used an LLM. Participants in the latter group are additionally asked an open-ended multiple-choice question about their reasons for non-use before being exited, providing supplementary data.
@@ -97,22 +105,21 @@ Participants who pass these filters proceed to report which LLM systems they hav
 Participants are next presented with a set of LLM-generated responses and asked to evaluate them. The responses were drawn from three thematic categories, selected to represent a range of contexts in which trust and accuracy carry meaningfully different stakes. The first category covers queries with potential legal implications, such as questions about whether certain activities are permitted, a domain where incorrect information could have direct personal consequences. The second category covers medical and health-related knowledge, where the reliability of information is similarly high-stakes. The third category covers general factual knowledge, which serves as a lower-stakes baseline. Importantly, the response set also includes factually incorrect LLM outputs, allowing the study to examine whether XAI methods help or hinder participants' ability to detect errors.
 
 \subsubsection{Trust Measurement Instrument}
+\label{sec:trust_instrument}
 
-The construct of trust was operationalized based on a review of relevant literature on human-computer trust. Drawing on established theoretical distinctions, the instrument was designed to capture four different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources\cite{castelfranchi_trust_2001}\cite{falcone_social_2001}\cite{jones_concept_2002}. 
+The construct of trust was operationalized based on a review of relevant literature on human-computer trust, as discussed in Section~\ref{sec:trust_theory}. Drawing on established theoretical distinctions, the instrument was designed to capture four different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources \cite{castelfranchi_trust_2001}\cite{falcone_social_2001}\cite{jones_concept_2002}.
 
-From these dimensions, a five-item scale was derived to assess trust responses to the system's outputs.
-
-Each item was rated on a five-point Likert scale ranging from \textit{stimme überhaupt nicht zu} (strongly disagree) to \textit{stimme voll zu} (strongly agree). The items were as follows:
+From these dimensions, a five-item scale was derived to assess trust responses to the system's outputs. Each item was rated on a five-point Likert scale ranging from \textit{stimme überhaupt nicht zu} (strongly disagree) to \textit{stimme voll zu} (strongly agree). The items were as follows:
 
 \begin{itemize}
-    \item Ich vertraue darauf, dass diese Antworten faktisch korrekt sind.
-    \item Ich halte die Informationen in diesen Antworten für zuverlässig.
-    \item Diese Antworten wirken kompetent und sachkundig.
-    \item Ich glaube, dass das System versucht hat, korrekte Antworten zu geben.
-    \item Ich würde mich bei diesen Antworten auf die enthaltenen Informationen verlassen.
+    \item \textit{Ich vertraue darauf, dass diese Antworten faktisch korrekt sind.} (I trust that these answers are factually accurate.)
+    \item \textit{Ich halte die Informationen in diesen Antworten für zuverlässig.} (I consider the information in these answers to be reliable.)
+    \item \textit{Diese Antworten wirken kompetent und sachkundig.} (These answers come across as competent and knowledgeable.)
+    \item \textit{Ich glaube, dass das System versucht hat, korrekte Antworten zu geben.} (I believe the system has tried to provide accurate answers.)
+    \item \textit{Ich würde mich bei diesen Antworten auf die enthaltenen Informationen verlassen.} (I would rely on the information contained in these answers.)
 \end{itemize}
 
-These items collectively capture multiple facets of trust, including perceived accuracy, reliability, competence, intentionality, and behavioral reliance.
+These items collectively capture multiple facets of trust, including perceived accuracy, reliability, competence, intentionality, and behavioral reliance. This repeated-measures design allows the effect of each XAI method on the full trust construct to be assessed across all five dimensions simultaneously.
 
 \subsubsection{Randomization into XAI Groups}
 
