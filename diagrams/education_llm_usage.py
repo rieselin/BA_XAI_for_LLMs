@@ -31,7 +31,7 @@ employment_role_labels = {
     "employment_role_management": "Management / Executive",
     "employment_role_expert": "Specialist / Expert",
     "employment_role_project_manager": "Project Manager",
-    "employment_role_engineer": "Technical Staff / Engineer",
+    "employment_role_ingenieur": "Technical Staff / Engineer",
     "employment_role_sales": "Sales",
     "employment_role_marketing": "Marketing / Communications",
     "employment_role_administration": "Administration",
