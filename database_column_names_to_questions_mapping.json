@@ -1,0 +1,217 @@
+
+{
+
+	"quality": "quality",
+	"id": "id",
+	"know_llm (Are you familiar with generative AI tools such as ChatGPT, Gemini, Copilot, Claude, LLaMA, and Bard?)":
+	{
+		"Yes": "Yes",
+		"No": "No"
+	},
+	"used_llm (Have you used a generative AI tool (e.g., ChatGPT, Gemini, Copilot, Claude, LLaMA, Bard) at least once?)":
+	{
+		"Yes": "Yes",
+		"No": "No"
+	},
+	"not_used (Why haven't you ever used a large language model (e.g., ChatGPT)?)":
+	{
+		"not_used_for_what": "I'm not exactly sure what they're used for.",
+		"not_used_not_needed": "I haven't seen a need for them so far.",
+		"not_used_data_security": "Privacy or security concerns.",
+		"not_used_not_trust": "I don't trust the results from such systems.",
+		"use_google_rather": "I prefer to use traditional search engines like Google.",
+		"not_used_registration": "Signing up or registering was too much of a hassle for me.",
+		"not_used_payment": "I thought it cost money to use.",
+		"not_used_knowledge": "I don't have the technical knowledge to use it.",
+		"not_used_environment": "It isn't used in my circle or at my job.",
+		"not_used_bad_reports": "I've heard negative reports about it.",
+		"not_used_other": "Other reasons."
+	},
+	"gender (Please select your gender)":
+	{
+		"female": "female",
+		"male": "male",
+		"diverse/other": "diverse/other",
+		"I'd rather not say": "I'd rather not say"
+	},
+	"age (How old are you?)":
+	{
+		"18-24": "18-24",
+		"25-34": "25-34",
+		"35-44": "35-44",
+		"45-54": "45-54",
+		"55-64": "55-64",
+		"65 or older": "65 or older"
+	},
+	"schooling (What is your highest level of education?)":
+	{
+		"Kein Abschluss": "Kein Abschluss",
+		"Hauptschulabschluss": "Hauptschulabschluss",
+		"Realschulabschluss": "Realschulabschluss",
+		"Fachhochschulreife": "Fachhochschulreife",
+		"Abitur": "Abitur",
+		"Bachelor-Abschluss": "Bachelor-Abschluss",
+		"Master-Abschluss": "Master-Abschluss"
+	},
+	"employment_role (Which professional roles apply to you? (Multiple selections allowed))":
+	{
+		"employment_role_ceo": "CEO / Executive",
+		"employment_role_management": "Management / Executive",
+		"employment_role_expert": "Specialist / Expert",
+		"employment_role_project_manager": "Project Manager",
+		"employment_role_engineer": "Technical Staff / Engineer",
+		"employment_role_sales": "Sales",
+		"employment_role_marketing": "Marketing / Communications",
+		"employment_role_administration": "Administration",
+		"employment_role_research": "Research & Development",
+		"employment_role_production": "Production / Operations",
+		"employment_role_software": "IT / Software / Data",
+		"employment_role_consulting": "Consulting",
+		"employment_role_education": "Education / Training",
+		"employment_role_self_employed": "Self-Employed / Entrepreneur",
+		"employment_role_freelancing": "Freelancer",
+		"employment_role_student": "Student / In Training",
+		"employment_role_searching_for_employment": "Job Seeker",
+		"employment_role_retired": "Retired",
+		"employment_role_not_employed": "Not employed",
+		"employment_role_employed_not_declared": "Employed (not declared)",
+		"employment_role_other": "Other"
+	},
+	"sector (In which industries do you operate? (Multiple selections allowed))":
+	{
+		"sector_software": "Information Technology / Software",
+        "sector_telecommunication": "Telecommunications",
+        "sector_finance": "Financial Services / Banking / Insurance",
+        "sector_consulting": "Consulting",
+        "sector_production": "Industry / Manufacturing",
+		"sector_engineering": "Mechanical Engineering / Engineering",
+        "sector_construction": "Construction / Architecture / Real Estate",
+        "sector_commerce": "Retail / E-Commerce",
+        "sector_marketing": "Marketing / Media / Advertising",
+        "sector_health": "Healthcare / Pharmaceuticals / Biotechnology",
+		"sector_education": "Education / Research",
+        "sector_public_sector": "Public Sector / Administration",
+        "sector_environment": "Energy / Environment / Sustainability",
+        "sector_transportation": "Transport / Logistics",
+		"sector_tourism": "Tourism / Hospitality",
+        "sector_agriculture": "Agriculture / Food",
+        "sector_design": "Creative Industries / Design",
+        "sector_non_profit": "Non-Profit / NGO",
+		"sector_na": "Not Specified / Not Applicable",
+        "sector_other": "Other"
+	},
+	"llms_used (Which of these LLMs have you tried so far?)":
+	{
+		"llm_used_chatGpt": "ChatGPT (OpenAI)",
+		"llm_used_gemini":"Gemini (Google DeepMind)",
+		"llm_used_grok": "Grok (xAI)",
+		"llm_used_copilot": "Copilot (Microsoft)",
+		"llm_used_bard": "Bard (Google)",
+		"llm_used_gemma": "Gemma (Google)",
+		"llm_used_llama": "LLaMA (Meta AI)",
+		"llm_used_palm": "PaLM (Google AI)",
+		"llm_used_claud": "Claude (Anthropic)",
+		"llm_used_nemotron": "Nemotron (NVIDIA)",
+		"llm_used_mistral": "Mistral (Mistral AI)",
+		"llm_used_deepSeek": "DeepSeek (DeepSeek)",
+		"llm_used_qwen": "Qwen (Alibaba)",
+		"llm_used_nova": "Nova (Amazon)",
+		"llm_used_ernie": "Ernie (Baidu)",
+		"llm_used_command": "Command (Cohere)",
+		"llm_used_falcon": "Falcon (Falcon)",
+		"llm_used_granite": "Granite (IBM)",
+		"llm_used_perplexity": "Perplexity (Perplexity AI)",
+		"llm_used_other": "Other"
+	},
+	"knowledge_assessment_llms (How would you rate your understanding of how LLMs work?)":
+	{
+		"1": "1",
+		"2": "2",
+		"3": "3",
+		"4": "4",
+		"5": "5"
+	},
+	"typeOfAI (Which of these applications are a form of AI?)":
+	{
+		"typeOfAI_chatGpt": "ChatGPT (OpenAI)",
+		"typeOfAI_alexa": "Amazon Alexa / Voice Assistant",
+		"typeOfAI_stock_market": "Stock Market Predictions",
+		"typeOfAI_chessComputer": "Chess Computer",
+		"typeOfAI_googleMaps": "Google Maps / Navigation Systems",
+		"typeOfAI_netflix_recommendations": "Netflix Movie and TV Show Recommendations",
+		"typeOfAI_selfDrivingCars": "Self-Driving Cars / Autonomous Vehicles",
+		"typeOfAI_face_recognition": "Face Recognition for Unlocking Your Phone",
+		"typeOfAI_clock": "Analog Clock",
+		"typeOfAI_gps_device": "Traditional GPS Device",
+		"typeOfAI_alarm_clock": "Simple Alarm Clock App"
+	},
+	"llm_trust (Rate these statements) (1 = Strongly Disagree, 5 = Strongly Agree)":
+	{
+		"llm_trust_that_factual": "I trust that these answers are factually accurate.",
+		"llm_trust_that_reliable": "I consider the information in these answers to be reliable.",
+		"llm_trust_that_competent": "These answers come across as competent and knowledgeable.",
+		"llm_trust_that_tried_to_answer_correct": "I believe the system has tried to provide accurate answers.",
+		"llm_trust_that_on_answer": "I would rely on the information contained in these answers."
+	},
+	"xai_knows (Which of the following methods for explaining or justifying an LLM’s response are you familiar with?)":
+	{
+		"xai_knows_activation": "Promoting interpretable structures by adjusting the training process or using specific training signals. (Sparse/Orthogonal Regularization, Concept Bottleneck Training, Data Preprocessing, Training-Time Regularization)",
+		"xai_knows_influence_of_components": "Identifying and measuring how specific concepts are represented in the model and influence predictions (TCAV, Concept Bottleneck Models, Network Dissection, Activation Maximization)",
+		"xai_knows_influence_of_query": "Improving the usability and controllability of the model through interventions during training or inference. (Training-Time Regularization, Inference-Time Control, Data Preprocessing, Model Pruning)",
+		"xai_knows_cooperation": "Gaining insights from finished model activations without retraining the model. (Input projection onto output embeddings, Feature Visualization, Saliency Maps)",
+		"xai_knows_concept_influences": "Analysis of how internal model representations (latent spaces) are used for prediction. (PCA on activations, t-SNE/UMAP visualization, autoencoders, Concept Activation Vectors (CAV/TCAV))",
+		"xai_knows_feature_attribution": "Measuring the influence of individual or multiple components of the model on the prediction. (SHAP, LIME, neural activation analysis, model pruning)",
+		"xai_knows_regularization": "Measuring the influence of individual parts of the input (e.g., words or features) on the model prediction. (SHAP, Integrated Gradients, Occlusion, Feature Ablation)",
+		"xai_knows_inference": "Investigating which groups of model components interact to generate predictions. (Activation Patching, Path Attribution, Circuit Analysis of Transformer models)",
+		"xai_knows_others": "Others",
+		"xai_knows_none": "None"
+	},
+	"cot_trust (Rate these statements) (1 = Strongly Disagree, 5 = Strongly Agree)":
+	{
+		"cot_trust_that_factual": "I trust that these answers are factually accurate.",
+		"cot_trust_that_reliable": "I consider the information in these answers to be reliable.",
+		"cot_trust_that_competent": "These answers come across as competent and knowledgeable.",
+		"cot_trust_that_tried_to_answer_correct": "I believe the system has tried to provide accurate answers.",
+		"cot_trust_that_on_answer": "I would rely on the information contained in these answers."
+	},
+	"shap_trust (Rate these statements) (1 = Strongly Disagree, 5 = Strongly Agree)":
+	{
+		"shap_trust_that_factual": "I trust that these answers are factually accurate.",
+		"shap_trust_that_reliable": "I consider the information in these answers to be reliable.",
+		"shap_trust_that_competent": "These answers come across as competent and knowledgeable.",
+		"shap_trust_that_tried_to_answer_correct": "I believe the system has tried to provide accurate answers.",
+		"shap_trust_that_on_answer": "I would rely on the information contained in these answers."
+	},
+	"conf_trust (Rate these statements) (1 = Strongly Disagree, 5 = Strongly Agree)":
+	{
+		"conf_trust_that_factual": "I trust that these answers are factually accurate.",
+		"conf_trust_that_reliable": "I consider the information in these answers to be reliable.",
+		"conf_trust_that_competent": "These answers come across as competent and knowledgeable.",
+		"conf_trust_that_tried_to_answer_correct": "I believe the system has tried to provide accurate answers.",
+		"conf_trust_that_on_answer": "I would rely on the information contained in these answers."
+	},
+	"useful_order (Rank the various methods from most helpful to least helpful) (1 = Most Helpful, 3 = Least Helpful)":
+	{
+		"useful_order_number_shap": "",
+		"useful_order_number_cot": "",
+		"useful_order_number_conf": ""
+	},
+	"explanation_method (seen_video_full != NULL => video, else: text)": "",
+	"explanation_trust (Rate these statements) (1 = Strongly Disagree, 5 = Strongly Agree)":
+	{
+		"explanation_trust_that_factual": "I trust that these answers are factually accurate.",
+		"explanation_trust_that_reliable": "I consider the information in these answers to be reliable.",
+		"explanation_trust_that_competent": "These answers come across as competent and knowledgeable.",
+		"explanation_trust_that_tried_to_answer_correct": "I believe the system has tried to provide accurate answers.",
+		"explanation_trust_that_on_answer": "I would rely on the information contained in these answers."
+	},
+	"trust_changed": {
+		"Yes": {
+			"trust_changed_how": ""
+		},
+		"No": "No",
+		"Don't know": "Don't know"
+	},
+	"quota": ""
+}
+
