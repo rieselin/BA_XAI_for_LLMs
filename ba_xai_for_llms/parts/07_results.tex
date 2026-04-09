@@ -7,7 +7,128 @@
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
 
+This chapter presents the findings of the user study conducted to evaluate how different
+explainability methods affect user trust in large language model (LLM) outputs. The study
+compared five conditions: a plain LLM baseline, Chain-of-Thought reasoning (CoT), SHAP
+feature attributions, confidence scores (CONF), and an explanation on the working of an LLM.
+Trust was measured across five Likert-scaled items (1\,=\,strongly disagree,
+5\,=\,strongly agree). The following sections first characterise the participant sample,
+then report trust outcomes per method, and finally describe the relative helpfulness
+rankings provided by participants.
+
+\section{Sample Characteristics}
+\label{sec:sample}
+ 
+\subsection{Familiarity and Prior Use of Generative AI}
+ 
+Of all survey respondents, \textbf{67.3\%} reported being familiar with generative AI
+tools such as ChatGPT, Gemini, Copilot, Claude, LLaMA, or Bard (see
+Figure~\ref{fig:familiar}). of those familiar with genAI \textbf{77.4\%} indicated having
+used at least one such tool at least once (Figure~\ref{fig:used}). Among those who had
+never used an LLM, the most frequently cited barrier was \emph{not yet having seen a
+need} ($n=37$), followed by a preference for traditional search engines ($n=21$) and
+privacy or security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
+ 
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=0.5\textwidth]{figures/familiar_pie.png}
+  \caption{Self-reported familiarity with generative AI tools.}
+  \label{fig:familiar}
+\end{figure}
+ 
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=0.5\textwidth]{figures/used_pie.png}
+  \caption{Self-reported prior use of a generative AI tool at least once.}
+  \label{fig:used}
+\end{figure}
+ 
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=0.9\textwidth]{figures/nonusers_bar.png}
+  \caption{Reasons given by participants who had never used a large language model.}
+  \label{fig:nonusers}
+\end{figure}
+ 
+Among LLM users, ChatGPT (OpenAI) was by far the most widely tried model ($n \approx 150$),
+followed by Gemini (Google DeepMind, $n \approx 85$) and Microsoft Copilot ($n \approx 51$)
+(Figure~\ref{fig:llms_tried}). Claude (Anthropic) had been used by approximately 12
+participants. This distribution indicates that the sample had broad, realistic exposure to
+current commercial LLMs, though it was skewed toward the most mainstream tools.
+ 
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=\textwidth]{figures/llms_tried_bar.png}
+  \caption{LLMs tried by participants, sorted by usage count.}
+  \label{fig:llms_tried}
+\end{figure}
+ 
+\subsection{Employment Role and Sector}
+\label{sec:sample_demographics}
+ 
+Figure~\ref{fig:role} shows LLM usage broken down by employment role. Administration
+($n=26$), Retired ($n=21$), and Specialist/Expert ($n=19$) were the three most represented
+groups, while technical roles such as IT/Software/Data ($n=15$) and Technical
+Staff/Engineer ($n=11$) together comprised a moderate share of users. The broad spread
+across non-technical roles suggests that the findings are not exclusively representative
+of a technically literate audience.
+ 
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=\textwidth]{figures/role_bar.png}
+  \caption{Number of LLM users per employment role.}
+  \label{fig:role}
+\end{figure}
+ 
+Sector-level results (Figure~\ref{fig:sector}) show Healthcare/Pharmaceuticals/Biotechnology
+as the largest group ($n \approx 26$), followed by participants who did not specify a sector
+($n \approx 22$) and Public Sector/Administration ($n \approx 18$). Education/Research
+($n \approx 17$) also contributed substantially.
+ 
+These demographic patterns introduce a potential \textbf{response bias}: the over-representation of administration, healthcare, and retirement demographics---relative to, say, software engineering---may lead to conservative trust ratings and a stronger preference for intuitive, human-readable explanations (such as CoT) over technical ones (such as SHAP). This limitation is discussed further in Chapter~\ref{chap:discussion}.
+ 
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=\textwidth]{figures/sector_bar.png}
+  \caption{Number of LLM users per industry sector.}
+  \label{fig:sector}
+\end{figure}
+ 
+\subsection{Education Level}
+ 
+LLM usage was highest among participants with a \emph{Realschulabschluss} (intermediate
+secondary certificate, $n=54$) and among those holding an \emph{Abitur}
+(university-entrance qualification, $n=36$), followed by Bachelor's ($n=29$) and
+Master's degree holders ($n=28$) (Figure~\ref{fig:edu}). The relatively high LLM adoption
+at the secondary rather than university level is notable and may partly reflect the larger
+absolute population of secondary-level respondents in the panel.
+ 
+\begin{figure}[ht]
+  \centering
+  % \includegraphics[width=0.9\textwidth]{figures/edu_bar.png}
+  \caption{LLM usage per education level (German qualification labels).}
+  \label{fig:edu}
+\end{figure}
 
 Diagrams and stuff showing results from survey
+- COT is the most impactful (quite closely followed by confidence score)
+    - the most people ranked it as the most useful and changed their opinion on all trust aspects the most
+    - also the lowest overall in trust
+- research other methods in this category human centered explanations
+
+
+
+
+Discuss bias: 
+- llm usage by sector and job => what people the pannel consists of
+
+
+
 
 and explaining the resulting prototype implementation
+
+\section{Prototype Implementation}
+The resulting best xai method has been implemented like this
+
+- implement a prototype of COT combined with CONF
+
