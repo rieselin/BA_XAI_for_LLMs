@@ -19,47 +19,60 @@ rankings provided by participants.
 \section{Sample Characteristics}
 \label{sec:sample}
  
+\subsection{Participant Overview}
+ 
+The survey was completed by a total sample from which \textbf{175 participants} confirmed
+prior use of at least one LLM. Only these participants were routed to the main study
+questions, including the trust ratings for the five explanation conditions and the
+helpfulness rankings. All analyses reported in Sections~\ref{sec:trust} and
+\ref{sec:rankings} are therefore based on this subset of $n = 175$.
+ 
+The panel was designed to be \textbf{equally distributed} across six age groups
+(18--24, 25--34, 35--44, 45--54, 55--64, and 65+ years) and \textbf{balanced by
+gender} (female vs.\ male/other), resulting in a quota-sampled design intended to ensure
+broad demographic coverage rather than convenience-based recruitment. Each age--gender
+cell was thus approximately equally represented, limiting age or gender confounds in
+the interpretation of trust outcomes.
+ 
 \subsection{Familiarity and Prior Use of Generative AI}
  
 Of all survey respondents, \textbf{67.3\%} reported being familiar with generative AI
 tools such as ChatGPT, Gemini, Copilot, Claude, LLaMA, or Bard (see
-Figure~\ref{fig:familiar}). of those familiar with genAI \textbf{77.4\%} indicated having
-used at least one such tool at least once (Figure~\ref{fig:used}). Among those who had
-never used an LLM, the most frequently cited barrier was \emph{not yet having seen a
-need} ($n=37$), followed by a preference for traditional search engines ($n=21$) and
-privacy or security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
+Figure~\ref{fig:familiar}). Of those familiar with GenAI \textbf{77.4\%} indicated having
+used at least one such tool at least once (Figure~\ref{fig:used}). Participants who had
+never used an LLM were asked for their reasons but did not proceed to the main study;
+among them, the most frequently cited barrier was \emph{not yet having seen a need}
+($n=37$), followed by a preference for traditional search engines ($n=21$) and privacy or
+security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
  
-\begin{figure}[ht]
+\begin{figure}[htbp]
   \centering
-  % \includegraphics[width=0.5\textwidth]{figures/familiar_pie.png}
+  \includegraphics[width=0.4\textwidth]{diagrams/survey_diagrams/know_llms.png}
   \caption{Self-reported familiarity with generative AI tools.}
   \label{fig:familiar}
 \end{figure}
  
-\begin{figure}[ht]
+\begin{figure}[htbp]
   \centering
-  % \includegraphics[width=0.5\textwidth]{figures/used_pie.png}
+  \includegraphics[width=0.45\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
   \caption{Self-reported prior use of a generative AI tool at least once.}
   \label{fig:used}
 \end{figure}
  
-\begin{figure}[ht]
+\begin{figure}[htbp]
   \centering
-  % \includegraphics[width=0.9\textwidth]{figures/nonusers_bar.png}
+  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/not_used_reasoning.png}
   \caption{Reasons given by participants who had never used a large language model.}
   \label{fig:nonusers}
 \end{figure}
  
-Among LLM users, ChatGPT (OpenAI) was by far the most widely tried model ($n \approx 150$),
-followed by Gemini (Google DeepMind, $n \approx 85$) and Microsoft Copilot ($n \approx 51$)
-(Figure~\ref{fig:llms_tried}). Claude (Anthropic) had been used by approximately 12
-participants. This distribution indicates that the sample had broad, realistic exposure to
-current commercial LLMs, though it was skewed toward the most mainstream tools.
+Among LLM users, ChatGPT (OpenAI) was by far the most widely tried model ($n = 152$),
+followed by Gemini (Google DeepMind, $n = 85$) and Microsoft Copilot ($n = 52$)(Figure~\ref{fig:llms_tried}). Claude (Anthropic) had been used by 12 participants. This distribution indicates that the sample had broad, realistic exposure to current commercial LLMs, though it was skewed toward the most mainstream tools.
  
-\begin{figure}[ht]
+\begin{figure}[htbp]
   \centering
-  % \includegraphics[width=\textwidth]{figures/llms_tried_bar.png}
-  \caption{LLMs tried by participants, sorted by usage count.}
+  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/llms_used.png}
+  \caption{LLMs tried by participants}
   \label{fig:llms_tried}
 \end{figure}
  
@@ -73,28 +86,34 @@ Staff/Engineer ($n=11$) together comprised a moderate share of users. The broad 
 across non-technical roles suggests that the findings are not exclusively representative
 of a technically literate audience.
  
-\begin{figure}[ht]
+\begin{figure}[htbp]
   \centering
-  % \includegraphics[width=\textwidth]{figures/role_bar.png}
-  \caption{Number of LLM users per employment role.}
+  \includegraphics[width=0.8\textwidth]{diagrams/survey_diagrams/llm_usage_per_employment_role.png}
+  \caption{Number of LLM using participants per employment role.}
   \label{fig:role}
 \end{figure}
  
 Sector-level results (Figure~\ref{fig:sector}) show Healthcare/Pharmaceuticals/Biotechnology
-as the largest group ($n \approx 26$), followed by participants who did not specify a sector
-($n \approx 22$) and Public Sector/Administration ($n \approx 18$). Education/Research
-($n \approx 17$) also contributed substantially.
+as the largest group in the survey participants ($n = 26$), followed by participants who did not specify a sector ($n = 22$) and Public Sector/Administration ($n = 18$). Education/Research
+($n = 17$) also contributed substantially.
  
-These demographic patterns introduce a potential \textbf{response bias}: the over-representation of administration, healthcare, and retirement demographics---relative to, say, software engineering---may lead to conservative trust ratings and a stronger preference for intuitive, human-readable explanations (such as CoT) over technical ones (such as SHAP). This limitation is discussed further in Chapter~\ref{chap:discussion}.
+These demographic patterns introduce a potential \textbf{response bias}: the over-representa\-tion of administration, healthcare, and retirement demographics, relative to, e.g. software engineering, may lead to conservative trust ratings and a stronger preference for intuitive, human-readable explanations (such as CoT) over technical ones (such as SHAP). This limitation is discussed further in Chapter~\ref{ch:discussion}.
  
-\begin{figure}[ht]
+\begin{figure}[htbp]
   \centering
-  % \includegraphics[width=\textwidth]{figures/sector_bar.png}
-  \caption{Number of LLM users per industry sector.}
+  \includegraphics[width=0.8\textwidth]{diagrams/survey_diagrams/llm_usage_per_sector.png}
+  \caption{Number of LLM using participants per industry sector.}
   \label{fig:sector}
 \end{figure}
  
 \subsection{Education Level}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.6\textwidth]{diagrams/survey_diagrams/llm_usage_per_education_level.png}
+  \caption{LLM usage per education level (German qualification labels).}
+  \label{fig:edu}
+\end{figure}
  
 LLM usage was highest among participants with a \emph{Realschulabschluss} (intermediate
 secondary certificate, $n=54$) and among those holding an \emph{Abitur}
@@ -103,32 +122,201 @@ Master's degree holders ($n=28$) (Figure~\ref{fig:edu}). The relatively high LLM
 at the secondary rather than university level is notable and may partly reflect the larger
 absolute population of secondary-level respondents in the panel.
  
-\begin{figure}[ht]
+
+\section{Trust Across Explanation Methods}
+\label{sec:trust}
+ 
+\subsection{Overall Trust Distributions}
+\label{sec:trust_dist}
+ 
+Figure~\ref{fig:boxplot_method} presents aggregated trust distributions for each of the
+five methods. The plain LLM baseline achieved the highest median trust (Mdn\,=\,4.0) and
+the tightest interquartile range, suggesting that in the absence of any explanation,
+participants defaulted to moderate-to-high trust in the system's outputs. The Chain of Thought (CoT) produced the \emph{lowest} median trust score (Mdn\,=\,3.0) across all methods, indicating that
+exposing the model's reasoning process frequently caused participants to revise their trust
+\emph{downward}. SHAP (Mdn\,=\,3.4) and the "How an LLM works" explanation (EXPL) (Mdn\,=\,3.6) occupied intermediate positions, while the confidence score (CONF) (Mdn\,=\,3.0) also remained below the LLM baseline.
+ 
+\begin{figure}[htbp]
   \centering
-  % \includegraphics[width=0.9\textwidth]{figures/edu_bar.png}
-  \caption{LLM usage per education level (German qualification labels).}
-  \label{fig:edu}
+  \includegraphics[width=0.7\textwidth]{diagrams/survey_diagrams/trust_per_method_dist.png}
+  \caption{Distribution of trust levels per explanation method (all five trust aspects
+           combined). Orange lines indicate medians; circles indicate outliers.}
+  \label{fig:boxplot_method}
+\end{figure}
+ 
+\subsection{Trust by Aspect and Method}
+\label{sec:heatmap}
+ 
+The heatmap in Figure~\ref{fig:heatmap} disaggregates trust into the five individual
+aspects across methods. Three patterns stand out:
+ 
+\begin{enumerate}
+  \item \textbf{The LLM baseline consistently scores highest.} Mean ratings range from
+        3.5 (``I would rely on the information'') to 4.1 (``I believe the system has
+        tried to provide accurate answers'').
+  \item \textbf{CoT consistently scores lowest.} Mean ratings across aspects range from
+        2.7 to 3.5, and every aspect is rated lower under CoT than under all other
+        methods except CONF.
+  \item \textbf{EXPL outperforms SHAP and CONF on most aspects.} Particularly for
+        perceived competence (3.9 vs.\ 3.4 for SHAP) and for reliability (3.7 vs.\ 3.3).
+  \item \textbf{Participants have a consistent high trust that ``I believe the system has
+        tried to provide accurate answers''} which is not something a generative LLM does.
+\end{enumerate}
+ 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/changeOfTrust_heat.png}
+  \caption{Mean trust ratings per method and aspect (scale 1--5). Warmer colours
+           indicate higher trust.}
+  \label{fig:heatmap}
+\end{figure}
+ 
+The line chart in Figure~\ref{fig:lineplot} confirms that the trust trajectory dips
+sharply at CoT for every aspect, recovers partially at SHAP, then narrows again at CONF
+before recovering at EXPL. The gap between the \emph{best-performing aspect} (``I believe the system has tried to provide accurate answers'') and the worst (``I would rely on the
+information'') is consistent across all methods, suggesting that \emph{intention
+attribution} is persistently rated more charitably than \emph{practical reliance}.
+ 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/changeOfTrust.png}
+  \caption{Trust trajectories across explanation methods, one line per trust aspect.}
+  \label{fig:lineplot}
+\end{figure}
+ 
+\subsection{Individual Trajectories}
+ 
+Figure~\ref{fig:individual} plots per-participant trust trajectories across methods.
+Although considerable individual heterogeneity is visible, the majority of lines converge
+around levels 3 and 4, and the dip at CoT is apparent even at the individual level.
+Participants who began with high trust under LLM (level\,5) showed the sharpest drops at
+CoT, while those who started at level\,3 or below were less affected. This suggests a
+\emph{prior-expectation effect}: CoT disrupts the trust of initially confident users more
+than that of sceptical ones.
+ 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{diagrams/survey_diagrams/individual_trust_trajectories.png}
+  \caption{Individual trust trajectories across all five methods.}
+  \label{fig:individual}
+\end{figure}
+ 
+\subsection{Trust Variation by Number of LLMs Used}
+ 
+Figure~\ref{fig:violin} shows violin plots of trust per aspect, grouped by the number of different
+LLMs a participant had previously used. No clear monotonic relationship is evident;
+participants who had used six or more LLMs showed greater variance rather than
+systematically higher or lower trust, possibly because heavier users have formed more
+nuanced, context-dependent judgements. Median trust remained consistently near 4.0 across
+experience levels for most aspects, suggesting that prior LLM exposure does not
+substantially moderate the effect of explanation type on trust.
+ 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
+  \caption{Distribution of trust levels per trust aspect, segmented by the number of
+           distinct LLMs previously used by each participant.}
+  \label{fig:violin}
 \end{figure}
 
-Diagrams and stuff showing results from survey
-- COT is the most impactful (quite closely followed by confidence score)
-    - the most people ranked it as the most useful and changed their opinion on all trust aspects the most
-    - also the lowest overall in trust
-- research other methods in this category human centered explanations
+\section{Perceived Helpfulness Rankings of XAI Methods}
+\label{sec:rankings}
+ 
+The 50\% of the participants that viewed all three XAI methods (SHAP, CoT, Confidence), were asked to
+rank them from most to least helpful. Figure~\ref{fig:ranking} shows the distribution of rank positions.
+ 
+\textbf{Chain-of-Thought} received the most ``Ranked \#1'' votes ($n = 45$), making it the most frequently preferred explanation type despite producing the \emph{lowest} mean trust scores. \textbf{Confidence scores} were ranked first by a comparable number of participants ($n = 43$) and accumulated the most second-place votes. \textbf{SHAP} was ranked first by the fewest participants ($n = 27$) and collected the most third-place votes, indicating it was perceived as the least helpful of the three explanations.
+ 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{diagrams/survey_diagrams/ranked_xai_methods.png}
+  \caption{Stacked bar chart of helpfulness rankings for the three XAI methods. Each
+           participant ranked SHAP, CoT, and Confidence from most (1) to least (3)
+           helpful.}
+  \label{fig:ranking}
+\end{figure}
+ 
+The juxtaposition of low trust with high perceived helpfulness for CoT is noteworthy.
+It suggests that participants found CoT \emph{informative}, it exposed reasoning steps they could evaluate, but that this very transparency revealed uncertainty or errors that reduced their trust in the answers. This pattern aligns with the concept of \emph{appropriate calibration} in human-centred XAI: an explanation that lowers inflated trust may still be considered useful if it aids decision-making \cite{zhang_effect_2020}.
+CoT can therefore be characterised as a \emph{high-information, trust-calibrating} explanation type, whereas confidence scores appear to function as a more \emph{trust-preserving} but lower-information signal.
+ 
+SHAP's low helpfulness ranking, despite producing intermediate trust scores, is consistent with prior literature suggesting that feature-importance visualisations are poorly understood by non-technical audiences \cite{chromik_i_2021}\cite{kaur_interpreting_2020}. Given the demographic composition of this sample (dominated by administrative, healthcare, and retired participants) the relatively technical nature of SHAP values likely contributed to its unfavourable reception.
 
+\section{Chain-of-Thought as a Human-Centred Explanation Method}
+\label{sec:cot_research}
 
+As established in Chapter~\ref{ch:theory}, XAI methods for LLMs can be broadly divided into post-hoc, intrinsic, and human-centred categories, with the latter consistently outperforming more formal representations in comprehension and perceived usefulness for non-expert audiences \cite{chromik_i_2021}, a pattern confirmed by the low helpfulness ranking of SHAP in the present study. Within the human-centred
+category, Chain-of-Thought prompting has emerged as the dominant paradigm and is the method most widely deployed in production systems, with both ChatGPT and Claude surfacing step-by-step reasoning traces as a transparency mechanism.
 
+An alternative to full CoT is the \emph{top-k} or highlight-based self-explanation, in which the model identifies only the few most important words or phrases. \cite{huang_can_2023} find that such LLM-generated self-explanations perform on par with traditional post-hoc methods such as LIME and occlusion saliency on faithfulness metrics, while being far cheaper to produce, since they are generated alongside the prediction itself rather than requiring thousands of additional model queries.
 
-Discuss bias: 
-- llm usage by sector and job => what people the pannel consists of
+However, a fundamental limitation of CoT concerns its \emph{faithfulness}, that is, whether the stated reasoning accurately represents the process by which the model actually arrived at its answer. \cite{lanham_measuring_2023} propose a suite of tests for measuring CoT faithfulness by intervening on the stated reasoning and observing whether the model's final answer changes. Their findings reveal substantial variation across tasks: for some tasks the model changes its answer more than 60\% of
+the time when the chain of thought is truncated or corrupted; for others, the final answer is almost entirely unaffected, suggesting the reasoning is largely post-hoc. Crucially, they find that \textbf{faithfulness shows inverse scaling with model size}: on most tasks, larger and more capable models produce \emph{less} faithful reasoning than smaller ones, because more capable models can arrive at a confident answer without needing to rely on the generated trace.
 
+The faithfulness problem has a deeper dimension beyond post-hoc rationalisation. \cite{turpin_language_2023} demonstrate that CoT reasoning can be systematically biased by features of the input, such as the position of an answer option or the presence of a suggestive statement, while the stated reasoning provides a different explanation that does not reference the actual cause of the answer shift. The model therefore produces a plausible-sounding but misleading account of its own behaviour.
+This concern is compounded by findings on dishonesty in alignment: \cite{huang_dishonesty_2024} show that LLMs trained with RLHF learn to produce responses whose internal representations score low on honesty metrics, particularly in the initial tokens of a refusal or safety response, suggesting that output text can diverge from the model's internal state even during normal operation.
 
+A related issue concerns the granularity of LLM-generated attributions. \cite{huang_can_2023} observe that when ChatGPT assigns importance scores to individual words, the values cluster on a small number of rounded levels rather than exhibiting the fine-grained variation produced by traditional methods. The authors interpret this as a consequence of alignment: the model produces saliency values
+plausible for a human to generate, even though a human would not be able to introspect at that level of granularity. This may constitute a faithfulness and understandability trade-off, where the explanation is more accessible but less precisely tied to the model's computation.
 
+These considerations together characterise CoT as a high-information, trust-calibrating explanation type that is, however, structurally prone to unfaithfulness, particularly in larger models and on tasks where the model can answer confidently without explicit reasoning. The paradox identified in the present data,
+namely that CoT is simultaneously the most preferred and the least trust-inducing explanation, may therefore reflect an empirically appropriate response by participants: transparency about a reasoning process that contains errors or inconsistencies reduces trust, even if that reasoning is not a faithful account of what the model actually did.
 
-and explaining the resulting prototype implementation
+\subsection{Directions for Future Work}
+
+More technically ambitious approaches attempt to ground explanations in the model's internal representations rather than its output text, operating directly on hidden embeddings at intermediate layers and in principle providing explanations causally connected to the model's computation. Such methods are not subject to the same faithfulness failures as CoT, but they are substantially less interpretable by non-expert users, limiting their deployment potential in the human-centred XAI contexts examined here.
+
+A notable example of such an approach is \textbf{SelfIE} (Self-Interpretation of Embeddings) \cite{chen_selfie_2024}, which enables LLMs to interpret their own hidden embeddings in natural language by leveraging their existing decoding capability. Rather than generating a separate post-hoc rationale, SelfIE injects a hidden embedding of interest into a secondary \emph{interpretation forward pass}, 
+prompting the model to summarise or repeat the information encoded at that layer. This produces open-world, free-text descriptions of internal states without requiring any additional training or data collection, and has been demonstrated on LLaMA-2-70B-Chat across tasks including harmful knowledge detection, prompt injection analysis, ethical reasoning, and hallucination tracing. Because the explanations are derived from the model's actual intermediate representations rather than its output tokens, they are structurally more faithful than CoT; a treatment-effect relevancy score further identifies which parts of a generated interpretation are causally tied to the interpreted embedding rather than produced by autoregression. 
+
+SelfIE's interpretations additionally open avenues for targeted model control: \emph{Supervised Control} edits a single layer's parameters to redirect the model's internal concept representation, while \emph{Reinforcement Control} extends RLHF to the embedding level, allowing harmful knowledge to be erased without supervised targets. In one reported experiment, Reinforcement Control reduced the success rate of prompt-injection attacks eliciting harmful responses from 89\% to 4.4\%, while preserving 95.85\% of the model's factual accuracy. Despite these strengths, SelfIE requires white-box access to model weights and activations, operates at a layer-by-layer granularity that is opaque to non-technical users, and has so far been evaluated primarily on a single large open-source model family (LLaMA-2-Chat), leaving its generalisability across architectures and deployment contexts an open question.
+
+An alternative strand of research has explored \textbf{neural template} generation as a human-interpretable explanation mechanism for AI systems. \cite{li_generate_2020} propose NETE (Neural Template Explanations), a framework originally developed for explainable recommender systems that bridges template-based and free-form natural language generation. Rather than relying on manually predefined sentence templates, which constrain expressiveness and cannot adapt to item-specific features, NETE learns \emph{neural templates} from data via a novel Gated Fusion Recurrent Unit (GFRU). The GFRU runs two parallel GRU decoders: a \emph{context GRU} that generates the surrounding sentence structure, and a \emph{feature GRU} that inserts a specified item feature at the appropriate position; a gated fusion unit then combines their outputs at each decoding step. This architecture allows the system to generate targeted, controllable explanations such as \emph{``The ramen was delicious''} when given the feature \emph{ramen}, closely matching ground-truth user reviews. Empirically, NETE produces substantially more unique and feature-diverse explanations than prior neural generation baselines (Att2Seq, NRT), with improvements exceeding 100\% on BLEU-4 and ROUGE-2 n-gram metrics across hotel, restaurant, and movie review datasets.
+
+However, the neural template paradigm carries several limitations that constrain its transferability to general-purpose LLM explainability. First, NETE requires structured training data in which each user-item interaction is paired with both a ground-truth feature label and a reference explanation sentence, a requirement that is not met in most LLM deployment settings. Second, the GFRU architecture is task-specific: it is designed to slot a single feature word into a recommendation-oriented sentence template, and does not straightforwardly generalise to the open-ended reasoning traces or multi-step factual answers that characterise LLM outputs. Third, like CoT, the generated text remains an output-level artefact and carries no guarantee of faithfulness to the model's internal computation; the template constrains surface form but not the accuracy of the underlying reasoning.
+
+The findings of this study therefore point towards a design space that remains substantially unoccupied: explanation methods grounded enough in model internals to be reliable, as SelfIE aims to be, yet rendered in forms accessible to lay users, as neural templates and CoT attempt to achieve. A promising direction, explored in the prototype described in the following section, is to combine CoT's narrative transparency with a complementary signal such as a confidence score, allowing users to calibrate their reliance on the stated reasoning without requiring any technical literacy about model architecture.
 
 \section{Prototype Implementation}
 The resulting best xai method has been implemented like this
 
 - implement a prototype of COT combined with CONF
+
+Architecture: 
+
+change cot structure from forced json (used in prototype) (which is quite unstable) to simpler step structure => should be easier to keep consistent (and no different to parse)
+
+for all the steps use confidence score (which llama already returns)
+
+for each step check if avg. confidence score is under threshold xx
+
+regenerate if under threshold
+
+color steps in frontend according to confidence (red to green)
+
+keep system prompt \& instrcution visible from prototype
+
+refactor like this
+\begin{lstlisting}
+app/
+  api/
+    routes.py              # FastAPI endpoints (thin)
+
+  core/
+    model_loader.py        # your get_model()
+    prompt_builder.py      # all prompt templates
+    generation.py          # unified generation logic
+
+  reasoning/
+    cot.py                 # CoT extraction/parsing
+    confidence.py          # token probability logic
+    pipeline.py            # orchestrator
+
+  schemas/
+    request.py
+    response.py
+
+  utils/
+    parse_steps.py
+\end{lstlisting}
 

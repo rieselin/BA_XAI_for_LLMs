@@ -3,7 +3,7 @@
 
 This chapter describes the research design and implementation steps taken to empirically evaluate the impact of selected Explainable Artificial Intelligence (XAI) methods on user trust in Large Language Model (LLM) outputs. As illustrated in Figure~\ref{fig:methodology_overview}, the overall methodology is organized into five sequential stages: the selection of an appropriate LLM, the selection and implementation of XAI methods, the design and execution of a user survey, the evaluation of the collected data, and the development of a prototype implementation. The right-hand column of the figure indicates that each stage is accompanied by documentation of the reasoning behind the choices made. The final stage synthesizes all findings into a results summary. The following sections describe each stage in detail.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.68\linewidth]{diagrams/BA_methods.drawio.png}
     \caption{Visual Methodology Diagram}
@@ -41,14 +41,14 @@ The explanation outputs shown to survey participants were generated using a loca
 
 The qpps primary purpose was to generate the explanation outputs shown to survey participants, and to serve as a demonstrable artefact of the three XAI methods studied. The tool therefore served a dual role: as a development environment for refining the visual presentation of each explanation method, and as the source of the stimuli presented to participants. A full reproduction of the survey including the embedded screenshots is provided in Appendix~\ref{appendix:survey}.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.3\linewidth]{img/prototype_architecture_frontend.drawio.png}
     \caption{Frontend Architecture}
     \label{fig:prototype_frontend}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=1\linewidth]{img/prototype_architecture.drawio.png}
     \caption{Backend Architecture}
@@ -91,14 +91,14 @@ The target sample size was constrained primarily by budget. In terms of composit
 
 Figure~\ref{fig:survey_flow} provides a complete overview of the survey flow. The survey is structured in three main phases: a background and screening phase, a core research phase~\ref{fig:main_research_flow} in which trust is measured before and after exposure to XAI methods, and a closing reflection. Each phase is described in detail below.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.49\linewidth]{img/survey_flow.drawio.png}
     \caption{Survey Flow}
     \label{fig:survey_flow}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.42\linewidth]{img/main_xai_research.drawio.png}
     \caption{Survey Flow (Main Trust Research Questions)}
@@ -154,4 +154,3 @@ Beyond the attention filter embedded in the AI awareness item described above, a
 \label{sec:limitations}
 
 The primary limitation of this study concerns the generalizability of its findings. Although the Bilendi panel provides access to a large pool of respondents and allows filtering by demographic characteristics and prior LLM usage, the sample is ultimately composed of individuals who have registered to participate in online surveys for compensation. This introduces a self-selection bias: participants are not representative of the general population or of all LLM users, but rather of a specific subgroup willing to engage in panel research. Findings should therefore be interpreted with appropriate caution when generalizing beyond this population. Future work could address this limitation through more controlled recruitment strategies, including stratified sampling or in-person study designs.
-
