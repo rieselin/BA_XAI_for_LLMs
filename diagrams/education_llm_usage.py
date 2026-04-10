@@ -92,7 +92,7 @@ sectors = [col for col in df.columns if col.startswith('sector_')]
 for col in sectors:
     df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
 
-sector_counts = df[sectors].sum().sort_values(ascending=False)
+sector_counts = df[sectors].sum().sort_values(ascending=True)
 sector_counts.index = sector_counts.index.map(lambda x: sector_labels.get(x, x))
 
 sector_counts.plot(kind='barh', figsize=(12,8), color='orchid')
