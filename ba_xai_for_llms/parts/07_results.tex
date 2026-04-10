@@ -101,7 +101,7 @@ These demographic patterns introduce a potential \textbf{response bias}: the ove
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{diagrams/survey_diagrams/llm_usage_per_sector.png}
+  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/llm_usage_per_sector.png}
   \caption{Number of LLM using participants per industry sector.}
   \label{fig:sector}
 \end{figure}
@@ -303,14 +303,14 @@ app/
     routes.py              # FastAPI endpoints (thin)
 
   core/
-    model_loader.py        # your get_model()
+    model_loader.py        # get_model()
     prompt_builder.py      # all prompt templates
     generation.py          # unified generation logic
 
   reasoning/
     cot.py                 # CoT extraction/parsing
     confidence.py          # token probability logic
-    pipeline.py            # orchestrator
+    pipeline.py            # orchestrator 
 
   schemas/
     request.py
