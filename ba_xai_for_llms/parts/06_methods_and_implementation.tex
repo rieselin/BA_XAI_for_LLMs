@@ -3,18 +3,12 @@
 
 This chapter describes the research design and implementation steps taken to empirically evaluate the impact of selected Explainable Artificial Intelligence (XAI) methods on user trust in Large Language Model (LLM) outputs. As illustrated in Figure~\ref{fig:methodology_overview}, the overall methodology is organized into five sequential stages: the selection of an appropriate LLM, the selection and implementation of XAI methods, the design and execution of a user survey, the evaluation of the collected data, and the development of a prototype implementation. The right-hand column of the figure indicates that each stage is accompanied by documentation of the reasoning behind the choices made. The final stage synthesizes all findings into a results summary. The following sections describe each stage in detail.
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\linewidth]{img/methods.png}
+    \includegraphics[width=0.68\linewidth]{diagrams/BA_methods.drawio.png}
     \caption{Visual Methodology Diagram}
     \label{fig:methodology_overview}
 \end{figure}
-
-
- TODO 
-=> evtl dokumentationspart weglah?
-
-prototyp implementation für umfrage beschreiben => evtl dann: wie es dann für umfrageteilnehmer aussah siehe anhang
 
 \section{Model and Method Selection}
 \label{sec:modelandmethod}
@@ -32,45 +26,60 @@ The selection of XAI methods was guided by the goal of covering a representative
 Figure~\ref{fig:xai_categories} illustrates the taxonomy of XAI methods relevant to this context. Based on this categorization, three methods were selected: SHAP-based feature attribution combined with counterfactual reasoning, Chain-of-Thought (CoT) prompting, and confidence indication. As shown in Figure~\ref{fig:methodology_overview}, each of the three methods was implemented independently. Together, these methods span distinct explanation paradigms, covering post-hoc attribution, process transparency, and uncertainty quantification respectively, while remaining accessible to a non-expert audience.
 
 \paragraph{SHAP and Counterfactual Reasoning} 
-SHAP (SHapley Additive exPlanations)\cite{lundberg_unified_2017} is a post-hoc attribution method grounded in cooperative game theory that assigns each input token a score reflecting its contribution to the model output. In the context of this study, SHAP scores are presented visually to indicate which parts of a prompt most strongly influenced the model's response. This is complemented by counterfactual reasoning, which illustrates how a change in the input would have altered the output, thereby offering an intuitive causal framing. Figures~\ref{fig:shap_sample} and~\ref{fig:counter_sample} show a representative example as it appeared in the survey.
-
-\FloatBarrier
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/shap_example_p1.png}
-    \caption{Query and System Prompt Sample}
-    \label{fig:shap_sample}
-\end{figure}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/shap_example_p2.png}
-    \caption{SHAP and Counterfactual Reasoning Sample}
-    \label{fig:counter_sample}
-\end{figure}
-
-\FloatBarrier
+SHAP (SHapley Additive exPlanations)\cite{lundberg_unified_2017} is a post-hoc attribution method grounded in cooperative game theory that assigns each input token a score reflecting its contribution to the model output. In the context of this study, SHAP scores are presented visually to indicate which parts of a prompt most strongly influenced the model's response. This is complemented by counterfactual reasoning, which illustrates how a change in the input would have altered the output, thereby offering an intuitive causal framing. The implementation of the SHAP and counterfactual reasoning method is described under~\ref{sec:shap} and a sample image of the output can be seen in the survey in Appendix~\ref{appendix:survey}.
 
 \paragraph{Chain-of-Thought (CoT)} 
-Chain-of-Thought prompting elicits intermediate reasoning steps from the model by instructing it to explain its thinking before arriving at a final answer. Unlike post-hoc explanations, CoT is an intrinsic method in which the explanation is generated as part of the model's output itself. This makes it particularly easy to present to users in a natural, readable format. A sample CoT output as presented in the survey is shown in Figure~\ref{fig:cot_sample}.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/cot_example.png}
-    \caption{Chain of Thought Sample}
-    \label{fig:cot_sample}
-\end{figure}
+Chain-of-Thought prompting elicits intermediate reasoning steps from the model by instructing it to explain its thinking before arriving at a final answer. Unlike post-hoc explanations, CoT is an intrinsic method in which the explanation is generated as part of the model's output itself. This makes it particularly easy to present to users in a natural, readable format. The implementation of the CoT method is described under~\ref{sec:cot} and a sample image of the output can be seen in the survey in Appendix~\ref{appendix:survey}.
 
 \paragraph{Confidence Indication} 
-Confidence scores provide an estimate of the model's certainty in its output, either derived from token-level probability distributions or expressed through natural language hedging. This method represents a form of uncertainty quantification and communicates the model's epistemic state to the user in a direct and concise way. A sample confidence output is shown in Figure~\ref{fig:conf_sample}.
+Confidence scores provide an estimate of the model's certainty in its output, either derived from token-level probability distributions or expressed through natural language hedging. This method represents a form of uncertainty quantification and communicates the model's epistemic state to the user in a direct and concise way. The implementation of the confidence score method is described under~\ref{sec:conf} and a sample image of the output can be seen in the survey in Appendix~\ref{appendix:survey}.
 
-\begin{figure}
+\section{Survey Stimulus Generation}
+\label{sec:stimulusGeneration}
+
+The explanation outputs shown to survey participants were generated using a locally hosted web application consisting of a Python FastAPI backend and a single-page HTML/JavaScript frontend. The architecture is illustrated in Figures~\ref{fig:prototype_frontend} and~\ref{fig:prototype_backend}, which show the frontend interaction flow and the backend inference pipeline respectively.
+
+The qpps primary purpose was to generate the explanation outputs shown to survey participants, and to serve as a demonstrable artefact of the three XAI methods studied. The tool therefore served a dual role: as a development environment for refining the visual presentation of each explanation method, and as the source of the stimuli presented to participants. A full reproduction of the survey including the embedded screenshots is provided in Appendix~\ref{appendix:survey}.
+
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\linewidth]{img/conf_example.png}
-    \caption{Confidence Sample}
-    \label{fig:conf_sample}
+    \includegraphics[width=0.3\linewidth]{img/prototype_architecture_frontend.drawio.png}
+    \caption{Frontend Architecture}
+    \label{fig:prototype_frontend}
 \end{figure}
-\FloatBarrier
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{img/prototype_architecture.drawio.png}
+    \caption{Backend Architecture}
+    \label{fig:prototype_backend}
+\end{figure}
+
+\subsection{System Architecture}
+
+The backend exposes three POST endpoints — \texttt{/explain/cot}, \texttt{/explain/shap}, and \texttt{/explain/confidence} — alongside a \texttt{/health} check used by the frontend to indicate server status. The selected model, Llama~3.1~8B, was loaded in 4-bit quantisation via the Unsloth library \cite{noauthor_llama_nodate}, which reduced GPU memory requirements sufficiently to run the full application on a consumer-grade GPU. A thread-safe lazy loader ensured the model was initialised only once and reused across requests.
+
+\subsection{Chain-of-Thought Implementation}
+\label{sec:cot}
+
+The Chain-of-Thought endpoint prompted the model to produce a strictly structured JSON response conforming to a Pydantic schema containing a list of reasoning steps and a final answer field. The system prompt was fixed and instructed the model to output JSON only, preventing free-text contamination. A JSON repair utility was applied to the raw output to close any uncompleted brackets caused by token limits before validation. The frontend parsed the resulting steps and rendered them as sequentially numbered cards, with the final answer displayed in a visually distinct conclusion block.
+
+\subsection{SHAP Attribution Implementation}
+\label{sec:shap}
+
+The SHAP endpoint used a base (non-instruct) variant of the model to first generate a reference response for the given prompt. A KernelExplainer from the SHAP library \cite{lundberg_unified_2017} was then applied to the full prompt, treating each whitespace-delimited word as a feature. For each sample, the explainer constructed a masked version of the prompt by replacing absent words with the token \texttt{[MASKED]}, ran a forward pass, and measured the change in the log-probability of the reference response. After all samples were collected, each word received a signed SHAP value indicating whether its presence promoted or suppressed the response.
+
+It should be noted that KernelExplainer computes a model-agnostic approximation of Shapley values rather than exact values. Exact computation would require evaluating all possible feature subsets, which is combinatorially intractable for prompts of any practical length. The approximation quality is controlled by the number of masking samples, a trade-off discussed in Section~\ref{sec:empUserStudy}. This is a deliberate methodological choice that prioritises feasibility over exactness, and is standard practice when applying SHAP to high-dimensional or black-box models.
+
+Words were annotated by section (system prompt, instruction, or input) and rendered in the frontend with colour-coded highlighting: orange shades for words that promoted the response and blue shades for words that suppressed it, with opacity scaled to the magnitude of each word's SHAP value. Bar charts were generated server-side using Matplotlib and returned as base64-encoded PNG images, one for each prompt section and one overall. A second inference call to the instruct model then produced a plain-language explanation of why the top-scoring words likely had the influence they did, referred to in the frontend as the AI counter-analysis.
+
+\subsection{Confidence Indication Implementation}
+\label{sec:conf}
+
+The confidence endpoint generated a response using the instruct model with the \texttt{output \_scores=True} flag enabled in the Hugging Face generation API, which returns the raw logit distributions for each generation step. For each generated token, the softmax probability of the chosen token was extracted as its confidence score. The response was returned as a list of token–probability pairs alongside aggregate statistics (mean and minimum confidence).
+
+In the frontend, each token was rendered inline with a background colour reflecting its confidence tier: green for high confidence (above 75\%), amber for medium (45–75\%), and red for low confidence (below 45\%). An animated ring indicator summarised the mean confidence across the full response.
+
 \section{Empirical User Study}
 \label{sec:empUserStudy}
 
@@ -80,17 +89,20 @@ The target sample size was constrained primarily by budget. In terms of composit
 
 \subsection{Survey Design}
 
-Figure~\ref{fig:survey_flow} provides a complete overview of the survey flow. The survey is structured in three main phases: a background and screening phase, a core research phase in which trust is measured before and after exposure to XAI methods, and a closing reflection. Each phase is described in detail below.
+Figure~\ref{fig:survey_flow} provides a complete overview of the survey flow. The survey is structured in three main phases: a background and screening phase, a core research phase~\ref{fig:main_research_flow} in which trust is measured before and after exposure to XAI methods, and a closing reflection. Each phase is described in detail below.
 
-\begin{figure}[p]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\linewidth]{img/survey_flow_p1.png}
-\end{figure}
-\begin{figure}[p]
-    \centering
-    \includegraphics[width=0.7\linewidth]{img/survey_flow_p2.png}
+    \includegraphics[width=0.49\linewidth]{img/survey_flow.drawio.png}
     \caption{Survey Flow}
     \label{fig:survey_flow}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.42\linewidth]{img/main_xai_research.drawio.png}
+    \caption{Survey Flow (Main Trust Research Questions)}
+    \label{fig:main_research_flow}
 \end{figure}
 
 The complete survey instrument, including all questions and branching logic, is reproduced in Appendix~\ref{appendix:survey}.
@@ -142,8 +154,3 @@ Beyond the attention filter embedded in the AI awareness item described above, a
 \label{sec:limitations}
 
 The primary limitation of this study concerns the generalizability of its findings. Although the Bilendi panel provides access to a large pool of respondents and allows filtering by demographic characteristics and prior LLM usage, the sample is ultimately composed of individuals who have registered to participate in online surveys for compensation. This introduces a self-selection bias: participants are not representative of the general population or of all LLM users, but rather of a specific subgroup willing to engage in panel research. Findings should therefore be interpreted with appropriate caution when generalizing beyond this population. Future work could address this limitation through more controlled recruitment strategies, including stratified sampling or in-person study designs.
-
-\section{Prototype Implementation}
-The resulting best xai method has been implemented like this
-
-TODO.
