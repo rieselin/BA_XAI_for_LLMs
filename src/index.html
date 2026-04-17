@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reasoning Engine</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+    }
+    .container { max-width: 900px; margin: 40px auto; padding: 20px; }
+    h1 { text-align: center; margin-bottom: 20px; }
+    textarea {
+      width: 100%; height: 100px; padding: 12px;
+      border-radius: 10px; border: none; outline: none;
+      resize: none; font-size: 16px; box-sizing: border-box;
+    }
+    .controls {
+      display: flex; align-items: center;
+      gap: 12px; margin-top: 10px; flex-wrap: wrap;
+    }
+    #run-btn {
+      padding: 12px 20px; border: none; border-radius: 10px;
+      background: #3b82f6; color: white; font-size: 16px;
+      cursor: pointer; min-width: 160px; transition: background 0.2s;
+    }
+    #run-btn:hover:not(:disabled) { background: #2563eb; }
+    #run-btn:disabled { background: #1e40af; opacity: 0.7; cursor: not-allowed; }
+
+    .toggle-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: #94a3b8;
+      cursor: pointer; user-select: none;
+    }
+    .toggle-label input[type=checkbox] {
+      width: 16px; height: 16px; cursor: pointer; accent-color: #3b82f6;
+    }
+
+    .threshold-wrap {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: #94a3b8;
+    }
+    .threshold-wrap input[type=number] {
+      width: 70px; padding: 6px 8px; border-radius: 8px;
+      border: 1px solid #334155; background: #1e293b;
+      color: #e2e8f0; font-size: 13px; outline: none;
+    }
+    .threshold-wrap input[type=number]:focus { border-color: #3b82f6; }
+
+    .result { margin-top: 30px; }
+
+    .answer {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      padding: 22px 24px;
+      border-radius: 14px;
+
+      /* Stronger visual separation */
+      background: linear-gradient(180deg, #1e293b, #172033);
+      border: 1px solid #3b82f6;
+      border-left: 8px solid #3b82f6;
+
+      /* Glow effect */
+      box-shadow:
+        0 0 0 1px #334155,
+        0 10px 30px rgba(0,0,0,0.35),
+        0 0 25px rgba(59,130,246,0.25);
+
+      line-height: 1.85;
+
+      /* subtle animation */
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .answer-label {
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.08em; color: #64748b;
+      margin-bottom: 6px; font-weight: 400;
+    }
+
+    .step {
+      background: #1e293b; padding: 15px; border-radius: 10px;
+      margin-bottom: 10px; border-left: 6px solid;
+    }
+    .step-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 8px;
+      font-size: 13px; color: #64748b;
+    }
+    .step-header-left { display: flex; align-items: center; gap: 8px; }
+    .confidence { font-weight: bold; }
+    .high   { color: #22c55e; }
+    .medium { color: #f59e0b; }
+    .low    { color: #ef4444; }
+    .high-border   { border-color: #22c55e; }
+    .medium-border { border-color: #f59e0b; }
+    .low-border    { border-color: #ef4444; }
+
+    .step-body { font-size: 15px; line-height: 1.7; }
+
+    .badge-regen {
+      font-size: 10px; padding: 2px 7px; border-radius: 6px;
+      background: #1d3461; color: #60a5fa;
+      letter-spacing: 0.04em; font-weight: 500;
+    }
+
+    .regen-btn {
+      padding: 4px 10px; border-radius: 7px;
+      border: 1px solid #334155; background: transparent;
+      color: #94a3b8; font-size: 12px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .regen-btn:hover:not(:disabled) { background: #334155; color: #e2e8f0; }
+    .regen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .tok-wrap { position: relative; display: inline; }
+    .tok-wrap .tok-tip {
+      display: none; position: absolute;
+      bottom: calc(100% + 4px); left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a; border: 1px solid #334155;
+      border-radius: 6px; padding: 3px 7px;
+      font-size: 12px; font-family: monospace;
+      color: #e2e8f0; white-space: nowrap;
+      pointer-events: none; z-index: 10;
+    }
+    .tokens-on .tok-wrap:hover .tok-tip {
+      display: block;
+    }
+
+    .tok-tip {
+      display: none;
+    }
+
+    .tok-high, .tok-medium, .tok-low, .tok-vlow {
+      border-radius: 2px; background: transparent; transition: background 0.15s;
+    }
+    .tokens-on .tok-high   { background: rgba(34,197,94,0.2);  }
+    .tokens-on .tok-medium { background: rgba(234,179,8,0.2);  }
+    .tokens-on .tok-low    { background: rgba(249,115,22,0.2); }
+    .tokens-on .tok-vlow   { background: rgba(239,68,68,0.3);  }
+
+    .meta { margin-top: 20px; font-size: 13px; color: #64748b; line-height: 1.8; }
+
+    .final-text {
+      font-size: 17px;
+      color: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🧠 Reasoning Engine</h1>
+  <textarea id="input" placeholder="Ask something..."></textarea>
+  <div class="controls">
+    <button id="run-btn" onclick="run()">Run Reasoning</button>
+
+    <label class="toggle-label">
+      <input type="checkbox" id="tok-toggle" onchange="applyTokenToggle()" />
+      Show token confidence
+    </label>
+
+    <div class="threshold-wrap">
+      <label for="threshold-input">Auto-regen below</label>
+      <input type="number" id="threshold-input"
+             min="0" max="100" step="1" placeholder="off"
+             title="Steps below this confidence % will be auto-regenerated" />
+      <span>%</span>
+    </div>
+  </div>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+  // ── State ────────────────────────────────────────────────────────────────
+  let _lastInput = "";
+  let _steps     = [];       // current step texts (mutated on regen)
+  let _stepConfs = [];       // current step confidences
+  let _allTokens = [];       // full token list from last full run
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+  function applyTokenToggle() {
+    const on = document.getElementById("tok-toggle").checked;
+    document.getElementById("result").classList.toggle("tokens-on", on);
+  }
+
+  function confClass(v) {
+    if (v > 0.9) return ["high",   "high-border"];
+    if (v > 0.7) return ["medium", "medium-border"];
+    return              ["low",    "low-border"];
+  }
+
+  function tokClass(v) {
+    if (v > 0.9) return "tok-high";
+    if (v > 0.7) return "tok-medium";
+    if (v > 0.4) return "tok-low";
+    return "tok-vlow";
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function tokenSpansFor(segment, tokens) {
+    if (!segment || !tokens.length) return escHtml(segment || "");
+    const fullText = tokens.map(t => t.token).join("");
+    const idx = fullText.indexOf(segment);
+    if (idx === -1) return escHtml(segment);
+
+    let out = "", charCount = 0;
+    for (const t of tokens) {
+      const start = charCount;
+      const end   = charCount + t.token.length;
+      if (end > idx && start < idx + segment.length) {
+        const pct = (t.prob * 100).toFixed(1) + "%";
+        out += `<span class="tok-wrap">` +
+                 `<span class="${tokClass(t.prob)}">${escHtml(t.token)}</span>` +
+                 `<span class="tok-tip">${pct}</span>` +
+               `</span>`;
+      }
+      charCount = end;
+    }
+    return out || escHtml(segment);
+  }
+
+  function getThreshold() {
+    const val = document.getElementById("threshold-input").value.trim();
+    if (!val) return null;
+    const n = parseFloat(val);
+    return (isNaN(n) || n <= 0 || n > 100) ? null : n / 100;
+  }
+
+  async function regenFinal() {
+    const btns = document.querySelectorAll(".regen-btn");
+    btns.forEach(b => b.disabled = true);
+
+    try {
+      const res = await fetch("/reason/final", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input: _lastInput, steps: _steps })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || res.statusText);
+
+      const tokens = (data.tokens || []).filter(t => !t.token.startsWith("<|"));
+      
+      // Guard: if answer is empty, don't wipe the existing content
+      if (!data.final_answer) {
+        alert("Regeneration returned an empty answer. Keeping the previous one.");
+        return;
+      }
+
+      const answerHTML = renderAnswer(data.final_answer, tokens, true);
+      const wrap = document.getElementById("answer-wrap");
+      if (wrap) {
+        wrap.innerHTML = answerHTML;
+      }
+      applyTokenToggle();
+    } catch (e) {
+      alert("Final regen failed: " + e.message);
+    } finally {
+      btns.forEach(b => b.disabled = false);
+    }
+  }
+
+  // ── Rendering ────────────────────────────────────────────────────────────
+  function renderAnswer(finalAnswer, tokens, wasRegenned = false) {
+    if (!finalAnswer) return "";
+
+    const probs = tokens.map(t => t.prob);
+    const mean = probs.length ? probs.reduce((a,b)=>a+b,0)/probs.length : 0;
+
+    // 👉 NEW: median
+    const sorted = [...probs].sort((a,b)=>a-b);
+    const median = sorted.length
+      ? (sorted.length % 2
+          ? sorted[Math.floor(sorted.length/2)]
+          : (sorted[sorted.length/2 - 1] + sorted[sorted.length/2]) / 2)
+      : 0;
+
+    const borderColor =
+      mean > 0.9 ? "linear-gradient(180deg,#22c55e,#16a34a)" :
+      mean > 0.7 ? "#f59e0b" :
+                  "#ef4444";
+    const badge = wasRegenned
+      ? `<span class="badge-regen">regenned</span>`
+      : "";
+
+    return `
+      <div class="answer" style="border-color:${borderColor}">
+    
+      <!-- HEADER (match steps) -->
+      <div class="step-header">
+        <div class="step-header-left">
+          <span>Final Answer</span>
+          ${badge}
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;">
+          <!-- ✅ Confidence top-right -->
+          <span class="confidence ${confClass(mean)[0]}">
+            ${(mean * 100).toFixed(1)}%
+          </span>
+
+          <!-- Button stays here -->
+          <button class="regen-btn" onclick="regenFinal()">
+            ↺ Regenerate
+          </button>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="final-text">
+        ${tokenSpansFor(finalAnswer, tokens)}
+      </div>
+    </div>`;
+  }
+
+  function renderStep(i, step, conf, tokens, wasAutoRegenned) {
+    const [tc, bc] = confClass(conf);
+    const badge = wasAutoRegenned
+      ? `<span class="badge-regen">auto-regenned</span>` : "";
+    return `
+      <div class="step ${bc}" id="step-${i}">
+        <div class="step-header">
+          <div class="step-header-left">
+            <span>Step ${i + 1}</span>
+            ${badge}
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="confidence ${tc}">${(conf * 100).toFixed(1)}%</span>
+            <button class="regen-btn" id="regen-btn-${i}"
+                    onclick="regenStep(${i})">↺ Regenerate</button>
+          </div>
+        </div>
+        <div class="step-body" id="step-body-${i}">${tokenSpansFor(step, tokens)}</div>
+      </div>`;
+  }
+
+  function renderMeta(confs) {
+    if (!confs.length) return "";
+    const mean = confs.reduce((s,c) => s+c, 0) / confs.length;
+    const min  = Math.min(...confs);
+    const weakest = confs.indexOf(min);
+    return `
+      <div class="meta">
+        Mean confidence: ${(mean * 100).toFixed(1)}%<br>
+        Lowest confidence: ${(min * 100).toFixed(1)}%
+        ${weakest !== -1 ? `<br>⚠️ Weakest step: Step ${weakest + 1}` : ""}
+      </div>`;
+  }
+
+  function renderAll(data, autoRegenFlags) {
+    const tokens = (data.tokens || []).filter(t => !t.token.startsWith("<|"));
+    _allTokens   = tokens;
+    _steps       = [...data.steps];
+    _stepConfs   = [...(data.step_confidence || [])];
+
+    const stepsHtml = _steps.map((step, i) =>
+      renderStep(i, step, _stepConfs[i] || 0, tokens,
+                 autoRegenFlags ? autoRegenFlags[i] : false)
+    ).join("");
+
+    document.getElementById("result").innerHTML =
+      `<div id="answer-wrap">${renderAnswer(data.final_answer, tokens)}</div>` +
+      stepsHtml +
+      renderMeta(_stepConfs);
+
+    applyTokenToggle();
+  }
+
+  // ── Per-step regen ───────────────────────────────────────────────────────
+  async function regenStep(i) {
+    const btn = document.getElementById(`regen-btn-${i}`);
+    const body = document.getElementById(`step-body-${i}`);
+    btn.disabled = true;
+    btn.textContent = "Regenerating…";
+    body.style.opacity = "0.4";
+
+    const threshold = getThreshold();
+
+    try {
+      const res = await fetch("/reason/step", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          input:        _lastInput,
+          prior_steps:  _steps.slice(0, i),   // steps 0..i-1
+          step_number:  i + 1,
+          threshold:    threshold,
+          max_attempts: 3,
+        })
+      });
+      const data = await res.json();
+
+      const newStep = data.steps[0] || "";
+      const newConf = (data.step_confidence || [])[0] || 0;
+      const newTokens = (data.tokens || []).filter(t => !t.token.startsWith("<|"));
+
+      _steps[i]     = newStep;
+      _stepConfs[i] = newConf;
+
+      // Patch just this step card
+      const stepEl = document.getElementById(`step-${i}`);
+      const [tc, bc] = confClass(newConf);
+
+      // Update border class
+      stepEl.className = `step ${bc}`;
+
+      // Update confidence label
+      stepEl.querySelector(".confidence").className = `confidence ${tc}`;
+      stepEl.querySelector(".confidence").textContent = (newConf * 100).toFixed(1) + "%";
+
+      // Add/update badge
+      const left = stepEl.querySelector(".step-header-left");
+      const existingBadge = left.querySelector(".badge-regen");
+      if (!existingBadge) {
+        left.insertAdjacentHTML("beforeend", `<span class="badge-regen">regenned</span>`);
+      }
+
+      // Update body
+      body.innerHTML = tokenSpansFor(newStep, newTokens);
+      body.style.opacity = "1";
+
+      // Update meta
+      const metaEl = document.querySelector(".meta");
+      if (metaEl) metaEl.outerHTML = renderMeta(_stepConfs);
+
+      applyTokenToggle();
+    } catch (err) {
+      body.style.opacity = "1";
+      alert("Regeneration failed: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "↺ Regenerate";
+    }
+  }
+
+  // ── Main run ─────────────────────────────────────────────────────────────
+  async function run() {
+    const btn   = document.getElementById("run-btn");
+    const input = document.getElementById("input").value.trim();
+    if (!input) return;
+
+    _lastInput = input;
+    btn.disabled = true;
+    btn.textContent = "Running…";
+
+    try {
+      const threshold = getThreshold();
+      const res = await fetch("/reason", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input, threshold, max_attempts: 3 })
+      });
+
+      const data = await res.json();
+
+      // ✅ Check for error before rendering
+      if (!res.ok) {
+        document.getElementById("result").innerHTML =
+          `<div style="color:#ef4444;background:#1e293b;padding:16px;border-radius:10px;border-left:6px solid #ef4444">
+            <strong>Server error ${res.status}</strong><br>
+            <code style="font-size:13px;white-space:pre-wrap">${escHtml(JSON.stringify(data, null, 2))}</code>
+          </div>`;
+        return;
+      }
+
+      let autoRegenFlags = null;
+      if (threshold !== null && data.step_confidence) {
+        autoRegenFlags = data.step_confidence.map(c => c < threshold);
+      }
+
+      renderAll(data, autoRegenFlags);
+    } catch (e) {
+      document.getElementById("result").innerHTML =
+        `<div style="color:#ef4444;background:#1e293b;padding:16px;border-radius:10px;border-left:6px solid #ef4444">
+          <strong>Request failed:</strong> ${escHtml(e.message)}
+        </div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Run Reasoning";
+    }
+  }
+</script>
+</body>
+</html>
