@@ -17,6 +17,21 @@ your final answer here
 [STEP 1]
 """.strip()
 
+def build_final_regen_prompt(user_input: str, steps: list[str]) -> str:
+    steps_str = "\n\n".join(f"[STEP {i}]\n{s}" for i, s in enumerate(steps, 1))
+    return  f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are a precise reasoning engine. Output ONLY the final answer text, no tags.
+<|eot_id|><|start_header_id|>user<|end_header_id|>
+{user_input}
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+{steps_str}
+
+
+[FINAL]
+""".strip()
+
+
+
 
 def build_step_regen_prompt(user_input: str, prior_steps: list[str], step_number: int) -> str:
     prior = ""

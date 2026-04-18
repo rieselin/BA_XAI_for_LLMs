@@ -1,4 +1,4 @@
-from src.core.prompt_builder import build_reasoning_prompt, build_step_regen_prompt
+from src.core.prompt_builder import build_reasoning_prompt, build_step_regen_prompt, build_final_regen_prompt
 from src.core.generation import generate_with_scores
 from src.reasoning.cot import extract_cot
 from src.reasoning.confidence import (
@@ -10,11 +10,90 @@ from src.schemas.response import ReasoningResponse, TokenConfidence, Regeneratio
 
 import numpy as np
 
-def run_step_regen_pipeline(request: StepRegenRequest):
-    pass
+def run_step_regen_pipeline(request: StepRegenRequest) -> ReasoningResponse:
+    steps = list(request.steps)
+    step_confs = list(request.step_confidences)
+    step_regenerated = list(request.step_regenerated)
+    i = request.step_to_regenerate_index
+    final_answer = request.final_answer
+    final_answer_conf = request.final_answer_confidence
+    final_regenerated = request.final_regenerated
 
-def run_final_regen_pipeline(request: FinalRegenRequest):
-    pass
+    for attempt in range(request.max_attempts):
+        # Build prompt with all steps prior to the one being regenerated
+        prior_steps = steps[:i]
+        prompt = build_step_regen_prompt(request.input, prior_steps, step_number=i + 1)
+        output, tokenizer = generate_with_scores(prompt)
+
+        prefix = f"[STEP {i + 1}]\n"
+        generated_text = _decode_generation(prompt, output, tokenizer, prefix=prefix)
+
+        # extract_cot returns all steps + final; we only want the regenerated step
+        new_steps, new_final = extract_cot(generated_text)
+
+        if not new_steps:
+            continue
+
+        new_step_text = new_steps[0]
+        tokens, probs = compute_token_confidence(output, tokenizer)
+        new_step_confs, new_final_conf = map_step_confidence(
+            [new_step_text], new_final, tokens, probs
+        )
+        new_conf = new_step_confs[0]
+
+        # Accept if above threshold or this is the last attempt
+        if new_conf.mean_confidence >= request.threshold or attempt == request.max_attempts - 1:
+            steps[i] = new_step_text
+            step_confs[i] = new_conf
+            step_regenerated[i] = RegenerationType.AUTO
+            break
+
+    return ReasoningResponse(
+        steps=steps,
+        final_answer=final_answer,
+        step_confidences=step_confs,
+        final_answer_confidence=final_answer_conf,
+        step_regenerated=step_regenerated,
+        final_regenerated=final_regenerated,
+    )
+
+
+def run_final_regen_pipeline(request: FinalRegenRequest) -> ReasoningResponse:
+    steps = list(request.steps)
+    step_confs = list(request.step_confidences)
+    step_regenerated = list(request.step_regenerated)
+
+    final_answer = ""
+    final_answer_conf = None
+    final_regenerated = RegenerationType.NOT_REGENERATED
+
+    for attempt in range(request.max_attempts):
+        prompt = build_final_regen_prompt(request.input, steps)
+        output, tokenizer = generate_with_scores(prompt)
+
+        generated_text = _decode_generation(prompt, output, tokenizer, prefix="")
+
+        # For final regen the prompt instructs plain text output (no tags),
+        # so treat the entire decoded output as the final answer
+        _, extracted_final = extract_cot(generated_text)
+        final_answer = extracted_final if extracted_final else generated_text.strip()
+
+        tokens, probs = compute_token_confidence(output, tokenizer)
+        _, final_answer_conf = map_step_confidence(steps, final_answer, tokens, probs)
+
+        final_regenerated = RegenerationType.AUTO
+
+        if final_answer_conf.mean_confidence >= request.threshold or attempt == request.max_attempts - 1:
+            break
+
+    return ReasoningResponse(
+        steps=steps,
+        final_answer=final_answer,
+        step_confidences=step_confs,
+        final_answer_confidence=final_answer_conf,
+        step_regenerated=step_regenerated,
+        final_regenerated=final_regenerated,
+    )
 
 def run_reasoning_pipeline(request: ReasoningRequest):
 
@@ -41,6 +120,8 @@ def run_reasoning_pipeline(request: ReasoningRequest):
                     steps=steps,
                     tokens=_tokens_to_objects(tokens, probs),
                     step_regenerated=step_regenerated,
+                    step_confidences=step_confs,
+                    final_answer_confidence=final_answer_conf,
                     step_to_regenerate_index=i,
                     final_answer=final_answer,
                     final_regenerated=final_regenerated,
@@ -49,7 +130,7 @@ def run_reasoning_pipeline(request: ReasoningRequest):
                 )
                 result = run_step_regen_pipeline(step_regen_req)
                 steps[i] = result.steps[0]
-                step_confs[i] = result.step_confidence[0]
+                step_confs[i] = result.step_confidences[0]
                 step_regenerated[i] = RegenerationType.AUTO
 
         # Check if final answer needs regeneration (if any step was regenerated or final is missing)
@@ -59,12 +140,13 @@ def run_reasoning_pipeline(request: ReasoningRequest):
                 steps=steps,
                 tokens=_tokens_to_objects(tokens, probs),
                 step_regenerated=step_regenerated,
+                step_confidences=step_confs,
                 max_attempts=request.max_attempts,
                 threshold=request.threshold,
             )
             result = run_final_regen_pipeline(final_answer_regen_req)
             final_answer = result.final_answer
-            final_answer_conf = result.final_confidence
+            final_answer_conf = result.final_answer_confidence
             final_regenerated = result.final_regenerated
 
     return ReasoningResponse(
