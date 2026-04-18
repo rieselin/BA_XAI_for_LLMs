@@ -1,5 +1,7 @@
 import torch
 import numpy as np
+from typing import List, Tuple
+from src.schemas.response import TokenConfidence, StepConfidence
 
 
 SPECIAL_TOKENS = {"<|eot_id|>", "<|begin_of_text|>", "<|end_of_text|>", "<|start_header_id|>", "<|end_header_id|>"}
@@ -25,35 +27,58 @@ def compute_token_confidence(output, tokenizer):
 
     return token_list, probs
 
+def map_step_confidence(
+    steps: List[str],
+    final_answer: str,
+    tokens: List[str],
+    probs: List[float],
+) -> tuple[List[StepConfidence], StepConfidence]:
 
-def aggregate_confidence(probs):
-    if not probs:
-        return {"mean": 0.0, "min": 0.0}
+    segments = steps + [final_answer]
 
-    return {
-        "mean": float(np.mean(probs)),
-        "min": float(np.min(probs))
-    }
+    full_text = "".join(tokens)  # no unpacking needed
 
+    segment_spans = []
+    cursor = 0
+    for seg in segments:
+        seg_stripped = seg.strip()
+        idx = full_text.find(seg_stripped, cursor)
+        if idx == -1:
+            segment_spans.append((cursor, cursor))
+        else:
+            segment_spans.append((idx, idx + len(seg_stripped)))
+            cursor = idx + len(seg_stripped)
 
-def map_step_confidence(steps, token_probs, tokens):
-    if not steps:
-        return []
-    
-    total_chars = sum(len(s) for s in steps)
-    if total_chars == 0:
-        return [0.0] * len(steps)
-    
-    step_conf = []
-    prob_idx = 0
-    total_tokens = len(token_probs)
-    
-    for step in steps:
-        # Allocate tokens proportional to this step's character length
-        proportion = len(step) / total_chars
-        count = max(1, round(proportion * total_tokens))
-        chunk = token_probs[prob_idx:prob_idx + count]
-        step_conf.append(float(np.mean(chunk)) if chunk else 0.0)
-        prob_idx += count
-    
-    return step_conf
+    segment_token_data: List[List[TokenConfidence]] = [[] for _ in segments]
+
+    char_pos = 0
+    for token, prob in zip(tokens, probs):  # zip here instead
+        token_mid = char_pos + len(token) / 2
+
+        assigned = False
+        for seg_idx, (seg_start, seg_end) in enumerate(segment_spans):
+            if seg_start <= token_mid < seg_end:
+                segment_token_data[seg_idx].append(TokenConfidence(token=token, prob=prob))
+                assigned = True
+                break
+
+        if not assigned and segment_token_data:
+            nearest = min(
+                range(len(segment_spans)),
+                key=lambda i: min(
+                    abs(token_mid - segment_spans[i][0]),
+                    abs(token_mid - segment_spans[i][1]),
+                )
+            )
+            segment_token_data[nearest].append(TokenConfidence(token=token, prob=prob))
+
+        char_pos += len(token)
+
+    def build_step_confidence(text: str, token_confidences: List[TokenConfidence]) -> StepConfidence:
+        mean_conf = float(np.mean([t.prob for t in token_confidences])) if token_confidences else 0.0
+        return StepConfidence(step=text, tokens=token_confidences, mean_confidence=mean_conf)
+
+    step_confidences = [build_step_confidence(steps[i], segment_token_data[i]) for i in range(len(steps))]
+    final_answer_confidence = build_step_confidence(final_answer, segment_token_data[len(steps)])
+
+    return step_confidences, final_answer_confidence

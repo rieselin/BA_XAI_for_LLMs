@@ -247,25 +247,31 @@
       const res = await fetch("/reason/final", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input: _lastInput, steps: _steps })
+        body: JSON.stringify({ 
+          input: _lastInput, 
+          steps: _steps,
+          threshold: getThreshold(),
+          max_attempts: 3,
+          })
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || res.statusText);
 
       const tokens = (data.tokens || []).filter(t => !t.token.startsWith("<|"));
-      
-      // Guard: if answer is empty, don't wipe the existing content
+
       if (!data.final_answer) {
         alert("Regeneration returned an empty answer. Keeping the previous one.");
         return;
       }
 
-      const answerHTML = renderAnswer(data.final_answer, tokens, true);
+      // Use final_regenerated from response ("manual" since this was user-triggered)
+      const regenLabel = data.final_regenerated || "manual";
+
+      const answerHTML = renderAnswer(data.final_answer, tokens, regenLabel);
       const wrap = document.getElementById("answer-wrap");
-      if (wrap) {
-        wrap.innerHTML = answerHTML;
-      }
+      if (wrap) wrap.innerHTML = answerHTML;
+
       applyTokenToggle();
     } catch (e) {
       alert("Final regen failed: " + e.message);
@@ -275,13 +281,13 @@
   }
 
   // ── Rendering ────────────────────────────────────────────────────────────
-  function renderAnswer(finalAnswer, tokens, wasRegenned = false) {
+  // ── Rendering ────────────────────────────────────────────────────────────
+  function renderAnswer(finalAnswer, tokens, regenLabel = null) {
     if (!finalAnswer) return "";
 
     const probs = tokens.map(t => t.prob);
     const mean = probs.length ? probs.reduce((a,b)=>a+b,0)/probs.length : 0;
 
-    // 👉 NEW: median
     const sorted = [...probs].sort((a,b)=>a-b);
     const median = sorted.length
       ? (sorted.length % 2
@@ -293,38 +299,33 @@
       mean > 0.9 ? "linear-gradient(180deg,#22c55e,#16a34a)" :
       mean > 0.7 ? "#f59e0b" :
                   "#ef4444";
-    const badge = wasRegenned
-      ? `<span class="badge-regen">regenned</span>`
-      : "";
+
+    // "manual" → "regenned"  |  "auto" → "auto-regenned"  |  null → no badge
+    const badge =
+      regenLabel === "manual" ? `<span class="badge-regen">regenned</span>` :
+      regenLabel === "auto"   ? `<span class="badge-regen">auto-regenned</span>` :
+                                "";
 
     return `
       <div class="answer" style="border-color:${borderColor}">
-    
-      <!-- HEADER (match steps) -->
-      <div class="step-header">
-        <div class="step-header-left">
-          <span>Final Answer</span>
-          ${badge}
+        <div class="step-header">
+          <div class="step-header-left">
+            <span>Final Answer</span>
+            ${badge}
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="confidence ${confClass(mean)[0]}">
+              ${(mean * 100).toFixed(1)}%
+            </span>
+            <button class="regen-btn" onclick="regenFinal()">
+              ↺ Regenerate
+            </button>
+          </div>
         </div>
-
-        <div style="display:flex;align-items:center;gap:10px;">
-          <!-- ✅ Confidence top-right -->
-          <span class="confidence ${confClass(mean)[0]}">
-            ${(mean * 100).toFixed(1)}%
-          </span>
-
-          <!-- Button stays here -->
-          <button class="regen-btn" onclick="regenFinal()">
-            ↺ Regenerate
-          </button>
+        <div class="final-text">
+          ${tokenSpansFor(finalAnswer, tokens)}
         </div>
-      </div>
-
-      <!-- BODY -->
-      <div class="final-text">
-        ${tokenSpansFor(finalAnswer, tokens)}
-      </div>
-    </div>`;
+      </div>`;
   }
 
   function renderStep(i, step, conf, tokens, wasAutoRegenned) {
@@ -368,12 +369,15 @@
     _stepConfs   = [...(data.step_confidence || [])];
 
     const stepsHtml = _steps.map((step, i) =>
-      renderStep(i, step, _stepConfs[i] || 0, tokens,
+      renderStep(i, step, (_stepConfs[i] ?? 0), tokens,
                  autoRegenFlags ? autoRegenFlags[i] : false)
     ).join("");
 
+    // Use final_regenerated directly instead of inferring from step_regenerated
+    const finalRegenLabel = data.final_regenerated || null;
+
     document.getElementById("result").innerHTML =
-      `<div id="answer-wrap">${renderAnswer(data.final_answer, tokens)}</div>` +
+      `<div id="answer-wrap">${renderAnswer(data.final_answer, tokens, finalRegenLabel)}</div>` +
       stepsHtml +
       renderMeta(_stepConfs);
 
