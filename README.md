@@ -9,7 +9,7 @@ cd ./survey
 python ./server.py
 # Open http://localhost:8000/ in browser
 ```
-Example results used in survey can also be found as .html files in /survey folder
+Example results used in survey can also be found as .html files in ./survey/survey_examples_html/ folder
 
 
 ### To run final Prototype locally: 
