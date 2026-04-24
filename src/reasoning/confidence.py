@@ -35,16 +35,16 @@ def map_step_confidence(
 ) -> tuple[List[StepConfidence], StepConfidence]:
 
     segments = steps + [final_answer]
+    full_text = "".join(tokens)
 
-    full_text = "".join(tokens)  # no unpacking needed
-
+    # Find each segment's char span in full_text
     segment_spans = []
     cursor = 0
     for seg in segments:
         seg_stripped = seg.strip()
         idx = full_text.find(seg_stripped, cursor)
         if idx == -1:
-            segment_spans.append((cursor, cursor))
+            segment_spans.append(None)  # segment not found
         else:
             segment_spans.append((idx, idx + len(seg_stripped)))
             cursor = idx + len(seg_stripped)
@@ -52,25 +52,19 @@ def map_step_confidence(
     segment_token_data: List[List[TokenConfidence]] = [[] for _ in segments]
 
     char_pos = 0
-    for token, prob in zip(tokens, probs):  # zip here instead
-        token_mid = char_pos + len(token) / 2
+    for token, prob in zip(tokens, probs):
+        token_start = char_pos
+        token_end = char_pos + len(token)
 
-        assigned = False
-        for seg_idx, (seg_start, seg_end) in enumerate(segment_spans):
-            if seg_start <= token_mid < seg_end:
+        for seg_idx, span in enumerate(segment_spans):
+            if span is None:
+                continue
+            seg_start, seg_end = span
+            # Token overlaps with this segment
+            if token_start < seg_end and token_end > seg_start:
                 segment_token_data[seg_idx].append(TokenConfidence(token=token, prob=prob))
-                assigned = True
                 break
-
-        if not assigned and segment_token_data:
-            nearest = min(
-                range(len(segment_spans)),
-                key=lambda i: min(
-                    abs(token_mid - segment_spans[i][0]),
-                    abs(token_mid - segment_spans[i][1]),
-                )
-            )
-            segment_token_data[nearest].append(TokenConfidence(token=token, prob=prob))
+        # If no segment matched, token is dropped (whitespace/markers between segments)
 
         char_pos += len(token)
 

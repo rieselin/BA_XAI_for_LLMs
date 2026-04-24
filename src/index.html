@@ -1,503 +1,173 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Reasoning Engine</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0e11;--bg-2:#14161b;--bg-3:#1c1f27;--border:#2a2e3a;--border-bright:#3d4255;
+  --text:#e8eaf0;--text-2:#8b90a8;--text-3:#555a70;
+  --accent:#5b8af0;--accent-dim:#1e2d52;
+  --green:#3ecf8e;--green-dim:#0f2d1f;
+  --amber:#f5a623;--amber-dim:#2d1f08;
+  --red:#e05252;--red-dim:#2d0f0f;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --radius:10px;--radius-lg:14px;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;background:var(--bg);z-index:100;}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;}
+.logo-mark svg{width:16px;height:16px;fill:white;}
+header h1{font-size:15px;font-weight:500;}
+header .chip{margin-left:auto;font-size:11px;font-family:var(--mono);color:var(--text-2);background:var(--bg-3);border:1px solid var(--border);padding:3px 8px;border-radius:20px;}
+#health-dot{width:7px;height:7px;border-radius:50%;background:var(--text-3);transition:background .3s;}
+#health-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
+#health-dot.err{background:var(--red);}
+main{flex:1;display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 56px);overflow:hidden;}
+.panel-left{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+.panel-section{padding:1.5rem;border-bottom:1px solid var(--border);}
+.panel-section:last-child{border-bottom:none;flex:1;}
+.section-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:1rem;}
+textarea#query-input{width:100%;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;padding:12px 14px;resize:vertical;min-height:100px;outline:none;transition:border-color .2s;}
+textarea#query-input::placeholder{color:var(--text-3);}
+textarea#query-input:focus{border-color:var(--accent);}
+.param-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem;}
+.param-field label{display:block;font-size:11px;color:var(--text-2);margin-bottom:6px;font-family:var(--mono);}
+.param-field input[type="number"]{width:100%;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--mono);font-size:13px;padding:7px 10px;outline:none;}
+.range-wrapper{display:flex;align-items:center;gap:8px;}
+.range-wrapper input[type="range"]{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:var(--border-bright);border-radius:2px;outline:none;}
+.range-wrapper input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.range-wrapper span{font-size:12px;font-family:var(--mono);color:var(--accent);min-width:28px;text-align:right;}
+button#run-btn{margin-top:1.25rem;width:100%;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-family:var(--font);font-size:14px;font-weight:500;padding:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s,transform .1s;}
+button#run-btn:hover{opacity:.88;}
+button#run-btn:active{transform:scale(.98);}
+button#run-btn:disabled{opacity:.4;cursor:not-allowed;}
+button#run-btn .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+button#run-btn.loading .spinner{display:block;}
+button#run-btn.loading .btn-text{display:none;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.panel-right{overflow-y:auto;padding:1.5rem 2rem;display:flex;flex-direction:column;gap:1.5rem;}
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text-3);}
+.empty-state svg{opacity:.25;}
+.empty-state p{font-size:14px;}
+.result-section{display:flex;flex-direction:column;gap:10px;}
+.result-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);}
 
-  :root {
-    --bg: #0d0e11;
-    --bg-2: #14161b;
-    --bg-3: #1c1f27;
-    --bg-4: #23273200;
-    --border: #2a2e3a;
-    --border-bright: #3d4255;
-    --text: #e8eaf0;
-    --text-2: #8b90a8;
-    --text-3: #555a70;
-    --accent: #5b8af0;
-    --accent-dim: #1e2d52;
-    --accent-glow: rgba(91,138,240,0.15);
-    --green: #3ecf8e;
-    --green-dim: #0f2d1f;
-    --amber: #f5a623;
-    --amber-dim: #2d1f08;
-    --red: #e05252;
-    --red-dim: #2d0f0f;
-    --font: 'DM Sans', sans-serif;
-    --mono: 'DM Mono', monospace;
-    --radius: 10px;
-    --radius-lg: 14px;
-  }
+/* ── Global confidence toggle bar ── */
+.conf-toggle-bar{
+  display:flex;align-items:center;gap:14px;
+  background:var(--bg-2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 16px;
+}
+.conf-toggle-bar label{font-size:12px;font-family:var(--mono);color:var(--text-2);white-space:nowrap;}
+.toggle-switch{position:relative;width:36px;height:20px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;border-radius:20px;background:var(--bg-3);border:1px solid var(--border-bright);cursor:pointer;transition:background .2s,border-color .2s;}
+.toggle-switch input:checked+.toggle-track{background:var(--accent-dim);border-color:var(--accent);}
+.toggle-knob{position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:var(--text-3);transition:transform .2s,background .2s;}
+.toggle-switch input:checked~.toggle-knob{transform:translateX(16px);background:var(--accent);}
+.conf-legend{display:flex;align-items:center;gap:12px;margin-left:auto;}
+.conf-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--text-2);}
+.conf-dot{width:8px;height:8px;border-radius:50%;}
 
-  body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+/* ── Final answer card ── */
+.final-answer-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:12px;}
+.final-answer-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:3px 0 0 3px;}
+.final-answer-text{font-size:15px;line-height:1.7;color:var(--text);grid-column:1;grid-row:1;}
+.final-answer-actions{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-top:2px;}
+.final-below{grid-column:1/-1;grid-row:2;margin-top:10px;}
+.conf-badge{font-size:11px;font-family:var(--mono);padding:3px 8px;border-radius:20px;}
+.regen-badge{font-size:11px;padding:3px 8px;border-radius:20px;border:1px solid var(--border);color:var(--text-2);}
+.regen-badge.manual{border-color:var(--amber);color:var(--amber);}
+.regen-badge.auto{border-color:var(--accent);color:var(--accent);}
+button.regen-btn{background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-2);font-family:var(--font);font-size:12px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:border-color .2s,color .2s;}
+button.regen-btn:hover{border-color:var(--accent);color:var(--accent);}
+button.regen-btn:disabled{opacity:.4;cursor:not-allowed;}
+button.regen-btn svg{width:12px;height:12px;}
 
-  /* ── Header ── */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 100;
-  }
-  .logo-mark {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    background: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .logo-mark svg { width: 16px; height: 16px; fill: white; }
-  header h1 { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
-  header .chip {
-    margin-left: auto;
-    font-size: 11px; font-family: var(--mono);
-    color: var(--text-2);
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    padding: 3px 8px; border-radius: 20px;
-  }
-  #health-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--text-3);
-    transition: background 0.3s;
-  }
-  #health-dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
-  #health-dot.err { background: var(--red); }
+/* ── Steps ── */
+.steps-list{display:flex;flex-direction:column;gap:8px;}
+.step-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:8px;align-items:start;transition:border-color .2s;}
+.step-card:hover{border-color:var(--border-bright);}
+.step-main{grid-column:1;grid-row:1;}
+.step-below{grid-column:1/-1;grid-row:2;margin-top:10px;}
+.step-num{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-bottom:5px;}
+.step-text{font-size:13px;line-height:1.6;color:var(--text);}
+.step-actions{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.conf-bar-wrap{display:flex;align-items:center;gap:8px;}
+.conf-bar-track{flex:1;height:4px;background:var(--bg-3);border-radius:2px;overflow:hidden;}
+.conf-bar-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.conf-label-sm{font-size:11px;font-family:var(--mono);min-width:34px;text-align:right;}
 
-  /* ── Layout ── */
-  main {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 380px 1fr;
-    gap: 0;
-    height: calc(100vh - 56px);
-    overflow: hidden;
-  }
-
-  /* ── Left Panel ── */
-  .panel-left {
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-  .panel-section {
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .panel-section:last-child { border-bottom: none; flex: 1; }
-  .section-label {
-    font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-3);
-    margin-bottom: 1rem;
-  }
-
-  textarea#query-input {
-    width: 100%;
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    line-height: 1.6;
-    padding: 12px 14px;
-    resize: vertical;
-    min-height: 100px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  textarea#query-input::placeholder { color: var(--text-3); }
-  textarea#query-input:focus { border-color: var(--accent); }
-
-  .param-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 1rem;
-  }
-  .param-field label {
-    display: block;
-    font-size: 11px; color: var(--text-2);
-    margin-bottom: 6px; font-family: var(--mono);
-  }
-  .param-field input[type="number"],
-  .param-field input[type="range"] {
-    width: 100%;
-  }
-  .param-field input[type="number"] {
-    background: var(--bg-3);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 7px 10px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .param-field input[type="number"]:focus { border-color: var(--accent); }
-  .range-wrapper {
-    display: flex; align-items: center; gap: 8px;
-  }
-  .range-wrapper input[type="range"] {
-    flex: 1;
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    background: var(--border-bright);
-    border-radius: 2px;
-    outline: none;
-  }
-  .range-wrapper input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-  }
-  .range-wrapper span {
-    font-size: 12px; font-family: var(--mono);
-    color: var(--accent); min-width: 28px; text-align: right;
-  }
-
-  button#run-btn {
-    margin-top: 1.25rem;
-    width: 100%;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius);
-    font-family: var(--font);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: opacity 0.2s, transform 0.1s;
-  }
-  button#run-btn:hover { opacity: 0.88; }
-  button#run-btn:active { transform: scale(0.98); }
-  button#run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  button#run-btn .spinner {
-    width: 14px; height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: none;
-  }
-  button#run-btn.loading .spinner { display: block; }
-  button#run-btn.loading .btn-text { display: none; }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── Right Panel ── */
-  .panel-right {
-    overflow-y: auto;
-    padding: 1.5rem 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .empty-state {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    color: var(--text-3);
-  }
-  .empty-state svg { opacity: 0.25; }
-  .empty-state p { font-size: 14px; }
-
-  /* ── Result Sections ── */
-  .result-section { display: flex; flex-direction: column; gap: 10px; }
-  .result-label {
-    font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-3);
-  }
-
-  /* Final answer */
-  .final-answer-card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem 1.5rem;
-    position: relative;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto auto;
-    column-gap: 12px;
-    row-gap: 0;
-  }
-  .final-answer-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--accent);
-    border-radius: 3px 0 0 3px;
-  }
-  .final-answer-text {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text);
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .final-answer-actions {
-    grid-column: 2;
-    grid-row: 1;
-    display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
-    padding-top: 2px;
-  }
-  .final-below {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-  .conf-badge {
-    font-size: 11px; font-family: var(--mono);
-    padding: 3px 8px; border-radius: 20px;
-  }
-  .regen-badge {
-    font-size: 11px;
-    padding: 3px 8px; border-radius: 20px;
-    border: 1px solid var(--border);
-    color: var(--text-2);
-  }
-  .regen-badge.manual { border-color: var(--amber); color: var(--amber); }
-  .regen-badge.auto { border-color: var(--accent); color: var(--accent); }
-
-  button.regen-btn {
-    margin-left: auto;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text-2);
-    font-family: var(--font); font-size: 12px;
-    padding: 5px 10px;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  button.regen-btn:hover { border-color: var(--accent); color: var(--accent); }
-  button.regen-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  button.regen-btn svg { width: 12px; height: 12px; }
-
-  /* Steps */
-  .steps-list { display: flex; flex-direction: column; gap: 8px; }
-  .step-card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    column-gap: 8px;
-    align-items: start;
-    transition: border-color 0.2s;
-  }
-  .step-card:hover { border-color: var(--border-bright); }
-  .step-main {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .step-below {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-  .step-num {
-    font-family: var(--mono); font-size: 11px;
-    color: var(--text-3); margin-bottom: 5px;
-  }
-  .step-text { font-size: 13px; line-height: 1.6; color: var(--text); }
-  .step-actions {
-    grid-column: 2;
-    grid-row: 1;
-    display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
-  }
-
-  /* Confidence bar */
-  .conf-bar-wrap {
-    display: flex; align-items: center; gap: 8px;
-  }
-  .step-below, .final-below { margin-top: 10px; }
-  .conf-bar-track {
-    flex: 1; height: 4px; background: var(--bg-3);
-    border-radius: 2px; overflow: hidden;
-  }
-  .conf-bar-fill {
-    height: 100%; border-radius: 2px;
-    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-  }
-  .conf-label-sm {
-    font-size: 11px; font-family: var(--mono);
-    min-width: 34px; text-align: right;
-  }
-
-  /* Token overlay toggle */
-  .token-toggle-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    margin-top: 10px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--text-3);
-    font-family: var(--mono); font-size: 11px;
-    padding: 3px 10px;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-    user-select: none;
-  }
-  .token-toggle-btn:hover { border-color: var(--border-bright); color: var(--text-2); }
-  .token-toggle-btn.active { border-color: var(--accent); color: var(--accent); }
-  .token-toggle-btn .toggle-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: currentColor;
-  }
-
-  /* Token overlay text */
-  .token-overlay {
-    display: none;
-    margin-top: 8px;
-    font-size: 13px;
-    line-height: 2;
-    flex-wrap: wrap;
-  }
-  .token-overlay.visible { display: flex; }
-  .tok {
-    position: relative;
-    display: inline-block;
-    border-radius: 3px;
-    padding: 1px 0;
-    cursor: default;
-    white-space: pre;
-  }
-  /* Tooltip */
-  .tok::after {
-    content: attr(data-tip);
-    position: absolute;
-    bottom: calc(100% + 5px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1a1d26;
-    border: 1px solid var(--border-bright);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 3px 7px;
-    border-radius: 5px;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.12s;
-    z-index: 200;
-  }
-  .tok:hover::after { opacity: 1; }
-
-  /* Error banner */
-  .error-banner {
-    background: var(--red-dim);
-    border: 1px solid var(--red);
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    font-size: 13px;
-    color: var(--red);
-    display: none;
-  }
-  .error-banner.visible { display: block; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
-
-  @media (max-width: 800px) {
-    main { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; overflow: visible; }
-    .panel-left { height: auto; overflow: visible; }
-    .panel-right { min-height: 50vh; }
-  }
+/* ── Inline token confidence overlay ── */
+.tok-inline{
+  position:relative;
+  display:inline;
+  border-radius:2px;
+  padding:1px 0;
+  cursor:default;
+  white-space:pre-wrap;
+  transition:background .3s;
+}
+.tok-inline::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:calc(100% + 5px);
+  left:50%;
+  transform:translateX(-50%);
+  background:#1a1d26;
+  border:1px solid var(--border-bright);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:11px;
+  padding:3px 7px;
+  border-radius:5px;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .12s;
+  z-index:200;
+}
+.tok-inline:hover::after{opacity:1;}
+.tok-inline.conf-hidden{background:transparent!important;pointer-events: none;}
+.error-banner{background:var(--red-dim);border:1px solid var(--red);border-radius:var(--radius);padding:12px 14px;font-size:13px;color:var(--red);display:none;}
+.error-banner.visible{display:block;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:3px;}
+@media(max-width:800px){main{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto;overflow:visible;}.panel-left{height:auto;overflow:visible;}.panel-right{min-height:50vh;}}
 </style>
-</head>
-<body>
 
 <header>
-  <div class="logo-mark">
-    <svg viewBox="0 0 16 16"><path d="M8 1L14.5 5v6L8 15 1.5 11V5L8 1z"/></svg>
-  </div>
+  <div class="logo-mark"><svg viewBox="0 0 16 16"><path d="M8 1L14.5 5v6L8 15 1.5 11V5L8 1z"/></svg></div>
   <h1>Reasoning Engine</h1>
   <div id="health-dot" title="API health"></div>
   <span class="chip" id="api-chip">checking…</span>
 </header>
 
 <main>
-  <!-- Left: Controls -->
   <aside class="panel-left">
     <div class="panel-section">
       <p class="section-label">Query</p>
       <textarea id="query-input" placeholder="Enter a question or problem to reason about…" rows="5"></textarea>
-
       <div class="param-row">
         <div class="param-field">
           <label>threshold</label>
           <div class="range-wrapper">
-            <input type="range" id="threshold" min="0" max="1" step="0.05" value="0.5" />
-            <span id="threshold-val">0.5</span>
+            <input type="range" id="threshold" min="0" max="1" step="0.05" value="0.5"/>
+            <span id="threshold-val">0.50</span>
           </div>
         </div>
         <div class="param-field">
           <label>max_attempts</label>
-          <input type="number" id="max-attempts" value="3" min="1" max="10" />
+          <input type="number" id="max-attempts" value="3" min="1" max="10"/>
         </div>
       </div>
-
-      <button id="run-btn">
-        <div class="spinner"></div>
-        <span class="btn-text">Run reasoning</span>
-      </button>
+      <button id="run-btn"><div class="spinner"></div><span class="btn-text">Run reasoning</span></button>
     </div>
-
     <div class="panel-section">
       <p class="section-label">About</p>
-      <p style="font-size: 13px; line-height: 1.7; color: var(--text-2);">
-        Submit a query to run the multi-step reasoning pipeline. Each step is scored by token-level confidence. Low-confidence steps or final answers can be regenerated individually.
-      </p>
-      <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 6px;">
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2);">
-          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0;"></span> High confidence (&gt; 0.7)
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2);">
-          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--amber); flex-shrink: 0;"></span> Medium confidence (0.4–0.7)
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2);">
-          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex-shrink: 0;"></span> Low confidence (&lt; 0.4)
-        </div>
-      </div>
+      <p style="font-size:13px;line-height:1.7;color:var(--text-2);">Submit a query to run the multi-step reasoning pipeline. Each step is scored by token-level confidence. Low-confidence steps or final answers can be regenerated individually.</p>
     </div>
   </aside>
 
-  <!-- Right: Results -->
   <section class="panel-right" id="results-panel">
     <div class="empty-state" id="empty-state">
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
@@ -506,26 +176,24 @@
       </svg>
       <p>Results will appear here</p>
     </div>
-
     <div id="error-banner" class="error-banner"></div>
-    <div id="result-root" style="display:none; display: flex; flex-direction: column; gap: 1.5rem;"></div>
+    <div id="result-root" style="display:none;flex-direction:column;gap:1.5rem;"></div>
   </section>
 </main>
 
 <script>
 (() => {
-  /* ── State ── */
-  let state = null; // holds last ReasoningResponse + original request params
+  let state = null;
+  let confVisible = false;
 
-  /* ── Health check ── */
   async function checkHealth() {
     try {
       const r = await fetch('/health');
-      const data = await r.json();
-      if (data.status === 'ok') {
+      const d = await r.json();
+      if (d.status === 'ok') {
         document.getElementById('health-dot').className = 'ok';
         document.getElementById('api-chip').textContent = 'online';
-      } else { throw new Error(); }
+      } else throw new Error();
     } catch {
       document.getElementById('health-dot').className = 'err';
       document.getElementById('api-chip').textContent = 'offline';
@@ -534,131 +202,92 @@
   checkHealth();
   setInterval(checkHealth, 120000);
 
-  /* ── Threshold slider ── */
-  const thresholdInput = document.getElementById('threshold');
-  const thresholdVal = document.getElementById('threshold-val');
-  thresholdInput.addEventListener('input', () => {
-    thresholdVal.textContent = parseFloat(thresholdInput.value).toFixed(2);
+  document.getElementById('threshold').addEventListener('input', e => {
+    document.getElementById('threshold-val').textContent = parseFloat(e.target.value).toFixed(2);
   });
 
-  /* ── Run pipeline ── */
   document.getElementById('run-btn').addEventListener('click', async () => {
     const query = document.getElementById('query-input').value.trim();
     if (!query) return;
-    const threshold = parseFloat(thresholdInput.value);
+    const threshold = parseFloat(document.getElementById('threshold').value);
     const maxAttempts = parseInt(document.getElementById('max-attempts').value);
-
-    setLoading(true);
-    hideError();
-
+    setLoading(true); hideError();
     try {
-      const res = await fetch('/reason', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: query, threshold, max_attempts: maxAttempts })
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.detail || 'Server error');
-      }
+      const res = await fetch('/reason', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({input:query,threshold,max_attempts:maxAttempts})});
+      if (!res.ok) { const e = await res.json(); throw new Error(e.detail||'Server error'); }
       const data = await res.json();
-      state = { response: data, request: { input: query, threshold, max_attempts: maxAttempts } };
+      state = {response:data, request:{input:query,threshold,max_attempts:maxAttempts}};
       renderResults();
-    } catch (e) {
-      showError(e.message);
-    } finally {
-      setLoading(false);
-    }
+    } catch(e) { showError(e.message); }
+    finally { setLoading(false); }
   });
 
-  /* ── Regen step ── */
   async function regenStep(index) {
     if (!state) return;
-    setStepLoading(index, true);
+    setStepLoading(index,true);
     try {
-      const body = {
-        ...state.request,
-        steps: state.response.steps,
-        tokens: state.response.step_confidences.flatMap(sc => sc.tokens),
-        step_regenerated: state.response.step_regenerated,
-        step_confidences: state.response.step_confidences,
-        step_to_regenerate_index: index,
-        final_answer: state.response.final_answer,
-        final_regenerated: state.response.final_regenerated,
-        final_answer_confidence: state.response.final_answer_confidence,
-      };
-      const res = await fetch('/reason/step', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) { const e = await res.json(); throw new Error(e.detail || 'Error'); }
-      const data = await res.json();
-      state.response = data;
-      renderResults();
-    } catch (e) {
-      showError(e.message);
-    } finally {
-      setStepLoading(index, false);
-    }
+      const body = {...state.request,steps:state.response.steps,tokens:state.response.step_confidences.flatMap(sc=>sc.tokens),step_regenerated:state.response.step_regenerated,step_confidences:state.response.step_confidences,step_to_regenerate_index:index,final_answer:state.response.final_answer,final_regenerated:state.response.final_regenerated,final_answer_confidence:state.response.final_answer_confidence};
+      const res = await fetch('/reason/step',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if (!res.ok) { const e = await res.json(); throw new Error(e.detail||'Error'); }
+      state.response = await res.json(); renderResults();
+    } catch(e) { showError(e.message); }
+    finally { setStepLoading(index,false); }
   }
 
-  /* ── Regen final ── */
   async function regenFinal() {
     if (!state) return;
     setFinalLoading(true);
     try {
-      const body = {
-        ...state.request,
-        steps: state.response.steps,
-        tokens: state.response.step_confidences.flatMap(sc => sc.tokens),
-        step_regenerated: state.response.step_regenerated,
-        step_confidences: state.response.step_confidences,
-      };
-      const res = await fetch('/reason/final', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) { const e = await res.json(); throw new Error(e.detail || 'Error'); }
-      const data = await res.json();
-      state.response = data;
-      renderResults();
-    } catch (e) {
-      showError(e.message);
-    } finally {
-      setFinalLoading(false);
-    }
+      const body = {...state.request,steps:state.response.steps,tokens:state.response.step_confidences.flatMap(sc=>sc.tokens),step_regenerated:state.response.step_regenerated,step_confidences:state.response.step_confidences};
+      const res = await fetch('/reason/final',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if (!res.ok) { const e = await res.json(); throw new Error(e.detail||'Error'); }
+      state.response = await res.json(); renderResults();
+    } catch(e) { showError(e.message); }
+    finally { setFinalLoading(false); }
   }
 
-  /* ── Helpers ── */
-  function confColor(v) {
-    if (v >= 0.7) return 'var(--green)';
-    if (v >= 0.4) return 'var(--amber)';
-    return 'var(--red)';
+  function confColor(v) { return v>=0.7?'var(--green)':v>=0.4?'var(--amber)':'var(--red)'; }
+  function confBg(v) { return v>=0.7?'var(--green-dim)':v>=0.4?'var(--amber-dim)':'var(--red-dim)'; }
+
+  function tokBgColor(p) {
+    let r,g,b;
+    if (p<0.4){const t=p/0.4;r=Math.round(224+(245-224)*t);g=Math.round(82+(166-82)*t);b=Math.round(82+(35-82)*t);}
+    else{const t=(p-0.4)/0.6;r=Math.round(245+(62-245)*t);g=Math.round(166+(207-166)*t);b=Math.round(35+(142-35)*t);}
+    return `rgba(${r},${g},${b},0.32)`;
   }
-  function confBg(v) {
-    if (v >= 0.7) return 'var(--green-dim)';
-    if (v >= 0.4) return 'var(--amber-dim)';
-    return 'var(--red-dim)';
-  }
+
   function regenLabel(r) {
-    if (!r) return 'NOT_REGENERATED';
-    const val = typeof r === 'object' ? r : r;
-    // handle enum value or name
-    if (val === 0 || val === 'NOT_REGENERATED') return 'NOT_REGENERATED';
-    if (val === 1 || val === 'MANUAL') return 'MANUAL';
-    if (val === 2 || val === 'AUTO') return 'AUTO';
-    return String(val);
+    if (!r||r===0||r==='NOT_REGENERATED') return 'NOT_REGENERATED';
+    if (r===1||r==='MANUAL') return 'MANUAL';
+    if (r===2||r==='AUTO') return 'AUTO';
+    return String(r);
   }
   function regenBadge(r) {
-    const l = regenLabel(r);
-    if (l === 'NOT_REGENERATED') return '';
-    const cls = l === 'MANUAL' ? 'manual' : 'auto';
-    return `<span class="regen-badge ${cls}">${l.toLowerCase().replace('_', ' ')}</span>`;
+    const l=regenLabel(r);
+    if (l==='NOT_REGENERATED') return '';
+    const cls=l==='MANUAL'?'manual':'auto';
+    return `<span class="regen-badge ${cls}">${l.toLowerCase().replace('_',' ')}</span>`;
+  }
+  function confBadge(v){return `<span class="conf-badge" style="background:${confBg(v)};color:${confColor(v)};">${(v*100).toFixed(0)}% conf</span>`;}
+  function confBarHtml(v){return `<div class="conf-bar-wrap"><div class="conf-bar-track"><div class="conf-bar-fill" style="width:${(v*100).toFixed(1)}%;background:${confColor(v)};"></div></div><span class="conf-label-sm" style="color:${confColor(v)};">${(v*100).toFixed(0)}%</span></div>`;}
+  function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function regenIcon(){return `<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 6A4 4 0 1 1 6 2" stroke-linecap="round"/><polyline points="6,0 8,2 6,4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+
+  function buildTokenText(tokens) {
+    if (!tokens||!tokens.length) return null;
+    return tokens.map(t =>
+      `<span class="tok-inline${confVisible?'':' conf-hidden'}" style="background:${tokBgColor(t.prob)};" data-prob="${t.prob}" data-tip="${escHtml(t.token)} · ${(t.prob*100).toFixed(1)}%">${escHtml(t.token)}</span>`
+    ).join('');
   }
 
-  /* ── Render ── */
+  function applyToggle(visible) {
+    confVisible = visible;
+    document.querySelectorAll('.tok-inline').forEach(el => {
+      if (visible) { el.classList.remove('conf-hidden'); }
+      else { el.classList.add('conf-hidden'); }
+    });
+  }
+
   function renderResults() {
     const root = document.getElementById('result-root');
     document.getElementById('empty-state').style.display = 'none';
@@ -667,161 +296,77 @@
     root.style.gap = '1.5rem';
     const r = state.response;
 
+    const finalTokenHtml = buildTokenText(r.final_answer_confidence.tokens);
+    const finalDisplay = finalTokenHtml || escHtml(r.final_answer);
+
     root.innerHTML = `
-      <!-- Final Answer -->
+      <div class="conf-toggle-bar">
+        <label for="conf-master-toggle" style="font-size:12px;font-family:var(--mono);color:var(--text-2);cursor:pointer;">token confidence</label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="conf-master-toggle" ${confVisible?'checked':''}>
+          <span class="toggle-track"></span>
+          <span class="toggle-knob"></span>
+        </label>
+        <div class="conf-legend">
+          <div class="conf-legend-item"><span class="conf-dot" style="background:var(--green);"></span>&gt;70%</div>
+          <div class="conf-legend-item"><span class="conf-dot" style="background:var(--amber);"></span>40–70%</div>
+          <div class="conf-legend-item"><span class="conf-dot" style="background:var(--red);"></span>&lt;40%</div>
+        </div>
+      </div>
+
       <div class="result-section">
         <p class="result-label">Final Answer</p>
         <div class="final-answer-card">
-          <p class="final-answer-text">${escHtml(r.final_answer)}</p>
+          <p class="final-answer-text">${finalDisplay}</p>
           <div class="final-answer-actions">
             ${confBadge(r.final_answer_confidence.mean_confidence)}
             ${regenBadge(r.final_regenerated)}
-            <button class="regen-btn" id="regen-final-btn" onclick="window._regenFinal()">
-              ${regenIcon()} Regenerate
-            </button>
+            <button class="regen-btn" id="regen-final-btn" onclick="window._regenFinal()">${regenIcon()} Regenerate</button>
           </div>
-          <div class="final-below">
-            ${confBarHtml(r.final_answer_confidence.mean_confidence)}
-            ${tokenOverlay('final', r.final_answer_confidence.tokens)}
-          </div>
+          <div class="final-below">${confBarHtml(r.final_answer_confidence.mean_confidence)}</div>
         </div>
       </div>
 
-      <!-- Steps -->
       <div class="result-section">
         <p class="result-label">Reasoning Steps (${r.steps.length})</p>
         <div class="steps-list">
-          ${r.steps.map((step, i) => stepCard(step, r.step_confidences[i], r.step_regenerated[i], i)).join('')}
+          ${r.steps.map((step,i)=>{
+            const conf=r.step_confidences[i];
+            const confVal=conf?conf.mean_confidence:0;
+            const tokHtml=conf?buildTokenText(conf.tokens):null;
+            const stepDisplay=tokHtml||escHtml(step);
+            return `<div class="step-card" id="step-card-${i}">
+              <div class="step-main">
+                <p class="step-num">step ${i+1}</p>
+                <p class="step-text">${stepDisplay}</p>
+              </div>
+              <div class="step-actions">
+                ${conf?confBadge(confVal):''}
+                ${regenBadge(r.step_regenerated[i])}
+                <button class="regen-btn" id="regen-step-btn-${i}" onclick="window._regenStep(${i})">${regenIcon()} Regen</button>
+              </div>
+              <div class="step-below">${conf?confBarHtml(confVal):''}</div>
+            </div>`;
+          }).join('')}
         </div>
-      </div>
-    `;
+      </div>`;
 
-    // wire up all toggle buttons
-    root.querySelectorAll('.token-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.dataset.target;
-        const overlay = document.getElementById(targetId);
-        if (!overlay) return;
-        const visible = overlay.classList.toggle('visible');
-        btn.classList.toggle('active', visible);
-        btn.querySelector('span:last-child').textContent = visible ? 'hide' : 'token confidence';
-      });
+    document.getElementById('conf-master-toggle').addEventListener('change', e => {
+      applyToggle(e.target.checked);
     });
-  }
 
-  function confBadge(v) {
-    return `<span class="conf-badge" style="background:${confBg(v)};color:${confColor(v)};">${(v * 100).toFixed(0)}% conf</span>`;
-  }
-
-  function confBarHtml(v) {
-    return `
-      <div class="conf-bar-wrap">
-        <div class="conf-bar-track">
-          <div class="conf-bar-fill" style="width:${(v*100).toFixed(1)}%;background:${confColor(v)};"></div>
-        </div>
-        <span class="conf-label-sm" style="color:${confColor(v)};">${(v*100).toFixed(0)}%</span>
-      </div>`;
-  }
-
-  function tokenOverlay(id, tokens) {
-    if (!tokens || !tokens.length) return '';
-    const overlayId = `tov-${id}`;
-
-    // interpolate red→amber→green via prob
-    function tokBg(p) {
-      // red  = [224, 82,  82]
-      // amber= [245,166, 35]
-      // green= [ 62,207,142]
-      let r, g, b;
-      if (p < 0.4) {
-        const t = p / 0.4;
-        r = Math.round(224 + (245-224)*t);
-        g = Math.round(82  + (166-82 )*t);
-        b = Math.round(82  + (35 -82 )*t);
-      } else {
-        const t = (p - 0.4) / 0.6;
-        r = Math.round(245 + (62 -245)*t);
-        g = Math.round(166 + (207-166)*t);
-        b = Math.round(35  + (142-35 )*t);
-      }
-      return `rgba(${r},${g},${b},0.28)`;
+    if (confVisible) {
+      document.querySelectorAll('.tok-inline').forEach(el => el.classList.remove('conf-hidden'));
     }
-
-    const chips = tokens.map(t =>
-      `<span class="tok" data-tip="${escHtml(t.token)} · ${(t.prob*100).toFixed(1)}%" style="background:${tokBg(t.prob)};">${escHtml(t.token)}</span>`
-    ).join('');
-
-    return `
-      <button class="token-toggle-btn" data-target="${overlayId}">
-        <span class="toggle-dot"></span>
-        <span>token confidence</span>
-      </button>
-      <div class="token-overlay" id="${overlayId}">${chips}</div>`;
   }
 
-  function stepCard(step, conf, regen, i) {
-    const confVal = conf ? conf.mean_confidence : 0;
-    return `
-      <div class="step-card" id="step-card-${i}">
-        <div class="step-main">
-          <p class="step-num">step ${i + 1}</p>
-          <p class="step-text">${escHtml(step)}</p>
-        </div>
-        <div class="step-actions">
-          ${conf ? confBadge(confVal) : ''}
-          ${regenBadge(regen)}
-          <button class="regen-btn" id="regen-step-btn-${i}" onclick="window._regenStep(${i})">
-            ${regenIcon()} Regen
-          </button>
-        </div>
-        <div class="step-below">
-          ${conf ? confBarHtml(confVal) : ''}
-          ${conf ? tokenOverlay(`step-${i}`, conf.tokens) : ''}
-        </div>
-      </div>`;
-  }
+  function setLoading(v){const btn=document.getElementById('run-btn');btn.disabled=v;btn.classList.toggle('loading',v);}
+  function setStepLoading(i,v){const btn=document.getElementById(`regen-step-btn-${i}`);if(btn)btn.disabled=v;}
+  function setFinalLoading(v){const btn=document.getElementById('regen-final-btn');if(btn)btn.disabled=v;}
+  function showError(msg){const el=document.getElementById('error-banner');el.textContent=`Error: ${msg}`;el.classList.add('visible');}
+  function hideError(){document.getElementById('error-banner').classList.remove('visible');}
 
-  function regenIcon() {
-    return `<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
-      <path d="M10 6A4 4 0 1 1 6 2" stroke-linecap="round"/>
-      <polyline points="6,0 8,2 6,4" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`;
-  }
-
-  function escHtml(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function setLoading(v) {
-    const btn = document.getElementById('run-btn');
-    btn.disabled = v;
-    btn.classList.toggle('loading', v);
-  }
-
-  function setStepLoading(i, v) {
-    const btn = document.getElementById(`regen-step-btn-${i}`);
-    if (btn) btn.disabled = v;
-  }
-
-  function setFinalLoading(v) {
-    const btn = document.getElementById('regen-final-btn');
-    if (btn) btn.disabled = v;
-  }
-
-  function showError(msg) {
-    const el = document.getElementById('error-banner');
-    el.textContent = `Error: ${msg}`;
-    el.classList.add('visible');
-  }
-
-  function hideError() {
-    document.getElementById('error-banner').classList.remove('visible');
-  }
-
-  /* expose for inline onclick */
-  window._regenStep = regenStep;
-  window._regenFinal = regenFinal;
+  window._regenStep=regenStep;
+  window._regenFinal=regenFinal;
 })();
 </script>
-</body>
-</html>
