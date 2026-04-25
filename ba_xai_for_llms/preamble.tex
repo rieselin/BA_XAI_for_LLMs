@@ -79,16 +79,7 @@
 \usepackage{algpseudocode}
 
 % Hyperlinks
-\usepackage[hidelinks, pdftex]{hyperref}
-\hypersetup{%
-  pdftitle={Increasing Trust in AI Systems},
-% Use \plainauthor for final version.
-  pdfauthor={Linda Riesen},
-%  pdfauthor={\emptyauthor},
-  pdfdisplaydoctitle=true, % For Accessibility
-  bookmarksnumbered,
-  pdfstartview={FitH}
-}
+
 
 % Enumerated list modification
 \usepackage{enumitem}
@@ -118,3 +109,27 @@
 }
 
 \newcommand{\speaker}[1]{\textbf{#1:}}
+
+\newcommand{\localtt}[1]{%
+  {\catcode`\_=12 \texttt{#1}}%
+}
+
+
+
+
+\usepackage[hidelinks, pdftex]{hyperref}
+\usepackage[htt]{hyphenat}
+\hypersetup{%
+  pdftitle={Explainable AI for Large Language Models: Technical Explanation Methods and their Impact on User Trust},
+% Use \plainauthor for final version.
+  pdfauthor={Linda Riesen},
+%  pdfauthor={\emptyauthor},
+  pdfdisplaydoctitle=true, % For Accessibility
+  bookmarksnumbered,
+  pdfstartview={FitH}
+}
+
+
+
+\usepackage{silence}
+\WarningFilter{latexfont}{Font shape}

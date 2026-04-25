@@ -57,7 +57,7 @@ The qpps primary purpose was to generate the explanation outputs shown to survey
 
 \subsection{System Architecture}
 
-The backend exposes three POST endpoints — \texttt{/explain/cot}, \texttt{/explain/shap}, and \texttt{/explain/confidence} — alongside a \texttt{/health} check used by the frontend to indicate server status. The selected model, Llama~3.1~8B, was loaded in 4-bit quantisation via the Unsloth library \cite{noauthor_llama_nodate}, which reduced GPU memory requirements sufficiently to run the full application on a consumer-grade GPU. A thread-safe lazy loader ensured the model was initialised only once and reused across requests.
+The backend exposes three POST endpoints: \texttt{/explain/cot}, \texttt{/explain/shap}, and \texttt{/explain/confidence} alongside a \texttt{/health} check used by the frontend to indicate server status. The selected model, Llama~3.1~8B, was loaded in 4-bit quantisation via the Unsloth library \cite{noauthor_llama_nodate}, which reduced GPU memory requirements sufficiently to run the full application on a consumer-grade GPU. A thread-safe lazy loader ensured the model was initialized only once and reused across requests.
 
 \subsection{Chain-of-Thought Implementation}
 \label{sec:cot}
@@ -69,16 +69,16 @@ The Chain-of-Thought endpoint prompted the model to produce a strictly structure
 
 The SHAP endpoint used a base (non-instruct) variant of the model to first generate a reference response for the given prompt. A KernelExplainer from the SHAP library \cite{lundberg_unified_2017} was then applied to the full prompt, treating each whitespace-delimited word as a feature. For each sample, the explainer constructed a masked version of the prompt by replacing absent words with the token \texttt{[MASKED]}, ran a forward pass, and measured the change in the log-probability of the reference response. After all samples were collected, each word received a signed SHAP value indicating whether its presence promoted or suppressed the response.
 
-It should be noted that KernelExplainer computes a model-agnostic approximation of Shapley values rather than exact values. Exact computation would require evaluating all possible feature subsets, which is combinatorially intractable for prompts of any practical length. The approximation quality is controlled by the number of masking samples, a trade-off discussed in Section~\ref{sec:empUserStudy}. This is a deliberate methodological choice that prioritises feasibility over exactness, and is standard practice when applying SHAP to high-dimensional or black-box models.
+It should be noted that KernelExplainer computes a model-agnostic approximation of Shapley values rather than exact values. Exact computation would require evaluating all possible feature subsets, which is combinatorially intractable for prompts of any practical length. The approximation quality is controlled by the number of masking samples, a trade-off discussed in Section~\ref{sec:empUserStudy}. This is a deliberate methodological choice that prioritizes feasibility over exactness, and is standard practice when applying SHAP to high-dimensional or black-box models.
 
-Words were annotated by section (system prompt, instruction, or input) and rendered in the frontend with colour-coded highlighting: orange shades for words that promoted the response and blue shades for words that suppressed it, with opacity scaled to the magnitude of each word's SHAP value. Bar charts were generated server-side using Matplotlib and returned as base64-encoded PNG images, one for each prompt section and one overall. A second inference call to the instruct model then produced a plain-language explanation of why the top-scoring words likely had the influence they did, referred to in the frontend as the AI counter-analysis.
+Words were annotated by section (system prompt, instruction, or input) and rendered in the frontend with color-coded highlighting: orange shades for words that promoted the response and blue shades for words that suppressed it, with opacity scaled to the magnitude of each word's SHAP value. Bar charts were generated server-side using Matplotlib and returned as base64-encoded PNG images, one for each prompt section and one overall. A second inference call to the instruct model then produced a plain-language explanation of why the top-scoring words likely had the influence they did, referred to in the frontend as the AI counter-analysis.
 
 \subsection{Confidence Indication Implementation}
 \label{sec:conf}
 
 The confidence endpoint generated a response using the instruct model with the \texttt{output \_scores=True} flag enabled in the Hugging Face generation API, which returns the raw logit distributions for each generation step. For each generated token, the softmax probability of the chosen token was extracted as its confidence score. The response was returned as a list of token–probability pairs alongside aggregate statistics (mean and minimum confidence).
 
-In the frontend, each token was rendered inline with a background colour reflecting its confidence tier: green for high confidence (above 75\%), amber for medium (45–75\%), and red for low confidence (below 45\%). An animated ring indicator summarised the mean confidence across the full response.
+In the frontend, each token was rendered inline with a background color reflecting its confidence tier: green for high confidence (above 75\%), amber for medium (45–75\%), and red for low confidence (below 45\%). An animated ring indicator summarized the mean confidence across the full response.
 
 \section{Empirical User Study}
 \label{sec:empUserStudy}
@@ -119,7 +119,7 @@ Participants are next presented with a set of LLM-generated responses and asked 
 \subsubsection{Trust Measurement Instrument}
 \label{sec:trust_instrument}
 
-The construct of trust was operationalized based on a review of relevant literature on human-computer trust, as discussed in Section~\ref{sec:trust_theory}. Drawing on established theoretical distinctions, the instrument was designed to capture four different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources \cite{castelfranchi_trust_2001}\cite{falcone_social_2001}\cite{jones_concept_2002}.
+The construct of trust was operationalized based on a review of relevant literature on human-computer trust, as discussed in Section~\ref{sec:trust_theory}. Drawing on established theoretical distinctions, the instrument was designed to capture four different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources \cite{castelfranchi_trust_2001, falcone_social_2001, jones_concept_2002}.
 
 From these dimensions, a five-item scale was derived to assess trust responses to the system's outputs. Each item was rated on a five-point Likert scale ranging from \textit{stimme überhaupt nicht zu} (strongly disagree) to \textit{stimme voll zu} (strongly agree). The items were as follows:
 

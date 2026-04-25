@@ -6,85 +6,193 @@
 % !TEX TS-program = pdflatexmk
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
+ 
+\begin{quote}
+\textit{``Is it [the GenAI Model's output] not only correct, but actually, can I trust it?''}\\
+\hspace*{\fill}--- Thomas Kuster, Partner at LEXR, GenAI ZH 2026
+\end{quote}
+ 
+\noindent Large Language Models (LLMs) such as ChatGPT, Claude, and Gemini have moved from
+research curiosity to everyday tool with remarkable speed.
+Since the public release of ChatGPT in November 2022, awareness of AI-powered
+applications has spread widely: a 2025 survey by gfs.bern commissioned by the Swiss
+Federal Chancellery found that 96~percent of the Swiss population had heard of
+LLM-based tools such as ChatGPT, Gemini, or Co-Pilot \cite{bern_chance_2025}.
+Of those familiar with these applications, 59~percent reported using them at least
+occasionally, and 59~percent of users also employ them in a professional context
+\cite{bern_chance_2025}.
+These figures illustrate that LLMs are no longer a niche technology: they are embedded
+in the daily routines of a broad and diverse population, the majority of whom are not
+AI specialists.
+ 
+Widespread adoption, however, does not imply well-calibrated trust.
+LLMs are susceptible to two distinct failure modes (dishonesty, in which a model
+contradicts knowledge it has acquired during training, and hallucination, in which it
+fabricates information entirely \cite{wu_usable_2025}), yet their outputs are delivered
+with the same confident fluency regardless of whether they are accurate or not.
+Users who cannot easily distinguish a correct answer from a confident but incorrect one
+risk placing trust where it is not warranted; conversely, users who have experienced
+model errors first-hand may develop excessive skepticism that prevents them from
+benefiting from the technology's genuine capabilities.
+The stakes are especially high in domains such as law and medicine, where decisions
+grounded in incorrect information can carry serious personal consequences.
+The opening question posed by legal practitioner Thomas Kuster at GenAI ZH 2026
+captures precisely this tension: correctness alone is not sufficient; what matters is
+whether a user can assess \emph{when} to trust a system's output.
+ 
+Public awareness of this gap appears to be growing.
+The same gfs.bern study found that the Swiss population identifies transparency,
+accountability, and data security as the foremost conditions under which AI use
+by public institutions would be considered acceptable \cite{bern_chance_2025}.
+This demand for interpretability is not confined to the public sector.
+Across domains, regulators, practitioners, and researchers are increasingly asking
+how AI systems can be made to explain their reasoning in terms that non-expert users
+can act on.
+ 
+Explainable AI (XAI) has emerged as the principal research response to this challenge.
+XAI encompasses methods and techniques designed to make AI behavior more
+interpretable, spanning post-hoc attribution methods such as SHAP and LIME,
+intrinsic approaches such as Chain-of-Thought (CoT) prompting, and
+human-centered techniques that leverage LLMs' own language generation capabilities
+to produce natural language explanations \cite{wu_usable_2025}.
+Yet despite the breadth of the XAI literature, a meaningful gap remains:
+most existing work is oriented towards technical audiences, and there is limited
+empirical evidence on which explanation types are most effective, or most helpful, for
+lay users interacting with LLMs in everyday settings \cite{wu_usable_2025}.
+ 
+\section{State of the Art}
+ 
+Research into LLM explainability has expanded rapidly in response to the broad
+deployment of these systems.
+Existing approaches can be broadly categorized along three axes.
+ 
+Post-hoc attribution methods, most notably SHAP \cite{lundberg_unified_2017} and LIME,
+treat the model as a black box and assign importance scores to input features after
+a prediction has been made.
+Recent work has extended gradient-based, perturbation-based, surrogate-based, and
+decomposition-based techniques to the token level, allowing individual words or phrases
+to be highlighted as drivers of a model's output \cite{wu_usable_2025, smilkov_smoothgrad_2017, ancona_towards_2018, zhou_learning_2015, selvaraju_grad-cam_2020, binder_layer-wise_2016, grosse_studying_2023}.
+ 
+Intrinsic interpretability methods embed transparency into the model's own generation process.
+While rule-based models such as Generalized Additive Models \cite{caruana_intelligible_2015},
+Explainable Boosting Machines \cite{lou_accurate_2013}, and Interpretable Decision Sets
+\cite{lakkaraju_interpretable_2016} achieve transparency by design, these approaches are
+fundamentally incompatible with the dense, high-dimensional parameter spaces of neural
+networks; they cannot be applied to LLMs without abandoning the representational capacity
+that makes such models effective.
 
+Chain-of-Thought prompting is the most prominent example: by instructing a model
+to articulate its reasoning step by step before arriving at a conclusion, CoT makes
+the inferential process visible as part of the response itself \cite{wu_usable_2025}. 
 
-find good citation to start with
+Both ChatGPT \cite{noauthor_chatgpt_nodate} and Claude \cite{noauthor_claude_nodate} surface step-by-step reasoning traces as a standard
+transparency mechanism, making CoT the most widely deployed explanation paradigm
+in production systems today.
+More technically ambitious variants operate directly on the model's internal hidden-state
+representations. For example, SelfIE \cite{chen_selfie_2024} enables LLMs to
+interpret their own embeddings in natural language without additional training, but
+such approaches require white-box access to model weights and remain opaque to
+non-technical audiences.
+ 
+Human-centered and narrative explanations represent a third strand, in which
+LLMs generate natural language accounts of their own behavior, either through
+direct self-explanation or through a dedicated secondary model \cite{wu_usable_2025,you_gamifying_2024}.
+A notable sub-class are counterfactual explanations, which characterize a model's
+decision boundary by describing the minimal change to an input that would alter
+the output \cite{wachter_counterfactual_2018}; extensions of this idea have
+moved beyond single-feature perturbations toward actionable, multi-step
+recourse paths that are more useful in practice \cite{rawal_beyond_2020}.
 
-most people at least know of LLMs, many at least sometimes use it
-
-concerningly the most used it is by medium high educated people working in sector health or the role administration. highly data sensitive thingies.
-
-\cite{bern_chance_2025}
-
-
-
-
-more and more also used in jobs and important decisions
-
-trust is often wrongly placed 
-
-xai has emerged
-
-thesis tries to evaluate user trust
-
-
-Beschreibung\\
-The aim of this bachelor thesis is to investigate technical methods of Explainable Artificial Intelligence (XAI) for Large Language Models (LLMs), implement selected approaches in a prototype, and empirically evaluate their impact on user trust.\\
-To this end, the thesis should:\\
-\begin{enumerate}
-    \item Review the relevant foundations of LLMs, XAI methods, and trust in AI systems,
-    \item Select and technically implement 1–2 XAI approaches for LLMs (e.g., token highlighting, attention visualization, or textual explanations) in a simple demonstrator (e.g., web interface or notebook),
-    \item Design and conduct a user study that measures trust and perceived transparency with and without explanations,
-    \item Analyze the results and critically discuss them with respect to design recommendations for trustworthy LLM-based applications.
-\end{enumerate}
-
-
-
-
-
-
-
-
-
-\section{State of the Art: }
-State of the Art: 
-
-- LLms explainability methods
-- gap in current research: field study
-
-
-- what xai methods exist for llms?\\
-
-=> deep research / deep search (chain of thought / trace of reasoning)\\
-enhance number based xai (like lime, shap)\\
-=> multi agent verification\\
-=> human AI collaboration (HAIC) e.g. HOOTL, HITL => based on Trust, mutual understanding, effective communication, role allocation and responsibility \cite{jeong_design_2025}\\
-
-pertubation based, gradient based, surrogate based, decomposition based \cite{wu_usable_2025}\\
-
-
-
-
-
-XAI visualisation : \cite{you_gamifying_2024}
-
+Gamification frameworks have further explored how narrative and interactive
+presentation can increase engagement with explanations among lay users
+\cite{you_gamifying_2024}.
+ 
+Human-AI Collaboration (HAIC) research has drawn attention to additional dimensions
+of the problem, emphasizing that effective collaboration depends not only on the quality
+of explanations but also on mutual understanding, appropriate role allocation,
+and calibrated trust between the human and the system
+\cite{jeong_design_2025}.
+Frameworks such as Human-in-the-Loop (HITL) and Human-on-the-Loop (HOTL)
+position the user as an active participant in AI-assisted decision making, foregrounding
+the need for tools that help users maintain appropriate oversight rather than simply
+delegating judgment to the model.
+ 
+A clear gap exists in the current literature.
+While the technical inventory of XAI methods is rich, empirical evidence on which
+approaches actually improve lay users' ability to calibrate their trust in LLM outputs
+remains sparse.
+The majority of evaluation studies focus on expert users, interpretability benchmarks,
+or controlled classification tasks rather than on the open-ended, high-stakes question
+formats that characterize everyday LLM use.
+It is precisely this gap, namely the question of what XAI can do \emph{in practice} for
+non-specialist users, that the present work addresses.
+ 
 \section{Motivation}
-Regulatory pressures
-very commonly used
-
+ 
+The motivation for this work rests on three converging pressures.
+ 
+First, \textbf{regulatory pressure} is mounting.
+The EU AI Act, which entered into force in 2024, establishes explicit transparency and
+explainability requirements for high-risk AI applications, and broader voluntary
+frameworks from standardization bodies and industry coalitions are following suit.
+Compliance requires not only that explanations exist, but that they are usable
+by the people affected by AI decisions.
+ 
+Second, \textbf{adoption is outpacing understanding}.
+As documented above, more than half of Swiss residents who are aware of LLMs use
+them in a professional context \cite{bern_chance_2025}, yet the majority of these
+users have no formal training in machine learning.
+The combination of high usage, high stakes, and low technical literacy creates
+conditions in which miscalibrated trust (in either direction) can cause real harm.
+ 
+Third, \textbf{trust is not self-correcting}.
+Research on sycophancy in LLMs shows that models trained to be agreeable tend to
+produce outputs that increase user trust by telling users what they want to hear,
+independent of factual accuracy \cite{wu_usable_2025}.
+Without external signals that make model uncertainty or evidential grounding visible,
+users have little basis for adjusting their reliance on a given output.
+XAI methods represent the most promising available mechanism for providing
+such signals, and understanding which of them work for whom and in what
+context is therefore a practically urgent question.
+ 
 \section{Research Questions and Thesis Contribution}
-\begin{itemize}
-    \item Does explainability help us trust / distrust the output of a model?
-    \item How do different XAI methods impact the trust level
-    \item Is XAI even a real indicator if the model works correctly
-    \item How can we make the general people more aware of how much to trust AI
-    \item How big is calculation impact for add-on xai methods = usability
-\end{itemize}
-
-
-
-
+ 
+Building on the motivation outlined above, this thesis addresses the following
+research questions:
+ 
+\begin{enumerate}
+    \item Does the provision of explainability information help users to appropriately
+          trust or distrust the output of an LLM?
+    \item How do different XAI methods (specifically post-hoc attribution with SHAP and
+          counterfactual reasoning, Chain-of-Thought prompting, and confidence
+          indication) differentially affect lay users' trust levels?
+    \item Is XAI a reliable indicator of whether the model is actually functioning
+          correctly, or can it create misleading impressions of transparency?
+    \item How can general users be made more aware of the appropriate degree of trust
+          to place in AI-generated information?
+    \item What is the computational and usability overhead of add-on XAI methods,
+          and does this overhead limit their practical deployment?
+\end{enumerate}
+ 
+To answer these questions, the thesis makes the following contributions.
+It reviews the relevant theoretical foundations spanning LLM architectures, XAI taxonomies, and the psychology of trust in AI systems.
+It selects and implements three XAI approaches (SHAP-based token attribution combined
+with counterfactual reasoning, Chain-of -Thought prompting, and confidence
+indication) in a functional web-based demonstrator running on an open-source LLM.
+It designs and conducts an empirical user study with \(n = 175\) prior LLM users,
+measuring trust across five dimensions before and after exposure to each explanation
+method.
+Finally, it synthesizes the results into a prototype that combines the two
+best-performing methods and derives concrete design recommendations for
+trustworthy LLM-based applications.
+ 
 \section{Thesis Structure}
+ 
+The remainder of this thesis is organized as follows
 
-
-
+\begin{itemize}
+    \item \hyperref[ch:theory]{Chapter 2} provides the theoretical background, covering the architecture and life-cycle of LLMs, the taxonomy of XAI methods, and the multidimensional construct of trust in AI systems.
+    \item \hyperref[ch:methods]{Chapter 3} describes the methodology, including the selection of the LLM and XAI methods, the implementation of the demonstrator, and the design of the user study.
+    \item \hyperref[ch:results]{Chapter 4} presents the empirical results, including sample characteristics, trust outcomes per explanation method, and perceived helpfulness rankings.
+    \item \hyperref[ch:discussion]{Chapter 5} discusses the findings, limitations, and future research directions.
+\end{itemize}
