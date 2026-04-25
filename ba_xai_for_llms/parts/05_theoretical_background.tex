@@ -11,11 +11,11 @@
 
 The term \textit{Artificial Intelligence} (AI) refers broadly to the field of computer science concerned with building systems that can perform tasks which would ordinarily require human intelligence, such as recognizing patterns, drawing inferences, or generating language \cite{stoffelbauer_how_2023}. Within this field, \textit{Machine Learning} (ML) denotes a subset of approaches in which systems are not explicitly programmed with rules but instead learn to perform tasks by identifying statistical regularities in data. \textit{Deep Learning} is a further specialization within machine learning that relies on artificial neural networks composed of many layers, enabling systems to learn highly abstract representations from raw input such as text, images, or audio.
 
-\textit{Large Language Models} (LLMs) are a class of deep learning systems trained on vast corpora of text with the objective of modeling the probability distribution over sequences of tokens. In practical terms, this means that an LLM learns to predict, given a preceding sequence of words, which words are most likely to follow. Through training on text at an enormous scale, LLMs acquire broad linguistic competence as well as a form of implicit factual and procedural knowledge encoded in their parameters. Well-known examples include OpenAI's ChatGPT\cite{noauthor_chatgpt_nodate}, Anthropic's Claude\cite{noauthor_claude_nodate}, and Meta's Llama family of models\cite{noauthor_meta-llamallama-31-8b_2024}.\cite{stoffelbauer_how_2023}
+\textit{Large Language Models} (LLMs) are a class of deep learning systems trained on vast corpora of text with the objective of modeling the probability distribution over sequences of tokens. In practical terms, this means that an LLM learns to predict, given a preceding sequence of words, which words are most likely to follow. Through training on text at an enormous scale, LLMs acquire broad linguistic competence as well as a form of implicit factual and procedural knowledge encoded in their parameters. Well-known examples include OpenAI's ChatGPT\cite{noauthor_chatgpt_nodate}, Anthropic's Claude\cite{noauthor_claude_nodate}, and Meta's Llama family of models\cite{noauthor_meta-llamallama-31-8b_2024, stoffelbauer_how_2023}
 
 \section{The LLM Pipeline}
 
-Understanding how LLMs are built and deployed is relevant context for evaluating their outputs and the role of explainability. The lifecycle of an LLM can be divided into three phases: pre-deployment, inference, and post-deployment.
+Understanding how LLMs are built and deployed is relevant context for evaluating their outputs and the role of explainability. The life-cycle of an LLM can be divided into three phases: pre-deployment, inference, and post-deployment.
 
 \subsection{Pre-Deployment: Training and Preparation}
 
@@ -29,7 +29,7 @@ For use cases requiring access to current or verified information, models may ad
 
 When a user submits a query, the input passes through several processing steps before a response is generated. Safety classifiers scan the input for harmful, inappropriate, or adversarial content. A system prompt, typically invisible to the end user, provides the model with behavioral instructions including accuracy guidelines, formatting preferences, and tool usage policies.
 
-If retrieval systems are configured, relevant documents may be fetched and appended to the model's context prior to generation. The model then generates a response autoregressively, producing one token at a time based on its training, the system prompt, any retrieved context, and the user's input. After generation, the output passes through a second layer of safety and content filters before being delivered to the user.
+If retrieval systems are configured, relevant documents may be fetched and appended to the model's context prior to generation. The model then generates a response auto-regressively, producing one token at a time based on its training, the system prompt, any retrieved context, and the user's input. After generation, the output passes through a second layer of safety and content filters before being delivered to the user.
 
 \subsection{Post-Deployment: Monitoring and Improvement}
 
@@ -83,7 +83,7 @@ Based on the taxonomy described above, three methods were selected for this stud
 
 Trust is a multidimensional construct that has been studied across philosophy, cognitive science, and human-computer interaction. At its core, trust involves a willingness to accept vulnerability based on positive expectations about another agent's behavior \cite{jones_concept_2002}. In the context of AI systems, trust can be understood as a user's disposition to rely on the system's outputs, shaped by beliefs about the system's competence, reliability, and intentions \cite{falcone_social_2001}.
 
-For the purposes of this study, the operationalization of trust draws on a framework that distinguishes four theoretical dimensions \cite{castelfranchi_trust_2001}\cite{falcone_social_2001}\cite{jones_concept_2002}: trust in the environment and the sociotechnical infrastructure in which the system operates, trust in the AI agent itself and any mediating agents involved in producing its outputs, trust in the system as an interaction partner, and trust in the system as an authoritative source of information. These dimensions together capture the layered nature of the trust relationship between a user and an LLM, spanning infrastructure-level reliability, agent-level competence and intention, and the social and epistemic weight a user assigns to the system's outputs. From this theoretical foundation, a five-item measurement instrument was derived for use in the empirical study, which is described in detail in Section~\ref{sec:trust_instrument}.
+For the purposes of this study, the operationalization of trust draws on a framework that distinguishes four theoretical dimensions \cite{castelfranchi_trust_2001, falcone_social_2001, jones_concept_2002}: trust in the environment and the sociotechnical infrastructure in which the system operates, trust in the AI agent itself and any mediating agents involved in producing its outputs, trust in the system as an interaction partner, and trust in the system as an authoritative source of information. These dimensions together capture the layered nature of the trust relationship between a user and an LLM, spanning infrastructure-level reliability, agent-level competence and intention, and the social and epistemic weight a user assigns to the system's outputs. From this theoretical foundation, a five-item measurement instrument was derived for use in the empirical study, which is described in detail in Section~\ref{sec:trust_instrument}.
 
 \subsection{Trust in the Context of LLMs}
 
@@ -100,7 +100,7 @@ As illustrated in Figure~\ref{fig:xaiTrustworthyness}, the taxonomy proposed by 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.5\linewidth]{img/trustworthynessExplanations.png}
-    \caption{Taxonomy of explanation techniques for trustworthiness aspects of LLMs. \cite{wu_usable_2025}}
+    \caption{Taxonomy of explanation techniques for trustworthiness aspects of LLMs~\cite{wu_usable_2025}}
     \label{fig:xaiTrustworthyness}
 \end{figure}
 
