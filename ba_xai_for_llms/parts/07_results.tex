@@ -47,21 +47,27 @@ security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.4\textwidth]{diagrams/survey_diagrams/know_llms.png}
-  \caption{Self-reported familiarity with generative AI tools.}
-  \label{fig:familiar}
+
+  \begin{subfigure}{0.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/survey_diagrams/know_llms.png}
+    \caption{Self-reported familiarity with generative AI tools}
+    \label{fig:familiar}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
+    \caption{Self-reported prior use of a generative AI tool at least once.}
+    \label{fig:used}
+  \end{subfigure}
 \end{figure}
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.45\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
-  \caption{Self-reported prior use of a generative AI tool at least once.}
-  \label{fig:used}
-\end{figure}
- 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/not_used_reasoning.png}
+  \makebox[\textwidth][c]{%
+  \includegraphics[width=0.85\textheight]{diagrams/survey_diagrams/not_used_reasoning.png}
+  }
   \caption{Reasons given by participants who had never used a large language model.}
   \label{fig:nonusers}
 \end{figure}
@@ -71,7 +77,9 @@ followed by Gemini (Google DeepMind, $n = 85$) and Microsoft Copilot ($n = 52$)(
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/llms_used.png}
+  \makebox[\textwidth][c]{%
+  \includegraphics[width=0.85\textheight]{diagrams/survey_diagrams/llms_used.png}
+  }
   \caption{LLMs tried by participants}
   \label{fig:llms_tried}
 \end{figure}
@@ -88,7 +96,7 @@ of a technically literate audience.
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{diagrams/survey_diagrams/llm_usage_per_employment_role.png}
+  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/llm_usage_per_employment_role.png}
   \caption{Number of LLM using participants per employment role.}
   \label{fig:role}
 \end{figure}
@@ -105,23 +113,23 @@ These demographic patterns introduce a potential \textbf{response bias}: the ove
   \caption{Number of LLM using participants per industry sector.}
   \label{fig:sector}
 \end{figure}
- 
-\subsection{Education Level}
 
+\subsection{Education Level}
+ 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.6\textwidth]{diagrams/survey_diagrams/llm_usage_per_education_level.png}
+  \includegraphics[width=0.8\textwidth]
+  {diagrams/survey_diagrams/llm_usage_per_education_level.png}
   \caption{LLM usage per education level (German qualification labels).}
   \label{fig:edu}
 \end{figure}
- 
+
 LLM usage was highest among participants with a \emph{Realschulabschluss} (intermediate
 secondary certificate, $n=54$) and among those holding an \emph{Abitur}
 (university-entrance qualification, $n=36$), followed by Bachelor's ($n=29$) and
 Master's degree holders ($n=28$) (Figure~\ref{fig:edu}). The relatively high LLM adoption
 at the secondary rather than university level is notable and may partly reflect the larger
 absolute population of secondary-level respondents in the panel.
- 
 
 \section{Trust Across Explanation Methods}
 \label{sec:trust}
@@ -138,7 +146,7 @@ exposing the model's reasoning process frequently caused participants to revise 
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.7\textwidth]{diagrams/survey_diagrams/trust_per_method_dist.png}
+  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/trust_per_method_dist.png}
   \caption{Distribution of trust levels per explanation method (all five trust aspects
            combined). Orange lines indicate medians; circles indicate outliers.}
   \label{fig:boxplot_method}
@@ -213,11 +221,45 @@ substantially moderate the effect of explanation type on trust.
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
+  \makebox[\textwidth][c]{%
+  \includegraphics[width=1.3\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
+  }
   \caption{Distribution of trust levels per trust aspect, segmented by the number of
            distinct LLMs previously used by each participant.}
   \label{fig:violin}
 \end{figure}
+
+\subsection{Change in Trust in LLMs After the Survey}
+
+Figure shows that of the 175 Participants, \textbf{18.9\%} reported that their trust in LLMs has changed after completing the survey.
+These ($n=33$) participants provided a range of open-ended responses. Their statements were translated from German into English and grouped into thematic categories.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{p{3.2cm} p{11cm}}
+\hline
+\textbf{Theme} & \textbf{Examples of Responses} \\
+\hline
+
+Increased Trust &
+Trust increased; more positive view; more trustworthy; may use it more often; improved perception. \\
+
+Decreased Trust &
+More skeptical; trust worsened; credibility decreased; less trust because it does not always provide facts; more fear or uncertainty. \\
+
+Conditional Trust &
+Useful tool, but not everything should be believed; still prefer own judgment; would verify or rewrite outputs. \\
+
+Greater Understanding &
+Better understanding of how LLMs work; clearer explanation of mechanisms; increased awareness; appears methodical. \\
+
+\hline
+\end{tabular}
+\caption{Summary of qualitative responses regarding changes in trust toward LLMs after the survey.}
+\end{table}
+
+Overall, responses indicate that the survey influenced participants in different ways: some reported increased trust due to improved understanding, others became more skeptical after learning about limitations such as hallucinations, while several participants expressed a more nuanced or conditional trust.
 
 \section{Perceived Helpfulness Rankings of XAI Methods}
 \label{sec:rankings}
@@ -228,237 +270,21 @@ rank them from most to least helpful. Figure~\ref{fig:ranking} shows the distrib
 \textbf{Chain-of-Thought} received the most ``Ranked \#1'' votes ($n = 45$), making it the most frequently preferred explanation type despite producing the \emph{lowest} mean trust scores. \textbf{Confidence scores} were ranked first by a comparable number of participants ($n = 43$) and accumulated the most second-place votes. \textbf{SHAP} was ranked first by the fewest participants ($n = 27$) and collected the most third-place votes, indicating it was perceived as the least helpful of the three explanations.
  
 \begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{diagrams/survey_diagrams/ranked_xai_methods.png}
-  \caption{Stacked bar chart of helpfulness rankings for the three XAI methods. Each
+    \centering
+    \includegraphics[width=0.7\linewidth]{diagrams/survey_diagrams/ranked_xai_methods.png}
+    \caption{Stacked bar chart of helpfulness rankings for the three XAI methods. Each
            participant ranked SHAP, CoT, and Confidence from most (1) to least (3)
            helpful.}
-  \label{fig:ranking}
+    \label{fig:ranking}
 \end{figure}
  
 The juxtaposition of low trust with high perceived helpfulness for CoT is noteworthy.
+
 It suggests that participants found CoT \emph{informative}, it exposed reasoning steps they could evaluate, but that this very transparency revealed uncertainty or errors that reduced their trust in the answers. This pattern aligns with the concept of \emph{appropriate calibration} in human-centered XAI: an explanation that lowers inflated trust may still be considered useful if it aids decision-making \cite{zhang_effect_2020}.
+
 CoT can therefore be characterized as a \emph{high-information, trust-calibrating} explanation type, whereas confidence scores appear to function as a more \emph{trust-preserving} but lower-information signal.
  
 SHAP's low helpfulness ranking, despite producing intermediate trust scores, is consistent with prior literature suggesting that feature-importance visualizations are poorly understood by non-technical audiences \cite{chromik_i_2021, kaur_interpreting_2020}. Given the demographic composition of this sample (dominated by administrative, healthcare, and retired participants) the relatively technical nature of SHAP values likely contributed to its unfavorable reception.
 
-\section{Chain-of-Thought as a Human-Centred Explanation Method}
-\label{sec:cot_research}
+todo weitere ergebnisse finden sich im anhang + full data in repo db
 
-As established in Chapter~\ref{ch:theory}, XAI methods for LLMs can be broadly divided into post-hoc, intrinsic, and human-centered categories, with the latter consistently outperforming more formal representations in comprehension and perceived usefulness for non-expert audiences \cite{chromik_i_2021}, a pattern confirmed by the low helpfulness ranking of SHAP in the present study. Within the human-centered
-category, Chain-of-Thought prompting has emerged as the dominant paradigm and is the method most widely deployed in production systems, with both ChatGPT and Claude surfacing step-by-step reasoning traces as a transparency mechanism.
-
-An alternative to full CoT is the \emph{top-k} or highlight-based self-explanation, in which the model identifies only the few most important words or phrases. \cite{huang_can_2023} find that such LLM-generated self-explanations perform on par with traditional post-hoc methods such as LIME and occlusion saliency on faithfulness metrics, while being far cheaper to produce, since they are generated alongside the prediction itself rather than requiring thousands of additional model queries.
-
-However, a fundamental limitation of CoT concerns its \emph{faithfulness}, that is, whether the stated reasoning accurately represents the process by which the model actually arrived at its answer. \cite{lanham_measuring_2023} propose a suite of tests for measuring CoT faithfulness by intervening on the stated reasoning and observing whether the model's final answer changes. Their findings reveal substantial variation across tasks: for some tasks the model changes its answer more than 60\% of
-the time when the chain of thought is truncated or corrupted; for others, the final answer is almost entirely unaffected, suggesting the reasoning is largely post-hoc. Crucially, they find that \textbf{faithfulness shows inverse scaling with model size}: on most tasks, larger and more capable models produce \emph{less} faithful reasoning than smaller ones, because more capable models can arrive at a confident answer without needing to rely on the generated trace.
-
-The faithfulness problem has a deeper dimension beyond post-hoc rationalisation. \cite{turpin_language_2023} demonstrate that CoT reasoning can be systematically biased by features of the input, such as the position of an answer option or the presence of a suggestive statement, while the stated reasoning provides a different explanation that does not reference the actual cause of the answer shift. The model therefore produces a plausible-sounding but misleading account of its own behavior.
-This concern is compounded by findings on dishonesty in alignment: \cite{huang_dishonesty_2024} show that LLMs trained with RLHF learn to produce responses whose internal representations score low on honesty metrics, particularly in the initial tokens of a refusal or safety response, suggesting that output text can diverge from the model's internal state even during normal operation.
-
-A related issue concerns the granularity of LLM-generated attributions. \cite{huang_can_2023} observe that when ChatGPT assigns importance scores to individual words, the values cluster on a small number of rounded levels rather than exhibiting the fine-grained variation produced by traditional methods. The authors interpret this as a consequence of alignment: the model produces saliency values
-plausible for a human to generate, even though a human would not be able to introspect at that level of granularity. This may constitute a faithfulness and understandability trade-off, where the explanation is more accessible but less precisely tied to the model's computation.
-
-These considerations together characterize CoT as a high-information, trust-calibrating explanation type that is, however, structurally prone to unfaithfulness, particularly in larger models and on tasks where the model can answer confidently without explicit reasoning. The paradox identified in the present data,
-namely that CoT is simultaneously the most preferred and the least trust-inducing explanation, may therefore reflect an empirically appropriate response by participants: transparency about a reasoning process that contains errors or inconsistencies reduces trust, even if that reasoning is not a faithful account of what the model actually did.
-
-\subsection{Technically-backed CoT Methods}
-
-More technically ambitious approaches attempt to ground explanations in the model's internal representations rather than its output text, operating directly on hidden embeddings at intermediate layers and in principle providing explanations causally connected to the model's computation. Such methods are not subject to the same faithfulness failures as CoT, but they are substantially less interpretable by non-expert users, limiting their deployment potential in the human-centered XAI contexts examined here.
-
-A notable example of such an approach is \textbf{SelfIE} (Self-Interpretation of Embeddings) \cite{chen_selfie_2024}, which enables LLMs to interpret their own hidden embeddings in natural language by leveraging their existing decoding capability. Rather than generating a separate post-hoc rationale, SelfIE injects a hidden embedding of interest into a secondary \emph{interpretation forward pass}, 
-prompting the model to summarize or repeat the information encoded at that layer. This produces open-world, free-text descriptions of internal states without requiring any additional training or data collection, and has been demonstrated on LLaMA-2-70B-Chat across tasks including harmful knowledge detection, prompt injection analysis, ethical reasoning, and hallucination tracing. Because the explanations are derived from the model's actual intermediate representations rather than its output tokens, they are structurally more faithful than CoT; a treatment-effect relevancy score further identifies which parts of a generated interpretation are causally tied to the interpreted embedding rather than produced by auto-regression. 
-
-SelfIE's interpretations additionally open avenues for targeted model control: \emph{Supervised Control} edits a single layer's parameters to redirect the model's internal concept representation, while \emph{Reinforcement Control} extends RLHF to the embedding level, allowing harmful knowledge to be erased without supervised targets. In one reported experiment, Reinforcement Control reduced the success rate of prompt-injection attacks eliciting harmful responses from 89\% to 4.4\%, while preserving 95.85\% of the model's factual accuracy. Despite these strengths, SelfIE requires white-box access to model weights and activations, operates at a layer-by-layer granularity that is opaque to non-technical users, and has so far been evaluated primarily on a single large open-source model family (LLaMA-2-Chat), leaving its generalisability across architectures and deployment contexts an open question.
-
-An alternative strand of research has explored \textbf{neural template} generation as a human-interpretable explanation mechanism for AI systems. \cite{li_generate_2020} propose NETE (Neural Template Explanations), a framework originally developed for explainable recommender systems that bridges template-based and free-form natural language generation. Rather than relying on manually predefined sentence templates, which constrain expressiveness and cannot adapt to item-specific features, NETE learns \emph{neural templates} from data via a novel Gated Fusion Recurrent Unit (GFRU). The GFRU runs two parallel GRU decoders: a \emph{context GRU} that generates the surrounding sentence structure, and a \emph{feature GRU} that inserts a specified item feature at the appropriate position; a gated fusion unit then combines their outputs at each decoding step. This architecture allows the system to generate targeted, controllable explanations such as \emph{``The ramen was delicious''} when given the feature \emph{ramen}, closely matching ground-truth user reviews. Empirically, NETE produces substantially more unique and feature-diverse explanations than prior neural generation baselines (Att2Seq, NRT), with improvements exceeding 100\% on BLEU-4 and ROUGE-2 n-gram metrics across hotel, restaurant, and movie review datasets.
-
-However, the neural template paradigm carries several limitations that constrain its transferability to general-purpose LLM explainability. First, NETE requires structured training data in which each user-item interaction is paired with both a ground-truth feature label and a reference explanation sentence, a requirement that is not met in most LLM deployment settings. Second, the GFRU architecture is task-specific: it is designed to slot a single feature word into a recommendation-oriented sentence template, and does not straightforwardly generalise to the open-ended reasoning traces or multi-step factual answers that characterise LLM outputs. Third, like CoT, the generated text remains an output-level artefact and carries no guarantee of faithfulness to the model's internal computation; the template constrains surface form but not the accuracy of the underlying reasoning.
-
-The findings of this study therefore point towards a design space that remains substantially unoccupied: explanation methods grounded enough in model internals to be reliable, as SelfIE aims to be, yet rendered in forms accessible to lay users, as neural templates and CoT attempt to achieve. A promising direction, explored in the prototype described in the following section, is to combine CoT's narrative transparency with a complementary signal such as a confidence score, allowing users to calibrate their reliance on the stated reasoning without requiring any technical literacy about model architecture.
-
-\section{Prototype Implementation}
-\label{sec:prototype}
- 
-Building on the findings of the user study, a prototype was developed that combines
-Chain-of-Thought reasoning with per-step confidence scores (CoT\,+\,CONF). This pairing
-is motivated by the complementary properties of the two methods identified in the study:
-CoT functions as a high-information, trust-calibrating explanation that surfaces reasoning
-steps the user can evaluate, while confidence scores provide a lightweight signal that
-allows users to assess the reliability of each step without requiring technical knowledge
-of model architecture. Together, they target the central tension identified in the results:
-making the model's reasoning transparent while keeping it simple to understand for lay-users.
- 
-\subsection{Design Rationale}
- 
-The prototype moves away from a forced JSON output format used in the survey app~\ref{sec:stimulusGeneration} of CoT extraction, which proved brittle and difficult to parse consistently. Instead, steps are structured as a simpler, delimited sequence, which is both easier for the model to produce reliably and easier to parse programmatically. Each reasoning step is assigned an
-average confidence score, derived from the token-level log-probabilities returned by the
-underlying language model. Steps whose mean confidence falls below a user-configurable
-threshold are automatically regenerated; users may also trigger manual regeneration of
-any individual step. In the frontend, steps are color-coded on a red-to-green scale
-reflecting their confidence, giving users an immediate visual summary of where the model
-is uncertain.
- 
-\subsection{Architecture Overview}
- 
-The application follows a modular FastAPI architecture. Source code and setup instructions
-are available in the project repository: \url{https://github.com/rieselin/BA_XAI_for_LLMs}
-The top-level directory structure is as follows:
- 
-\begin{lstlisting}
-src/
-  api/
-    routes.py              # FastAPI endpoints
-  core/
-    model_loader.py        # get_model()
-    prompt_builder.py      # all prompt templates
-    generation.py          # unified generation logic
-  reasoning/
-    cot.py                 # CoT extraction/parsing
-    confidence.py          # token probability logic
-    pipeline.py            # orchestrator
-  schemas/
-    request.py             # Request models
-    response.py            # Response models
-  index.html               # Frontend
-  main.py                  # FastAPI app setup
-\end{lstlisting}
- 
-\subsection{Class Structure}
- 
-The system's data model and processing classes are described below. Figure~\ref{fig:class_classes}
-shows the schema and request/response classes, while Figure~\ref{fig:class_methods} shows
-the processing classes together with their methods.
- 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.85\textwidth]{diagrams/class_diagram_classes.png}
-  \caption{Class diagram showing the schema and data-model classes}
-  \label{fig:class_classes}
-\end{figure}
- 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{diagrams/class_diagram_methods.png}
-  \caption{Class diagram showing the processing classes with their methods.}
-  \label{fig:class_methods}
-\end{figure}
- 
-\subsubsection{Data and Schema Classes}
-
-The request pipeline begins with a \localtt{ReasoningRequest}, which carries the user's
-input string, a confidence threshold (float), and a maximum number of regeneration
-attempts. A \localtt{ReasoningRequest} is extended by \localtt{RegenerationRequest}, which
-additionally holds the list of reasoning steps, the token-level confidence data for each
-step (\localtt{List[TokenConfidence]}), the regeneration status of each step
-(\localtt{List[Regeneration-Type]}), and the aggregated per-step confidence objects
-(\localtt{List[StepConfidence]}).
- 
-Two specialisations of \localtt{RegenerationRequest} exist. A
-\localtt{StepRegenerationRequest} is used when a single step must be re-generated: it adds
-the index of the step to regenerate, the current final answer, the regeneration type of
-the final answer, and its confidence. A \localtt{FinalRegenerationRequest} carries the
-same fields minus the step index, and is used when only the concluding answer requires
-regeneration.
- 
-The \localtt{ReasoningResponse} returned to the client contains the final answer string,
-the list of reasoning steps, per-step confidence objects, the confidence of the final
-answer (\localtt{StepConfidence}), and the regeneration status of every step and of the
-final answer.
- 
-Two auxiliary value types support the confidence representation. A
-\localtt{TokenConfidence} pairs a decoded token string with its probability (float). A
-\localtt{StepConfidence} groups an entire reasoning step with its token list and the
-mean confidence across those tokens. Finally, \localtt{RegenerationType} is an enumeration
-with three values: \localtt{NOT\_REGENERATED}, \localtt{MANUAL}, and \localtt{AUTO},
-recording how each step was produced.
- 
-\subsubsection{Processing Classes}
- 
-The \localtt{model\_loader} module maintains a singleton model and tokenizer
-(\localtt{\_model}, \localtt{\_tokenizer}) together with an async lock (\localtt{\_model\_Lock})
-and exposes a single \localtt{get\_model()} method that returns both objects.
- 
-Prompt construction is centralised in \localtt{prompt\_builder}, which provides three
-template methods: \localtt{build\_reasoning\_prompt()} for the initial CoT query,
-\localtt{build\_step\_regen\_prompt()} for single-step regeneration, and
-\localtt{build\_final\_regen\_prompt()} for regenerating the concluding answer.
- 
-The \localtt{generation} class wraps the low-level inference call in a single method,
-\localtt{generate\_with\_scores()}, which returns the raw output tokens together with the
-tokenizer, making log-probability extraction straightforward for downstream modules.
- 
-Confidence computation is handled by two methods on the \localtt{confidence} class.
-\localtt{compute\_token\_confidence()} accepts the raw output and tokenizer and returns a
-parallel list of decoded token strings and their probabilities. \localtt{map\_step\_confidence()}
-maps these token-level values onto the step boundaries identified by the CoT parser,
-returning a list of \localtt{StepConfidence} objects.
- 
-The \localtt{cot} module exposes a single method, \localtt{extract\_cot()}, which parses
-the model output into a list of step strings and the final answer string.
- 
-Endpoint routing is provided by \localtt{routes} (registered as an
-\localtt{APIRouter}), which exposes four HTTP handlers: \localtt{reason()} for the primary
-inference request, \localtt{regen\_step()} and \localtt{regen\_final()} for targeted
-regeneration, \localtt{health()} for a liveness probe, and \localtt{serve\_frontend()} to
-serve the single-page HTML interface.
- 
-The \localtt{pipeline} class is the central orchestrator. Its public entry point,
-\localtt{run\_reasoning\_pipeline()}, coordinates all other modules and calls the two
-regeneration sub-pipelines internally whenever automatic regeneration is triggered.
-\localtt{run\_step\_regen\_pipeline()} and \localtt{run\_final\_regen\_pipeline()} therefore
-serve a dual role: they are invoked by \localtt{run\_reasoning\_pipeline()} during the
-automatic threshold check, and are also called directly by the \localtt{regen\_step()} and
-\localtt{regen\_final()} route handlers when the user requests manual regeneration from the
-frontend. Two private utilities, \localtt{\_decode\_generation()} and
-\localtt{\_tokens\_to\_objects()}, handle token decoding and the conversion of raw
-probability arrays into \localtt{TokenConfidence} objects respectively. All three pipeline
-methods return a \localtt{ReasoningResponse}.
- 
-The entry point \localtt{main.py} instantiates the FastAPI \localtt{app} and registers a
-\localtt{lifespan()} context manager that triggers the asynchronous model load on startup.
- 
-\subsection{Application Flow}
- 
-On startup, the application executes an asynchronous \localtt{get\_model()} call and waits
-until the model and tokenizer are resident in memory before accepting requests. The
-primary inference route (\localtt{/reason}) accepts a \localtt{ReasoningRequest} and
-delegates to \localtt{run\_reasoning\_pipeline()}, which proceeds as follows:
- 
-\begin{enumerate}
-  \item \textbf{Prompt construction.} \localtt{build\_reasoning\_prompt()} formats the user
-        query into a CoT prompt.
-  \item \textbf{Generation.} \localtt{generate\_with\_scores()} calls the model and returns
-        output tokens with log-probabilities.
-  \item \textbf{Decoding.} \localtt{\_decode\_generation()} converts raw token ids to
-        strings; \localtt{compute\_token\_confidence()} extracts per-token probabilities.
-  \item \textbf{Parsing.} \localtt{extract\_cot()} segments the decoded output into
-        individual reasoning steps and the final answer.
-  \item \textbf{Confidence mapping.} \localtt{map\_step\_confidence()} aligns token
-        probabilities with step boundaries to produce \localtt{StepConfidence} objects.
-  \item \textbf{Threshold check.} Any step whose mean confidence falls below the
-        user-supplied threshold is queued for automatic regeneration. Steps above the
-        threshold are retained as-is.
-  \item \textbf{Regeneration (if required).} Steps flagged in the previous phase are
-        passed individually to \localtt{run\_step\_regen\_pipeline()}, which calls
-        \localtt{build\_step\_regen\_prompt()}, reruns generation and confidence mapping,
-        and marks the step as \localtt{AUTO}. If the final answer is below the threshold,
-        \localtt{run\_final\_regen\_pipeline()} is invoked analogously using
-        \localtt{build\_final\_regen\_prompt()}.
-  \item \textbf{Response assembly.} A \localtt{ReasoningResponse} is constructed from the
-        (potentially updated) steps, confidence objects, and regeneration status flags, and
-        returned to the client.
-\end{enumerate}
- 
-The same sub-pipelines are also reachable directly from the frontend: when the user
-manually requests regeneration of a step or of the final answer via a call to
-\localtt{/reason/step} or \localtt{/reason/final} the route handler calls
-\localtt{run\_step\_regen\_pipeline()} or \localtt{run\_final\_regen\_pipeline()}
-respectively, following exactly the same logic as the automatic path but recording the
-regeneration type as \localtt{MANUAL} rather than \localtt{AUTO}. The frontend displays
-each step with a color gradient from red
-(low confidence) to green (high confidence), and exposes the regeneration threshold as a
-configurable input, allowing users to adjust the sensitivity of automatic regeneration to
-their needs.
- 
-For full setup instructions of both this prototype and the survey demo app see the project \href{https://github.com/rieselin/BA_XAI_for_LLMs/blob/main/README.md}{README}.
