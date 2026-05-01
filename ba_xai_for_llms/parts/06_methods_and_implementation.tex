@@ -1,63 +1,114 @@
 \section{Overview of the Methodology}
 \label{sec:methodologyOverview}
 
-This chapter describes the research design and implementation steps taken to empirically evaluate the impact of selected Explainable Artificial Intelligence (XAI) methods on user trust in Large Language Model (LLM) outputs. As illustrated in Figure~\ref{fig:methodology_overview}, the overall methodology is organized into five sequential stages: the selection of an appropriate LLM, the selection and implementation of XAI methods, the design and execution of a user survey, the evaluation of the collected data, and the development of a prototype implementation. The right-hand column of the figure indicates that each stage is accompanied by documentation of the reasoning behind the choices made. The final stage synthesizes all findings into a results summary. The following sections describe each stage in detail.
-
-\begin{figure}[htbp]
+\begin{wrapfigure}{R}{0.6\textwidth}
     \centering
-    \includegraphics[width=0.68\linewidth]{diagrams/BA_methods.drawio.png}
+    \vspace{-\baselineskip}
+    \includegraphics[height=0.86\textheight, width=0.58\textwidth, keepaspectratio]{diagrams/BA_methods.drawio.png}
     \caption{Visual Methodology Diagram}
+    \vspace{-1.4cm}
     \label{fig:methodology_overview}
-\end{figure}
+\end{wrapfigure}
+
+This chapter describes the research design and implementation steps taken to empirically evaluate the impact of selected Explainable Artificial Intelligence (XAI) methods on user trust in Large Language Model (LLM) outputs. 
+
+As illustrated in Figure~\ref{fig:methodology_overview}, the overall methodology is organized into five sequential stages: the selection of an appropriate LLM, the selection and implementation of XAI methods, the design and execution of a user survey, the evaluation of the collected data, and the development of a prototype implementation. The right-hand column of the figure indicates that each stage is accompanied by documentation of the reasoning behind the choices made. The final stage synthesizes all findings into a results summary. 
+
+The following sections describe each stage in detail.
 
 \section{Model and Method Selection}
 \label{sec:modelandmethod}
 
 \subsection{LLM Selection}
 
-The first step in operationalizing this study was the selection of a suitable LLM to serve as the underlying system whose outputs participants would evaluate. Three criteria guided this decision. First, the model needed to be sufficiently well-known that survey participants might plausibly have encountered it before, which helps ensure that responses to the model's outputs are not confounded by unfamiliarity with the technology itself. Second, the model had to be open-source, or at minimum freely available for research purposes, in order to allow full transparency and reproducibility of the experimental setup. Third, pre-trained weights needed to be publicly accessible, as fine-tuning or training from scratch was outside the scope of this work.
+The first step in operationalizing this study was the selection of a suitable LLM to serve as the underlying system whose outputs participants would evaluate. 
 
-Llama~2 and its successor Llama~3, developed by Meta AI, satisfy all three of these requirements. Both models are released under open licenses that permit research use, their weights and training code are publicly available, and they have achieved sufficient public prominence to be recognized by a broad audience. Furthermore, Llama models support the modification of the system prompt, the instruction passed to the model prior to a user query that shapes its behavior and response style, which is necessary for implementing certain XAI approaches in this study. The models also exist in versions trained with Reinforcement Learning from Human Feedback (RLHF), which improves instruction-following and output quality. For these reasons, Llama 3.1\cite{noauthor_llama_nodate} was selected as the model for this study.
+Three criteria guided this decision. First, the model needed to be sufficiently well-known that survey participants might plausibly have encountered it before, which helps ensure that responses to the model's outputs are not confounded by unfamiliarity with the technology itself. Second, the model had to be open-source, or at minimum freely available for research purposes, in order to allow full transparency and reproducibility of the experimental setup. Third, pre-trained weights needed to be publicly accessible, as fine-tuning or training from scratch was outside the scope of this work.
+
+Llama~2 and its successor Llama~3, developed by Meta AI, satisfy all three of these requirements. Both models are released under open licenses that permit research use, their weights and training code are publicly available, and they have achieved sufficient public prominence to be recognized by a broad audience. Furthermore, Llama models support the modification of the system prompt, the instruction passed to the model prior to a user query that shapes its behavior and response style, which is necessary for implementing certain XAI approaches in this study. 
+
+The models also exist in versions trained with Reinforcement Learning from Human Feedback (RLHF), which improves instruction-following and output quality. For these reasons, Llama 3.1\cite{noauthor_llama_nodate} was selected as the model for this study.
 
 \subsection{XAI Method Selection}
+The selection of XAI methods was guided by three criteria applied jointly: coverage of distinct explanation paradigms, feasibility of implementation within the constraints of this study, and accessibility to lay participants without a technical background. Given the particular characteristics of LLMs, which operate on natural language rather than structured tabular data, not all classical XAI approaches are straightforwardly applicable, and the selection had to account for this.
 
-The selection of XAI methods was guided by the goal of covering a representative range of explanation categories as they apply to LLMs, while at the same time ensuring that each method is implementable within the constraints of the study and comprehensible to lay participants without a technical background. Given the particular characteristics of LLMs, which operate on natural language rather than structured tabular data, not all classical XAI approaches are straightforwardly applicable, and the selection had to account for this.
+Figure~\ref{fig:xai_categories} illustrates the taxonomy of XAI methods described in Section~\ref{sec:xai_categories}. Applying the three criteria to each category yields the following rationale for inclusion and exclusion.
 
-Figure~\ref{fig:xai_categories} illustrates the taxonomy of XAI methods relevant to this context. Based on this categorization, three methods were selected: SHAP-based feature attribution combined with counterfactual reasoning, Chain-of-Thought (CoT) prompting, and confidence indication. As shown in Figure~\ref{fig:methodology_overview}, each of the three methods was implemented independently. Together, these methods span distinct explanation paradigms, covering post-hoc attribution, process transparency, and uncertainty quantification respectively, while remaining accessible to a non-expert audience.
+\textbf{Probing and mechanistic interpretability} methods, including SelfIE \cite{chen_selfie_2024}, were excluded despite their stronger faithfulness guarantees because they require white-box access to model weights and activations and produce layer-level outputs that are opaque to non-technical audiences. They are technically ambitious precisely in ways that make them unsuitable for a study oriented toward lay users.
 
-\paragraph{SHAP and Counterfactual Reasoning} 
-SHAP (SHapley Additive exPlanations)\cite{lundberg_unified_2017} is a post-hoc attribution method grounded in cooperative game theory that assigns each input token a score reflecting its contribution to the model output. In the context of this study, SHAP scores are presented visually to indicate which parts of a prompt most strongly influenced the model's response. This is complemented by counterfactual reasoning, which illustrates how a change in the input would have altered the output, thereby offering an intuitive causal framing. The implementation of the SHAP and counterfactual reasoning method is described under~\ref{sec:shap} and a sample image of the output can be seen in the survey in Appendix~\ref{appendix:survey}.
+\textbf{Attention-based interpretability} was excluded because the relationship between attention weights and model behavior is contested in the literature, and presenting raw attention maps to lay participants would require significant additional interface design without a clear interpretive benefit.
 
-\paragraph{Chain-of-Thought (CoT)} 
-Chain-of-Thought prompting elicits intermediate reasoning steps from the model by instructing it to explain its thinking before arriving at a final answer. Unlike post-hoc explanations, CoT is an intrinsic method in which the explanation is generated as part of the model's output itself. This makes it particularly easy to present to users in a natural, readable format. The implementation of the CoT method is described under~\ref{sec:cot} and a sample image of the output can be seen in the survey in Appendix~\ref{appendix:survey}.
+\textbf{Human-AI Collaboration frameworks} such as HITL and HOTL represent a system-level design philosophy rather than a discrete, implementable explanation method, and therefore fall outside the scope of what can be operationalized as a survey stimulus.
 
-\paragraph{Confidence Indication} 
-Confidence scores provide an estimate of the model's certainty in its output, either derived from token-level probability distributions or expressed through natural language hedging. This method represents a form of uncertainty quantification and communicates the model's epistemic state to the user in a direct and concise way. The implementation of the confidence score method is described under~\ref{sec:conf} and a sample image of the output can be seen in the survey in Appendix~\ref{appendix:survey}.
+\textbf{Gradient-based} and \textbf{decomposition-based} post-hoc methods such as SmoothGrad \cite{smilkov_smoothgrad_2017} and Layer-wise Relevance Propagation \cite{binder_layer-wise_2016} require access to the model's internal gradient computations and are not straightforwardly applicable in a black-box or quantized inference setting. They were therefore excluded in favor of the model-agnostic SHAP approximation.
+
+The three methods that were selected each satisfy all three criteria and together span non-overlapping explanation paradigms: post-hoc attribution, process transparency, and uncertainty quantification. Based on this categorization, the selected methods are: SHAP-based feature attribution combined with counterfactual reasoning, Chain-of-Thought (CoT) prompting, and confidence indication. As shown in Figure~\ref{fig:methodology_overview}, each method was implemented independently to allow their effects on user trust to be assessed separately.
+
+\paragraph{SHAP and Counterfactual Reasoning}
+SHAP (SHapley Additive exPlanations) \cite{lundberg_unified_2017} was selected as the representative of the post-hoc attribution category. Its grounding in cooperative game theory gives it a principled consistency guarantee that is absent from simpler perturbation heuristics, and its KernelExplainer variant is model-agnostic, making it applicable to a quantized open-source LLM without requiring gradient access. 
+
+Among the post-hoc sub-families described in Section~\ref{sec:xai_categories}, surrogate-based and decomposition-based methods were considered less suitable: surrogate models introduce an additional layer of approximation whose fidelity is difficult to communicate to lay users, while decomposition methods such as LRP depend on the specific network architecture and are not straightforwardly applicable to transformer-based LLMs. 
+
+SHAP scores are presented visually to indicate which parts of a prompt most strongly influenced the model's response. This is complemented by counterfactual reasoning, which illustrates how a change in the input would have altered the output, thereby offering an intuitive causal framing that bridges the gap between the technical attribution scores and a user-interpretable account of model behavior. The implementation is described in Section~\ref{sec:shap} and a sample output is reproduced in Appendix~\ref{appendix:survey}.
+
+\paragraph{Chain-of-Thought (CoT)}
+CoT prompting was selected as the representative of the intrinsic interpretability category and specifically of the process-transparency sub-class. It was preferred over attention-based interpretability because attention weights are both technically contested as proxies for importance and visually difficult to render in a way that is meaningful to non-expert users. 
+
+CoT requires no post-hoc analysis, generates explanations in natural language as part of the model's own output, and is already deployed as a transparency mechanism in mainstream production systems including ChatGPT \cite{noauthor_chatgpt_nodate} and Claude \cite{noauthor_claude_nodate}, which means participants are more likely to encounter it in their everyday use of LLMs. 
+
+Its primary limitation is faithfulness \cite{lanham_measuring_2023}, but this limitation is itself relevant to the research question of whether visible reasoning affects user trust, and is discussed in Chapter~\ref{ch:prototype}. The implementation is described in Section~\ref{sec:cot} and a sample output is reproduced in Appendix~\ref{appendix:survey}.
+
+\paragraph{Confidence Indication}
+Confidence scores were selected as the representative of the uncertainty quantification dimension. This category has no direct equivalent in the post-hoc or intrinsic taxonomies: it does not explain how an answer was reached, but communicates how certain the model is that the answer is correct. 
+
+Including it allows the study to examine whether explicit uncertainty communication affects user trust independently of any explanatory content, a question of particular practical relevance given that LLMs characteristically produce fluent but potentially overconfident outputs \cite{tao_when_2024}. 
+
+Confidence scores are derivable directly from the token-level log-probability distributions produced during inference, making them cheap to compute and straightforward to implement without any additional model calls. The implementation is described in Section~\ref{sec:conf} and a sample output is reproduced in Appendix~\ref{appendix:survey}.
 
 \section{Survey Stimulus Generation}
 \label{sec:stimulusGeneration}
 
 The explanation outputs shown to survey participants were generated using a locally hosted web application consisting of a Python FastAPI backend and a single-page HTML/JavaScript frontend. The architecture is illustrated in Figures~\ref{fig:prototype_frontend} and~\ref{fig:prototype_backend}, which show the frontend interaction flow and the backend inference pipeline respectively.
 
-The qpps primary purpose was to generate the explanation outputs shown to survey participants, and to serve as a demonstrable artefact of the three XAI methods studied. The tool therefore served a dual role: as a development environment for refining the visual presentation of each explanation method, and as the source of the stimuli presented to participants. A full reproduction of the survey including the embedded screenshots is provided in Appendix~\ref{appendix:survey}.
+The apps primary purpose was to generate the explanation outputs shown to survey participants, and to serve as a demonstrable artefact of the three XAI methods studied. The tool therefore served a dual role: as a development environment for refining the visual presentation of each explanation method, and as the source of the stimuli presented to participants. A full reproduction of the survey including the embedded screenshots is provided in Appendix~\ref{appendix:survey}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.3\linewidth]{img/prototype_architecture_frontend.drawio.png}
-    \caption{Frontend Architecture}
-    \label{fig:prototype_frontend}
-\end{figure}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\linewidth]{img/prototype_architecture.drawio.png}
+    \makebox[\textwidth][c]{%
+    \includegraphics[width=1.\linewidth]{img/prototype_architecture.drawio.png}
+    }
     \caption{Backend Architecture}
     \label{fig:prototype_backend}
 \end{figure}
 
 \subsection{System Architecture}
 
-The backend exposes three POST endpoints: \texttt{/explain/cot}, \texttt{/explain/shap}, and \texttt{/explain/confidence} alongside a \texttt{/health} check used by the frontend to indicate server status. The selected model, Llama~3.1~8B, was loaded in 4-bit quantisation via the Unsloth library \cite{noauthor_llama_nodate}, which reduced GPU memory requirements sufficiently to run the full application on a consumer-grade GPU. A thread-safe lazy loader ensured the model was initialized only once and reused across requests.
+\label{sec:system_architecture}
+
+\begin{wrapfigure}{r}{0.3\textwidth}
+    \centering
+    \vspace{-\baselineskip}
+    \includegraphics[width=1\linewidth]{img/prototype_architecture_frontend.drawio.png}
+    \caption{Frontend Architecture}
+    \vspace{-.4cm}
+    \label{fig:prototype_frontend}
+\end{wrapfigure}
+
+The survey stimulus application followed a two-tier architecture consisting of a Python FastAPI backend and a single-page HTML/JavaScript frontend, illustrated in Figures~\ref{fig:prototype_frontend} and~\ref{fig:prototype_backend} respectively.
+
+The frontend, shown in Figure~\ref{fig:prototype_frontend}, handled all user interaction through a single page. After the user selected an explanation method and filled in the prompt fields, pressing the Run button triggered input validation (checking for non-empty input within the permitted length) before dispatching a POST request to the corresponding backend endpoint. A loading indicator was displayed during inference, and the returned results were rendered directly in the page once the response arrived. The static screenshots embedded in the Tivian survey were captured from this interface.
+
+The backend, shown in Figure~\ref{fig:prototype_backend}, exposed three POST endpoints: \localtt{/explain/cot}, \localtt{/explain/shap}, and \localtt{/explain/confidence}, alongside a \localtt{/health} check used by the frontend to indicate server status. Each endpoint implemented a distinct inference pipeline tailored to its explanation method. 
+
+The SHAP endpoint ran a KernelExplainer over the prompt, computed signed per-word attribution scores, generated Matplotlib bar charts server-side and returned them as base64-encoded PNG images, and issued a second inference call to produce a plain-language counter-analysis. 
+
+The CoT endpoint built a fixed system prompt instructing the model to output a strictly structured JSON object, applied a JSON repair utility to the raw output, and returned a list of reasoning steps together with a final answer field. 
+
+The confidence endpoint enabled the \localtt{output\_scores=True} flag in the Hugging Face generation API, extracted the softmax probability of each chosen token, and returned the full sequence of token-probability pairs alongside aggregate statistics.
+
+The selected model, Llama~3.1~8B, was loaded in 4-bit quantisation via the Unsloth library \cite{noauthor_llama_nodate}, which reduced GPU memory requirements sufficiently to run the full application on a consumer-grade GPU. A thread-safe lazy loader ensured the model was initialized only once and reused across requests.
+
+This architecture was designed primarily to generate the survey stimuli and serve as a demonstrable artefact of the three XAI methods under study. As such, it prioritized simplicity and rapid iteration over modularity or robustness. The limitations that emerged from this design, in particular the brittleness of the JSON-based CoT extraction and the monolithic endpoint structure, informed the architectural decisions made in the prototype described in Chapter~\ref{ch:prototype}, where the system was redesigned with a modular pipeline, a more reliable step-delimited CoT parser, and per-step confidence integration.
 
 \subsection{Chain-of-Thought Implementation}
 \label{sec:cot}
@@ -67,7 +118,7 @@ The Chain-of-Thought endpoint prompted the model to produce a strictly structure
 \subsection{SHAP Attribution Implementation}
 \label{sec:shap}
 
-The SHAP endpoint used a base (non-instruct) variant of the model to first generate a reference response for the given prompt. A KernelExplainer from the SHAP library \cite{lundberg_unified_2017} was then applied to the full prompt, treating each whitespace-delimited word as a feature. For each sample, the explainer constructed a masked version of the prompt by replacing absent words with the token \texttt{[MASKED]}, ran a forward pass, and measured the change in the log-probability of the reference response. After all samples were collected, each word received a signed SHAP value indicating whether its presence promoted or suppressed the response.
+The SHAP endpoint used a base (non-instruct) variant of the model to first generate a reference response for the given prompt. A KernelExplainer from the SHAP library \cite{lundberg_unified_2017} was then applied to the full prompt, treating each whitespace-delimited word as a feature. For each sample, the explainer constructed a masked version of the prompt by replacing absent words with the token \localtt{[MASKED]}, ran a forward pass, and measured the change in the log-probability of the reference response. After all samples were collected, each word received a signed SHAP value indicating whether its presence promoted or suppressed the response.
 
 It should be noted that KernelExplainer computes a model-agnostic approximation of Shapley values rather than exact values. Exact computation would require evaluating all possible feature subsets, which is combinatorially intractable for prompts of any practical length. The approximation quality is controlled by the number of masking samples, a trade-off discussed in Section~\ref{sec:empUserStudy}. This is a deliberate methodological choice that prioritizes feasibility over exactness, and is standard practice when applying SHAP to high-dimensional or black-box models.
 
@@ -76,7 +127,7 @@ Words were annotated by section (system prompt, instruction, or input) and rende
 \subsection{Confidence Indication Implementation}
 \label{sec:conf}
 
-The confidence endpoint generated a response using the instruct model with the \texttt{output \_scores=True} flag enabled in the Hugging Face generation API, which returns the raw logit distributions for each generation step. For each generated token, the softmax probability of the chosen token was extracted as its confidence score. The response was returned as a list of token–probability pairs alongside aggregate statistics (mean and minimum confidence).
+The confidence endpoint generated a response using the instruct model with the \localtt{output \_scores=True} flag enabled in the Hugging Face generation API, which returns the raw logit distributions for each generation step. For each generated token, the softmax probability of the chosen token was extracted as its confidence score. The response was returned as a list of token–probability pairs alongside aggregate statistics (mean and minimum confidence).
 
 In the frontend, each token was rendered inline with a background color reflecting its confidence tier: green for high confidence (above 75\%), amber for medium (45–75\%), and red for low confidence (below 45\%). An animated ring indicator summarized the mean confidence across the full response.
 
@@ -89,34 +140,87 @@ The target sample size was constrained primarily by budget. In terms of composit
 
 \subsection{Survey Design}
 
-Figure~\ref{fig:survey_flow} provides a complete overview of the survey flow. The survey is structured in three main phases: a background and screening phase, a core research phase~\ref{fig:main_research_flow} in which trust is measured before and after exposure to XAI methods, and a closing reflection. Each phase is described in detail below.
+Figure~\ref{fig:survey_flow} provides a complete overview of the survey flow. The survey is structured in two main phases: a background and screening phase~\ref{sec:background_screening} and a core research phase~\ref{sec:core_research} in which trust is measured before and after exposure to XAI methods. Each phase is described in detail below.
+
+The complete survey instrument, including all questions and branching logic, is reproduced in Appendix~\ref{appendix:survey}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.49\linewidth]{img/survey_flow.drawio.png}
+    \includegraphics[width=0.518\linewidth]{img/survey_flow.drawio.png}
     \caption{Survey Flow}
     \label{fig:survey_flow}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.42\linewidth]{img/main_xai_research.drawio.png}
+    \begin{tikzpicture}
+        \node[anchor=south west, inner sep=0] (image) at (0,0) {
+            \includegraphics[width=0.65\linewidth]{img/main_xai_research.drawio.png}
+        };
+        \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+            \node[anchor=south west, inner sep=0pt] at (0.74, 0.93) {%
+                \hyperref[sec:cat_and_llm_outputs]{%
+                    \phantom{\rule{0.15\linewidth}{0.03\linewidth}}
+                }%
+            };
+        \end{scope}
+        \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+            \node[anchor=south west, inner sep=0pt] at (0.74, 0.765) {%
+                \hyperref[sec:random_xai_group]{%
+                    \phantom{\rule{0.15\linewidth}{0.04\linewidth}}
+                }%
+            };
+        \end{scope}
+        \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+            \node[anchor=south west, inner sep=0pt] at (0.74, 0.515) {%
+                \hyperref[sec:trust_instrument]{%
+                    \phantom{\rule{0.15\linewidth}{0.04\linewidth}}
+                }%
+            };
+        \end{scope}
+        \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+            \node[anchor=south west, inner sep=0pt] at (0.74, 0.275) {%
+                \hyperref[sec:llm_explanations]{%
+                    \phantom{\rule{0.15\linewidth}{0.04\linewidth}}
+                }%
+            };
+        \end{scope}
+        \begin{scope}[x={(image.south east)}, y={(image.north west)}]
+            \node[anchor=south west, inner sep=0pt] at (0.74, 0.035) {%
+                \hyperref[sec:reflection_and_close]{%
+                    \phantom{\rule{0.15\linewidth}{0.04\linewidth}}
+                }%
+            };
+        \end{scope}
+    \end{tikzpicture}
     \caption{Survey Flow (Main Trust Research Questions)}
     \label{fig:main_research_flow}
 \end{figure}
 
-The complete survey instrument, including all questions and branching logic, is reproduced in Appendix~\ref{appendix:survey}.
-\subsubsection{Background and Screening}
+\subsubsection{Background and Screening Phase}
+\label{sec:background_screening}
+
+Figure~\ref{fig:survey_flow} illustrates the background and screening phase flow, including the branching logic for participant exclusion.
 
 The survey opens by collecting basic demographic information, including age group, gender, job title and occupational group, and industry. This is followed by two branching filter questions. Participants who indicate that they are not aware of AI or LLMs, with ChatGPT, Claude, and similar systems given as examples, are routed out of the survey, as are participants who have never used an LLM. Participants in the latter group are additionally asked an open-ended multiple-choice question about their reasons for non-use before being exited, providing supplementary data.
 
-Participants who pass these filters proceed to report which LLM systems they have previously used, and to rate their self-assessed level of LLM knowledge on a five-point scale ranging from no knowledge to expert. A subsequent item asks participants to identify which of a list of tools constitute a form of artificial intelligence. This item serves a dual purpose: it probes awareness of the distinction between AI broadly and LLMs specifically, and it embeds a quality control check. Participants who select an analogue clock, an item that is clearly not a form of AI, are identified as inattentive and excluded from the analysis. This attention filter was implemented to improve data quality without relying on separate, easily identifiable attention-check items that experienced panel respondents may recognize and game.
+Participants who pass these filters proceed to report which LLM systems they have previously used, and to rate their self-assessed level of LLM knowledge on a five-point scale ranging from no knowledge to expert. 
 
-\subsubsection{Use Case Categories and LLM Outputs}
+A subsequent item asks participants to identify which of a list of tools constitute a form of artificial intelligence. This item serves a dual purpose: it probes awareness of the distinction between AI broadly and LLMs specifically, and it embeds a quality control check. Participants who select an analogue clock, an item that is clearly not a form of AI, are identified as inattentive and excluded from the analysis. This attention filter was implemented to improve data quality without relying on separate, easily identifiable attention-check items that experienced panel respondents may recognize and game.
 
-Participants are next presented with a set of LLM-generated responses and asked to evaluate them. The responses were drawn from three thematic categories, selected to represent a range of contexts in which trust and accuracy carry meaningfully different stakes. The first category covers queries with potential legal implications, such as questions about whether certain activities are permitted, a domain where incorrect information could have direct personal consequences. The second category covers medical and health-related knowledge, where the reliability of information is similarly high-stakes. The third category covers general factual knowledge, which serves as a lower-stakes baseline. Importantly, the response set also includes factually incorrect LLM outputs, allowing the study to examine whether XAI methods help or hinder participants' ability to detect errors.
+\subsubsection{Core Research Phase}
+\label{sec:core_research}
 
-\subsubsection{Trust Measurement Instrument}
+Figure~\ref{fig:main_research_flow} provides a detailed overview of the core research phase flow.
+
+\paragraph{Use Case Categories and LLM Outputs}
+\label{sec:cat_and_llm_outputs}
+
+Participants are next presented with a set of LLM-generated responses and asked to evaluate them. The responses were drawn from three thematic categories, selected to represent a range of contexts in which trust and accuracy carry meaningfully different stakes. 
+
+The first category covers queries with potential legal implications, such as questions about whether certain activities are permitted, a domain where incorrect information could have direct personal consequences. The second category covers medical and health-related knowledge, where the reliability of information is similarly high-stakes. The third category covers general factual knowledge, which serves as a lower-stakes baseline. Importantly, the response set also includes factually incorrect LLM outputs, allowing the study to examine whether XAI methods help or hinder participants' ability to detect errors.
+
+\paragraph{Trust Measurement Instrument}
 \label{sec:trust_instrument}
 
 The construct of trust was operationalized based on a review of relevant literature on human-computer trust, as discussed in Section~\ref{sec:trust_theory}. Drawing on established theoretical distinctions, the instrument was designed to capture four different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources \cite{castelfranchi_trust_2001, falcone_social_2001, jones_concept_2002}.
@@ -133,16 +237,21 @@ From these dimensions, a five-item scale was derived to assess trust responses t
 
 These items collectively capture multiple facets of trust, including perceived accuracy, reliability, competence, intentionality, and behavioral reliance. This repeated-measures design allows the effect of each XAI method on the full trust construct to be assessed across all five dimensions simultaneously.
 
-\subsubsection{Randomization into XAI Groups}
+\paragraph{Randomization into XAI Groups}
+\label{sec:random_xai_group}
 
 After the baseline trust measurement, participants are informed about the concept of Explainable AI. They are then randomly assigned to one of four conditions. Approximately half of participants are shown all three XAI methods in sequence (CoT, SHAP with counterfactual, and confidence indication), while the remaining three groups are each shown only one of the three methods. This design allows both within-subject comparisons across methods for the full-exposure group and between-subject comparisons across the single-method groups, supporting more robust conclusions about the relative impact of each approach. Participants assigned to view all methods are additionally asked to rank them according to their perceived usefulness.
 
-\subsubsection{LLM Explanation for Participants}
+\paragraph{LLM Explanation for Participants}
+\label{sec:llm_explanations}
 
-Following the XAI exposure and trust ratings, participants are randomly assigned to receive either a short video or a written text explanation of how large language models work, with both formats covering equivalent content in approximately three minutes. The aim is to convey a functional understanding of LLMs sufficient to contextualize the tasks they have completed, while avoiding overly technical language. Crucially, both formats emphasize that LLMs operate through statistical pattern matching rather than genuine understanding or intelligence, in order to correct potential anthropomorphization. Based on the mentioned criteria, this \href{https://www.youtube.com/watch?v=8Rumn1O-RkY}{\underline{video}} and this \href{https://axels-technikblog.de/was-ist-ein-llm-large-language-models-einfach-erklaert/}{\underline{textual explanation}} were chosen.
+Following the XAI exposure and trust ratings, participants are randomly assigned to receive either a short video or a written text explanation of how large language models work, with both formats covering equivalent content in approximately three minutes. 
+
+The aim is to convey a functional understanding of LLMs sufficient to contextualize the tasks they have completed, while avoiding overly technical language. Crucially, both formats emphasize that LLMs operate through statistical pattern matching rather than genuine understanding or intelligence, in order to correct potential anthropomorphization. Based on the mentioned criteria, this \href{https://www.youtube.com/watch?v=8Rumn1O-RkY}{\underline{video}} and this \href{https://axels-technikblog.de/was-ist-ein-llm-large-language-models-einfach-erklaert/}{\underline{textual explanation}} were chosen.
 A final trust measurement is taken after this explanation, allowing any additional effect of the explanatory format, whether video or text, to be assessed.
 
-\subsubsection{Reflection and Close}
+\paragraph{Reflection and Close}
+\label{sec:reflection_and_close}
 
 The survey concludes with a brief reflection item that asks participants whether their trust in LLM outputs has changed as a result of the explanations they received, with response options of yes, no, and unsure. Participants who indicate that their trust has changed are invited to elaborate in a free-text field. This qualitative supplement enriches the quantitative trust data and may surface mechanisms of trust change that the scaled items do not fully capture.
 

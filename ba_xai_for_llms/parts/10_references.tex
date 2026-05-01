@@ -7,12 +7,18 @@
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
 %\printbibliography
+\section{Bibliography}
 \begingroup
-  \let\clearpage\relax
-  \let\cleardoublepage\relax
+  \renewcommand{\chapter}[2]{} % suppress auto heading
   \bibliography{doc}
   \bibliographystyle{deIEEEzhaw}
-\endgroup\listoffigures
+\endgroup
+
+\section{List of Figures}
+\begingroup
+  \renewcommand{\chapter}[2]{} % suppress auto heading
+  \listoffigures
+\endgroup
 %
 %{
 %\renewcommand{\clearpage}{}

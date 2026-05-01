@@ -8,6 +8,13 @@
 % !TEX root = doc.tex
 
 % Lorem Ipsum
+\usepackage[a4paper,bottom=3cm,top=3cm, left=2.5cm,right=2.5cm]{geometry}
+\RedeclareSectionCommand[
+  beforeskip=-2pt
+]{chapter}
+\renewcommand*\chapterheadstartvskip{\vspace*{-1cm}}
+
+
 \usepackage{lipsum}
 
 % Language and Font
@@ -26,6 +33,7 @@
 \usepackage{subcaption} % figures inside figures (e.g. for side by side figures)
 \usepackage{float} % required for positioning figures with [H] (and lots of other stuff)
 \usepackage{wrapfig} % floating figures
+\usepackage{tikz}
 
 % Import PDFs
 \usepackage{pdfpages}
@@ -39,6 +47,8 @@
 \automark{chapter}
 \ihead{\leftmark{}}
 \ofoot[\thepage]{\thepage}
+
+
 
 \setcounter{secnumdepth}{3}
 
@@ -128,8 +138,10 @@
   bookmarksnumbered,
   pdfstartview={FitH}
 }
-
+\usepackage{svg}
 
 
 \usepackage{silence}
 \WarningFilter{latexfont}{Font shape}
+
+
