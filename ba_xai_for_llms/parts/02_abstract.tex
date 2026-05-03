@@ -7,4 +7,42 @@
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
 
-\lipsum[1]
+Large Language Models (LLMs) such as ChatGPT, Claude, and Gemini have become embedded
+in the daily routines of a broad and diverse population, the majority of whom are not AI
+specialists. Yet these systems remain susceptible to hallucination and dishonesty, delivering
+confident outputs regardless of their accuracy. Users who cannot distinguish a correct answer
+from a fluent but incorrect one risk either placing trust where it is not warranted or, following
+negative experiences, developing excessive skepticism that prevents them from benefiting from
+the technology's genuine capabilities. Explainable AI (XAI) has emerged as the principal
+mechanism for addressing this challenge, but empirical evidence on which explanation types
+are most effective for lay users remains sparse.
+
+This thesis investigates the impact of three XAI methods: Chain-of-Thought (CoT) prompting,
+SHAP-based token attribution combined with counterfactual reasoning, and confidence
+indication on user trust in LLM outputs. A functional web-based demonstrator running on
+Llama 3.1 was built to generate explanation stimuli across three use case categories: legal,
+medical, and general factual queries. An empirical user study with $n = 175$ prior LLM users
+measured trust across five dimensions before and after exposure to each explanation method,
+using a repeated-measures design with randomization into single-method and all-methods
+conditions.
+
+The results show that all three XAI methods reduced trust relative to a plain LLM baseline,
+but that this reduction reflects appropriate recalibration rather than failure. Chain-of-Thought
+prompting produced the lowest median trust scores of all conditions while simultaneously
+receiving the highest perceived helpfulness rankings, suggesting that its transparency exposes
+errors and inconsistencies that appropriately reduce inflated trust. Confidence indication
+achieved a comparable helpfulness ranking with lower information overhead, functioning as an
+efficient trust-preserving signal. SHAP attribution, despite producing intermediate trust scores,
+was ranked least helpful by the majority of participants, consistent with prior literature on
+the inaccessibility of feature-importance visualizations to non-technical audiences. A general
+explanation of how LLMs work produced competitive trust outcomes across all aspects,
+underscoring the value of conceptual framing alongside per-output explanation methods.
+
+Building on these findings, a prototype was developed that combines Chain-of-Thought
+reasoning with per-step confidence scores and automatic regeneration of low-confidence steps.
+This design targets the central tension identified in the data: making the model's reasoning
+transparent while equipping lay users with a simple, immediately interpretable signal for
+calibrating reliance on individual steps. The thesis concludes with concrete design
+recommendations for trustworthy LLM-based applications and identifies directions for future
+research, including the challenge of making technically faithful explanation methods accessible
+to non-specialist users.

@@ -96,6 +96,7 @@ A related line of work explores \textbf{gamification frameworks} that use narrat
 A notable gap that persists across all of these categories is that most XAI research focuses on technical audiences. There is limited empirical evidence on which explanation types are most effective for lay users interacting with LLMs in everyday contexts \cite{wu_usable_2025}.
 
 \subsection{Selected XAI Methods}
+\label{sec:selected_xai_methods}
 
 Based on the taxonomy described above, three methods were selected for this study, one from each major category. The selection criteria were: coverage of distinct explanation paradigms, feasibility of implementation, and accessibility to non-expert users.
 
@@ -115,6 +116,7 @@ Trust is a multidimensional construct that has been studied across philosophy, c
 For the purposes of this study, the operationalization of trust draws on a framework that distinguishes four theoretical dimensions \cite{castelfranchi_trust_2001, falcone_social_2001, jones_concept_2002}: trust in the environment and the sociotechnical infrastructure in which the system operates, trust in the AI agent itself and any mediating agents involved in producing its outputs, trust in the system as an interaction partner, and trust in the system as an authoritative source of information. These dimensions together capture the layered nature of the trust relationship between a user and an LLM, spanning infrastructure-level reliability, agent-level competence and intention, and the social and epistemic weight a user assigns to the system's outputs. From this theoretical foundation, a five-item measurement instrument was derived for use in the empirical study, which is described in detail in Section~\ref{sec:trust_instrument}.
 
 \subsection{Trust in the Context of LLMs}
+\label{sec:trust_in_context_of_llms}
 
 The fluency and apparent confidence of LLM outputs creates a particular risk of miscalibrated trust. Users who are not familiar with the failure modes of LLMs may attribute a level of reliability to model outputs that is not warranted by the model's actual accuracy \cite{schwartz_enhancing_2023}. Conversely, users who become aware of hallucination through negative experiences may develop excessive skepticism that prevents them from benefiting from the model's genuine capabilities.
 
@@ -128,12 +130,12 @@ XAI methods represent one promising avenue for supporting better-calibrated trus
     \centering
     \vspace{-\baselineskip}
     \includegraphics[width=\linewidth]{img/trustworthynessExplanations.png}
-    \caption{Taxonomy of explanation techniques for trustworthiness aspects of LLMs~\cite{wu_usable_2025}}
+    \caption{Taxonomy of explanation techniques for trust\-worthi\-ness aspects of LLMs \cite{wu_usable_2025}}
     \vspace{-0.2cm}
     \label{fig:xaiTrustworthyness}
 \end{wrapfigure}
 
-As illustrated in Figure~\ref{fig:xaiTrustworthyness}, the taxonomy proposed by Wu et al. \cite{wu_usable_2025} maps explainability techniques to specific trustworthiness dimensions of LLMs, including security, privacy, fairness, toxicity, and truthfulness. This mapping provides a principled basis for selecting XAI methods that target the trust concerns most relevant to lay users interacting with general-purpose LLMs.
+As illustrated in Figure~\ref{fig:xaiTrustworthyness}, the taxonomy proposed in \cite{wu_usable_2025} maps explainability techniques to specific trustworthiness dimensions of LLMs, including security, privacy, fairness, toxicity, and truthfulness. This mapping provides a principled basis for selecting XAI methods that target the trust concerns most relevant to lay users interacting with general-purpose LLMs.
 
 The three methods selected for this study each address distinct dimensions of the trust relationship described in Section~\ref{sec:trust_theory}. SHAP-based attribution and counterfactual reasoning target trust at the level of the AI agent and its outputs: by making visible which parts of a prompt drove a given response, and by illustrating how alternative inputs would have changed that response, these methods support the user's ability to assess the reliability and competence of the system. They are particularly suited to addressing concerns about hallucination and ungrounded outputs, where users benefit from understanding the evidential basis of a response \cite{wu_usable_2025}.
 

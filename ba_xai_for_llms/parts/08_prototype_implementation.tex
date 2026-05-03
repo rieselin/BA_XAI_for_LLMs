@@ -29,6 +29,7 @@ category, Chain-of-Thought prompting has emerged as the dominant paradigm and is
 An alternative to full CoT is the \emph{top-k} or highlight-based self-explanation, in which the model identifies only the few most important words or phrases. \cite{huang_can_2023} find that such LLM-generated self-explanations perform on par with traditional post-hoc methods such as LIME and occlusion saliency on faithfulness metrics, while being far cheaper to produce, since they are generated alongside the prediction itself rather than requiring thousands of additional model queries.
 
 \subsection{The Faithfulness Problem}
+\label{sec:faithfulness_problem}
 
 Despite its advantages for lay users, CoT carries a fundamental structural limitation:
 \emph{faithfulness}, that is, whether the stated reasoning accurately represents the process
@@ -100,7 +101,7 @@ making the model's reasoning transparent while keeping it simple to understand f
  
 \subsection{Design Rationale}
  
-The prototype moves away from a forced JSON output format used in the survey app~\ref{sec:stimulusGeneration} of CoT extraction, which proved brittle and difficult to parse consistently. Instead, steps are structured as a simpler, delimited sequence, which is both easier for the model to produce reliably and easier to parse programmatically. Each reasoning step is assigned an
+The prototype moves away from a forced JSON output format used in the survey app (Section~\ref{sec:stimulusGeneration}) of CoT extraction, which proved brittle and difficult to parse consistently. Instead, steps are structured as a simpler, delimited sequence, which is both easier for the model to produce reliably and easier to parse programmatically. Each reasoning step is assigned an
 average confidence score, derived from the token-level log-probabilities returned by the
 underlying language model. Steps whose mean confidence falls below a user-configurable
 threshold are automatically regenerated; users may also trigger manual regeneration of
@@ -196,7 +197,7 @@ template methods: \localtt{build\_reasoning\_prompt()} for the initial CoT query
  
 The \localtt{generation} class wraps the low-level inference call in a single method,
 \localtt{generate\_with\_scores()}, which returns the raw output tokens together with the
-tokenizer, making log-probability extraction straightforward for downstream modules.
+tokenizer, making log-proba\-bi\-li\-ty extraction straightforward for downstream modules.
  
 Confidence computation is handled by two methods on the \localtt{confidence} class.
 \localtt{compute\_token\_confidence()} accepts the raw output and tokenizer and returns a
