@@ -55,7 +55,7 @@ security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
     \label{fig:familiar}
   \end{subfigure}
   \hfill
-  \begin{subfigure}{0.48\textwidth}
+  \begin{subfigure}{0.49\textwidth}
     \centering
     \includegraphics[width=\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
     \caption{Self-reported prior use of a generative AI tool at least once.}
@@ -184,10 +184,18 @@ sharply at CoT for every aspect, recovers partially at SHAP, then narrows again 
 before recovering at EXPL. The gap between the \emph{best-performing aspect} (``I believe the system has tried to provide accurate answers'') and the worst (``I would rely on the
 information'') is consistent across all methods, suggesting that \emph{intention
 attribution} is persistently rated more charitably than \emph{practical reliance}.
- 
+
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/changeOfTrust.png}
+  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/individual_trust_trajectories.png}
+  \caption{Individual trust trajectories across all five methods.}
+  \label{fig:individual}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \makebox[\textwidth][c]{%
+  \includegraphics[width=1.1\textwidth]{diagrams/survey_diagrams/changeOfTrust.png}}
   \caption{Trust trajectories across explanation methods, one line per trust aspect.}
   \label{fig:lineplot}
 \end{figure}
@@ -201,13 +209,6 @@ Participants who began with high trust under LLM (level\,5) showed the sharpest 
 CoT, while those who started at level\,3 or below were less affected. This suggests a
 \emph{prior-expectation effect}: CoT disrupts the trust of initially confident users more
 than that of skeptical ones.
- 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/individual_trust_trajectories.png}
-  \caption{Individual trust trajectories across all five methods.}
-  \label{fig:individual}
-\end{figure}
  
 \subsection{Trust Variation by Number of LLMs Used}
  
@@ -264,6 +265,7 @@ Better understanding of how LLMs work; clearer explanation of mechanisms; increa
 \hline
 \end{tabular}
 \caption{Summary of qualitative responses regarding changes in trust toward LLMs after the survey.}
+\label{tb:example_responses_trust}
 \end{table}
 
 Overall, responses indicate that the survey influenced participants in different ways: some reported increased trust due to improved understanding, others became more skeptical after learning about limitations such as hallucinations, while several participants expressed a more nuanced or conditional trust.
