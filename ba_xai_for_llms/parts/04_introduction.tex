@@ -16,10 +16,10 @@
 research curiosity to everyday tool with remarkable speed.
 Since the public release of ChatGPT in November 2022, awareness of AI-powered
 applications has spread widely: a 2025 survey by gfs.bern commissioned by the Swiss
-Federal Chancellery found that 96~percent of the Swiss population had heard of
-LLM-based tools such as ChatGPT, Gemini, or Co-Pilot \cite{bern_chance_2025}.
-Of those familiar with these applications, 59~percent reported using them at least
-occasionally, and 59~percent of users also employ them in a professional context
+Federal Chancellery found that 96~\% of the Swiss population had heard of
+LLM-based tools such as ChatGPT, Gemini, or Copilot \cite{bern_chance_2025}.
+Of those familiar with these applications, 59~\% reported using them at least
+occasionally, and 59~\% of users also employ them in a professional context
 \cite{bern_chance_2025}.
 These figures illustrate that LLMs are no longer a niche technology: they are embedded
 in the daily routines of a broad and diverse population, the majority of whom are not
@@ -32,7 +32,7 @@ fabricates information entirely \cite{wu_usable_2025}), yet their outputs are de
 with the same confident fluency regardless of whether they are accurate or not.
 Users who cannot easily distinguish a correct answer from a confident but incorrect one
 risk placing trust where it is not warranted; conversely, users who have experienced
-model errors first-hand may develop excessive skepticism that prevents them from
+model errors first-hand may develop excessive scepticism that prevents them from
 benefiting from the technology's genuine capabilities.
 The stakes are especially high in domains such as law and medicine, where decisions
 grounded in incorrect information can carry serious personal consequences.
@@ -50,10 +50,10 @@ how AI systems can be made to explain their reasoning in terms that non-expert u
 can act on.
  
 Explainable AI (XAI) has emerged as the principal research response to this challenge.
-XAI encompasses methods and techniques designed to make AI behavior more
+XAI encompasses methods and techniques designed to make AI behaviour more
 interpretable, spanning post-hoc attribution methods such as SHAP and LIME,
 intrinsic approaches such as Chain-of-Thought (CoT) prompting, and
-human-centered techniques that leverage LLMs' own language generation capabilities
+human-centred techniques that leverage LLMs' own language generation capabilities
 to produce natural language explanations \cite{wu_usable_2025}.
 Yet despite the breadth of the XAI literature, a meaningful gap remains:
 most existing work is oriented towards technical audiences, and there is limited
@@ -85,7 +85,7 @@ Chain-of-Thought prompting is the most prominent example: by instructing a model
 to articulate its reasoning step by step before arriving at a conclusion, CoT makes
 the inferential process visible as part of the response itself \cite{wu_usable_2025}. 
 
-Both ChatGPT \cite{noauthor_chatgpt_nodate} and Claude \cite{noauthor_claude_nodate} surface step-by-step reasoning traces as a standard
+Both ChatGPT \cite{openai_chatgpt_2026} and Claude \cite{anthropic_claude_2025} surface step-by-step reasoning traces as a standard
 transparency mechanism, making CoT the most widely deployed explanation paradigm
 in production systems today.
 More technically ambitious variants operate directly on the model's internal hidden-state
@@ -94,8 +94,8 @@ interpret their own embeddings in natural language without additional training, 
 such approaches require white-box access to model weights and remain opaque to
 non-technical audiences.
  
-Human-centered and narrative explanations represent a third strand, in which
-LLMs generate natural language accounts of their own behavior, either through
+Human-centred and narrative explanations represent a third strand, in which
+LLMs generate natural language accounts of their own behaviour, either through
 direct self-explanation or through a dedicated secondary model \cite{wu_usable_2025,you_gamifying_2024}.
 A notable sub-class are counterfactual explanations, which characterize a model's
 decision boundary by describing the minimal change to an input that would alter
@@ -178,7 +178,7 @@ research questions:
 To answer these questions, the thesis makes the following contributions.
 It reviews the relevant theoretical foundations spanning LLM architectures, XAI taxonomies, and the psychology of trust in AI systems.
 It selects and implements three XAI approaches (SHAP-based token attribution combined
-with counterfactual reasoning, Chain-of -Thought prompting, and confidence
+with counterfactual reasoning, Chain-of-Thought prompting, and confidence
 indication) in a functional web-based demonstrator running on an open-source LLM.
 It designs and conducts an empirical user study with \(n = 175\) prior LLM users,
 measuring trust across five dimensions before and after exposure to each explanation
@@ -195,6 +195,6 @@ The remainder of this thesis is organized as follows
     \item \hyperref[ch:theory]{Chapter 2} provides the theoretical background, covering the architecture and life-cycle of LLMs, the taxonomy of XAI methods, and the multidimensional construct of trust in AI systems.
     \item \hyperref[ch:methods]{Chapter 3} describes the methodology, including the selection of the LLM and XAI methods, the implementation of the demonstrator, and the design of the user study.
     \item \hyperref[ch:results]{Chapter 4} presents the empirical results, including sample characteristics, trust outcomes per explanation method, and perceived helpfulness rankings.
-    \item \hyperref[ch:prototype]{Chapter 4} Describes the implementation of a prototype that using a combination of the best rated XAI methods.
-    \item \hyperref[ch:discussion]{Chapter 6} discusses the findings, limitations, and future research directions.
+    \item \hyperref[ch:prototype]{Chapter 5} Describes the implementation of a prototype that using a combination of the best rated XAI methods.
+    \item \hyperref[ch:discussion]{Chapter 6} Discusses the findings, limitations, and future research directions.
 \end{itemize}
