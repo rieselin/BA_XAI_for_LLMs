@@ -23,7 +23,7 @@ its advantages, carries structural limitations that make such a complementary si
 \section{Chain-of-Thought as a Human-Centred Explanation Method}
 \label{sec:cot_research}
 
-As established in Chapter~\ref{ch:theory}, XAI methods for LLMs can be broadly divided into post-hoc, intrinsic, and human-centered categories, with the latter consistently outperforming more formal representations in comprehension and perceived usefulness for non-expert audiences \cite{chromik_i_2021}, a pattern confirmed by the low helpfulness ranking of SHAP in the present study. Within the human-centered
+As established in Chapter~\ref{ch:theory}, XAI methods for LLMs can be broadly divided into post-hoc, intrinsic, and human-centred categories, with the latter consistently outperforming more formal representations in comprehension and perceived usefulness for non-expert audiences \cite{chromik_i_2021}, a pattern confirmed by the low helpfulness ranking of SHAP in the present study. Within the human-centred
 category, Chain-of-Thought prompting has emerged as the dominant paradigm and is the method most widely deployed in production systems, with both ChatGPT and Claude surfacing step-by-step reasoning traces as a transparency mechanism.
 
 An alternative to full CoT is the \emph{top-k} or highlight-based self-explanation, in which the model identifies only the few most important words or phrases. \cite{huang_can_2023} find that such LLM-generated self-explanations perform on par with traditional post-hoc methods such as LIME and occlusion saliency on faithfulness metrics, while being far cheaper to produce, since they are generated alongside the prediction itself rather than requiring thousands of additional model queries.
@@ -47,7 +47,7 @@ size}: on most tasks, larger and more capable models produce \emph{less} faithfu
 than smaller ones, because more capable models can arrive at a confident answer without
 needing to rely on the generated trace.
 
-The faithfulness problem has a deeper dimension beyond post-hoc rationalization. \cite{turpin_language_2023} demonstrate that CoT reasoning can be systematically biased by features of the input, such as the position of an answer option or the presence of a suggestive statement, while the stated reasoning provides a different explanation that does not reference the actual cause of the answer shift. The model therefore produces a plausible-sounding but misleading account of its own behavior.
+The faithfulness problem has a deeper dimension beyond post-hoc rationalization. \cite{turpin_language_2023} demonstrate that CoT reasoning can be systematically biased by features of the input, such as the position of an answer option or the presence of a suggestive statement, while the stated reasoning provides a different explanation that does not reference the actual cause of the answer shift. The model therefore produces a plausible-sounding but misleading account of its own behaviour.
 This concern is compounded by findings on dishonesty in alignment: \cite{huang_dishonesty_2024} show that LLMs trained with RLHF learn to produce responses whose internal representations score low on honesty metrics, particularly in the initial tokens of a refusal or safety response, suggesting that output text can diverge from the model's internal state even during normal operation.
 
 A related issue concerns the granularity of LLM-generated attributions. \cite{huang_can_2023} observe that when ChatGPT assigns importance scores to individual words, the values cluster on a small number of rounded levels rather than exhibiting the fine-grained variation produced by traditional methods. The authors interpret this as a consequence of alignment: the model produces saliency values
@@ -58,7 +58,7 @@ namely that CoT is simultaneously the most preferred and the least trust-inducin
 
 \subsection{Technically-Grounded Alternatives}
 
-More technically ambitious approaches attempt to ground explanations in the model's internal representations rather than its output text, operating directly on hidden embeddings at intermediate layers and in principle providing explanations causally connected to the model's computation. Such methods are not subject to the same faithfulness failures as CoT, but they are substantially less interpretable by non-expert users, limiting their deployment potential in the human-centered XAI contexts examined here.
+More technically ambitious approaches attempt to ground explanations in the model's internal representations rather than its output text, operating directly on hidden embeddings at intermediate layers and in principle providing explanations causally connected to the model's computation. Such methods are not subject to the same faithfulness failures as CoT, but they are substantially less interpretable by non-expert users, limiting their deployment potential in the human-centred XAI contexts examined here.
 
 A notable example of such an approach is \textbf{SelfIE} (Self-Interpretation of Embeddings) \cite{chen_selfie_2024}, which enables LLMs to interpret their own hidden embeddings in natural language by leveraging their existing decoding capability. Rather than generating a separate post-hoc rationale, SelfIE injects a hidden embedding of interest into a secondary \emph{interpretation forward pass}, 
 prompting the model to summarize or repeat the information encoded at that layer. This produces open-world, free-text descriptions of internal states without requiring any additional training or data collection, and has been demonstrated on LLaMA-2-70B-Chat across tasks including harmful knowledge detection, prompt injection analysis, ethical reasoning, and hallucination tracing. Because the explanations are derived from the model's actual intermediate representations rather than its output tokens, they are structurally more faithful than CoT; a treatment-effect relevancy score further identifies which parts of a generated interpretation are causally tied to the interpreted embedding rather than produced by auto-regression. 
@@ -67,7 +67,7 @@ SelfIE's interpretations additionally open avenues for targeted model control: \
 
 An alternative strand of research has explored \textbf{neural template} generation as a human-interpretable explanation mechanism for AI systems. \cite{li_generate_2020} propose NETE (Neural Template Explanations), a framework originally developed for explainable recommender systems that bridges template-based and free-form natural language generation. Rather than relying on manually predefined sentence templates, which constrain expressiveness and cannot adapt to item-specific features, NETE learns \emph{neural templates} from data via a novel Gated Fusion Recurrent Unit (GFRU). The GFRU runs two parallel GRU decoders: a \emph{context GRU} that generates the surrounding sentence structure, and a \emph{feature GRU} that inserts a specified item feature at the appropriate position; a gated fusion unit then combines their outputs at each decoding step. This architecture allows the system to generate targeted, controllable explanations such as \emph{``The ramen was delicious''} when given the feature \emph{ramen}, closely matching ground-truth user reviews. Empirically, NETE produces substantially more unique and feature-diverse explanations than prior neural generation baselines (Att2Seq, NRT), with improvements exceeding 100\% on BLEU-4 and ROUGE-2 n-gram metrics across hotel, restaurant, and movie review datasets.
 
-However, the neural template paradigm carries several limitations that constrain its transferability to general-purpose LLM explainability. First, NETE requires structured training data in which each user-item interaction is paired with both a ground-truth feature label and a reference explanation sentence, a requirement that is not met in most LLM deployment settings. Second, the GFRU architecture is task-specific: it is designed to slot a single feature word into a recommendation-oriented sentence template, and does not straightforwardly generalise to the open-ended reasoning traces or multi-step factual answers that characterise LLM outputs. Third, like CoT, the generated text remains an output-level artefact and carries no guarantee of faithfulness to the model's internal computation; the template constrains surface form but not the accuracy of the underlying reasoning.
+However, the neural template paradigm carries several limitations that constrain its transferability to general-purpose LLM explainability. First, NETE requires structured training data in which each user-item interaction is paired with both a ground-truth feature label and a reference explanation sentence, a requirement that is not met in most LLM deployment settings. Second, the GFRU architecture is task-specific: it is designed to slot a single feature word into a recommendation-oriented sentence template, and does not straightforwardly generalize to the open-ended reasoning traces or multi-step factual answers that characterize LLM outputs. Third, like CoT, the generated text remains an output-level artefact and carries no guarantee of faithfulness to the model's internal computation; the template constrains surface form but not the accuracy of the underlying reasoning.
 
 \subsection{The Design Gap and the Prototype Direction}
 
@@ -105,7 +105,7 @@ The prototype moves away from a forced JSON output format used in the survey app
 average confidence score, derived from the token-level log-probabilities returned by the
 underlying language model. Steps whose mean confidence falls below a user-configurable
 threshold are automatically regenerated; users may also trigger manual regeneration of
-any individual step. In the frontend, steps are color-coded on a red-to-green scale
+any individual step. In the frontend, steps are colour-coded on a red-to-green scale
 reflecting their confidence, giving users an immediate visual summary of where the model
 is uncertain.
  
@@ -265,9 +265,8 @@ The same sub-pipelines are also reachable directly from the frontend: when the u
 manually requests regeneration of a step or of the final answer via a call to
 \localtt{/reason/step} or \localtt{/reason/final} the route handler calls
 \localtt{run\_step\_regen\_pipeline()} or \localtt{run\_final\_regen\_pipeline()}
-respectively, following exactly the same logic as the automatic path but recording the
-regeneration type as \localtt{MANUAL} rather than \localtt{AUTO}. The frontend displays
-each step with a color gradient from red
+depending on which endpoint was invoked, following the same logic as the automatic path but recording the regeneration type as \localtt{MANUAL} rather than \localtt{AUTO}. The frontend displays
+each step with a colour gradient from red
 (low confidence) to green (high confidence), and exposes the regeneration threshold as a
 configurable input, allowing users to adjust the sensitivity of automatic regeneration to
 their needs.
