@@ -5,7 +5,7 @@ import numpy as np
 import seaborn as sns
 
 # --- DB CONNECTION ---
-conn = sqlite3.connect("database.db")
+conn = sqlite3.connect("../survey/database.db")
 
 # --- LOAD DATA ---
 df = pd.read_sql("SELECT * FROM data_project", conn)
@@ -51,29 +51,38 @@ df['num_llms_used'] = df[llm_cols].sum(axis=1)
 # --- FILTER OUT COLUMNS WITH NaN VALUES ---
 llm_trust_cols_clean = [col for col in llm_trust_cols if df[col].notna().all()]
 aspects_clean = [aspects[i] for i, col in enumerate(llm_trust_cols) if df[col].notna().all()]
-
-# --- PLOT: Violin plot per trust aspect with 0-6 scale ---
 sns.set(style="whitegrid")
-fig, axes = plt.subplots(1, len(llm_trust_cols_clean), figsize=(18,6), sharey=True)
+
+fig, axes = plt.subplots(2, 3, figsize=(18,10), sharey=True)
+axes = axes.flatten()  # makes indexing easier
 
 for i, col in enumerate(llm_trust_cols_clean):
     sns.violinplot(
-        x=df['num_llms_used'], 
-        y=df[col], 
-        ax=axes[i], 
-        palette="Set2", 
+        x=df['num_llms_used'],
+        y=df[col],
+        ax=axes[i],
+        palette="Set2",
         inner="quartile",
-        bw=0.1  # reduce KDE overshoot
+        bw=0.1
     )
+
     axes[i].set_title(aspects_clean[i], fontsize=10)
     axes[i].set_xlabel("Number of LLMs Used", fontsize=9)
-    if i == 0:
+
+    if i % 3 == 0:
         axes[i].set_ylabel("Trust Level (1-5)", fontsize=10)
     else:
         axes[i].set_ylabel("")
-    
-    axes[i].set_ylim(0,6)  # <-- adjusted scale from 0 to 6
 
-plt.suptitle("Distribution of Trust Levels per Number of LLMs Used", fontsize=14)
+    axes[i].set_ylim(0, 6)
+
+# Hide the unused 6th subplot
+axes[-1].set_visible(False)
+
+plt.suptitle(
+    "Distribution of Trust Levels per Number of LLMs Used",
+    fontsize=14
+)
+
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 plt.show()

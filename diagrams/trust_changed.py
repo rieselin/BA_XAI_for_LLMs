@@ -50,12 +50,12 @@ wedges, texts, autotexts = ax.pie(
     autopct=lambda pct: f"{pct:.1f}%",
     startangle=140,
     wedgeprops={'edgecolor': 'white', 'linewidth': 1},
-    textprops={'fontsize': 10.5, 'color': '#333333'}
+    textprops={'fontsize': 12, 'color': '#333333'}
 )
 
 ax.set_title(
     "Has this survey changed your confidence in LLMs?",
-    fontsize=12,
+    fontsize=14,
     pad=16
 )
 

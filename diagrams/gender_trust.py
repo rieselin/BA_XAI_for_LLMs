@@ -105,30 +105,64 @@ n_genders = len(gender_labels)
 # ============================================================
 colors = plt.cm.Set2.colors
 
-fig, axes = plt.subplots(1, len(methods), figsize=(18, 6), sharey=True)
+# 2 rows × 3 columns
+fig, axes = plt.subplots(2, 3, figsize=(18, 10), sharey=True)
+axes = axes.flatten()
 
 for i, method in enumerate(methods):
     col = f'trust_{method}'
-    data_by_gender = [df[df['gender'] == g][col].dropna().values for g in gender_labels]
-    bp = axes[i].boxplot(data_by_gender, patch_artist=True, widths=0.5,
-                         medianprops=dict(color='black', linewidth=1.5))
-    for patch, c in zip(bp['boxes'], [colors[j % len(colors)] for j in range(n_genders)]):
+
+    data_by_gender = [
+        df[df['gender'] == g][col].dropna().values
+        for g in gender_labels
+    ]
+
+    bp = axes[i].boxplot(
+        data_by_gender,
+        patch_artist=True,
+        widths=0.5,
+        medianprops=dict(color='black', linewidth=1.5)
+    )
+
+    for patch, c in zip(
+        bp['boxes'],
+        [colors[j % len(colors)] for j in range(n_genders)]
+    ):
         patch.set_facecolor(c)
         patch.set_alpha(0.8)
+
     axes[i].set_xticks(range(1, n_genders + 1))
-    axes[i].set_xticklabels(gender_labels, rotation=20, ha='right', fontsize=9)
+    axes[i].set_xticklabels(
+        gender_labels,
+        rotation=20,
+        ha='right',
+        fontsize=9
+    )
+
     axes[i].set_title(method, fontsize=12)
-    axes[i].set_xlabel("Gender")
     axes[i].set_ylim(0.5, 5.5)
     axes[i].yaxis.grid(True, linestyle='--', alpha=0.7)
     axes[i].set_axisbelow(True)
-    if i == 0:
-        axes[i].set_ylabel("Mean Trust Score (1–5)")
 
-fig.suptitle("Mean Trust per Method by Gender", fontsize=14, y=1.02)
+    # ylabel only on left column
+    if i % 3 == 0:
+        axes[i].set_ylabel("Mean Trust Score (1–5)")
+    else:
+        axes[i].set_ylabel("")
+
+# Hide unused subplot
+axes[-1].set_visible(False)
+
+fig.suptitle(
+    "Mean Trust per Method by Gender",
+    fontsize=14,
+    y=0.98
+)
+
 plt.tight_layout()
 plt.savefig("gender_trust_boxplot.png", dpi=150, bbox_inches='tight')
 plt.show()
+
 print("Saved: gender_trust_boxplot.png")
 
 # ============================================================
@@ -184,38 +218,77 @@ print("Saved: gender_trust_violin.png")
 # ============================================================
 # PLOT 4: Bar chart per method — aspect-level breakdown by gender
 # ============================================================
-fig, axes = plt.subplots(1, len(methods), figsize=(20, 6), sharey=True)
+# 2 rows × 3 columns
+fig, axes = plt.subplots(2, 3, figsize=(20, 10), sharey=True)
+axes = axes.flatten()
+
 bar_colors = [colors[j % len(colors)] for j in range(n_genders)]
 x = np.arange(len(aspects))
 bar_width = 0.8 / n_genders
 
 for i, method in enumerate(methods):
     cols = sets[method]
+
     for j, g in enumerate(gender_labels):
         group = df[df['gender'] == g]
         means = [group[col].mean() for col in cols]
+
         offset = (j - n_genders / 2 + 0.5) * bar_width
-        axes[i].bar(x + offset, means, width=bar_width, label=g,
-                    color=bar_colors[j], alpha=0.85)
+
+        axes[i].bar(
+            x + offset,
+            means,
+            width=bar_width,
+            label=g,
+            color=bar_colors[j],
+            alpha=0.85
+        )
+
     axes[i].set_xticks(x)
-    axes[i].set_xticklabels(aspects, rotation=35, ha='right', fontsize=8)
+    axes[i].set_xticklabels(
+        aspects,
+        rotation=35,
+        ha='right',
+        fontsize=12
+    )
+
     axes[i].set_title(method, fontsize=11)
     axes[i].set_ylim(1, 5)
     axes[i].yaxis.grid(True, linestyle='--', alpha=0.6)
     axes[i].set_axisbelow(True)
-    if i == 0:
-        axes[i].set_ylabel("Mean Trust Score (1–5)")
 
-legend_elements = [Patch(facecolor=bar_colors[j], alpha=0.85, label=g)
-                   for j, g in enumerate(gender_labels)]
-fig.legend(handles=legend_elements, title="Gender",
-           bbox_to_anchor=(1.01, 0.7), loc='upper left')
-fig.suptitle("Mean Trust per Aspect, Method, and Gender", fontsize=13, y=1.02)
+    # ylabel only on left column
+    if i % 3 == 0:
+        axes[i].set_ylabel("Mean Trust Score (1–5)")
+    else:
+        axes[i].set_ylabel("")
+
+# Hide unused subplot
+axes[-1].set_visible(False)
+
+legend_elements = [
+    Patch(facecolor=bar_colors[j], alpha=0.85, label=g)
+    for j, g in enumerate(gender_labels)
+]
+
+fig.legend(
+    handles=legend_elements,
+    title="Gender",
+    bbox_to_anchor=(1.01, 0.7),
+    loc='upper left'
+)
+
+fig.suptitle(
+    "Mean Trust per Aspect, Method, and Gender",
+    fontsize=13,
+    y=0.98
+)
+
 plt.tight_layout()
 plt.savefig("gender_trust_aspect_bars.png", dpi=150, bbox_inches='tight')
 plt.show()
-print("Saved: gender_trust_aspect_bars.png")
 
+print("Saved: gender_trust_aspect_bars.png")
 # ============================================================
 # STATISTICAL TEST: Mann-Whitney U (or Kruskal-Wallis for 3+)
 # ============================================================

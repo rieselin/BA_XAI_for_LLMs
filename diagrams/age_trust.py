@@ -123,30 +123,61 @@ trust_mean_cols = [f'trust_{m}' for m in sets]
 methods = list(sets.keys())
 colors = plt.cm.Set2.colors
 
-fig, axes = plt.subplots(1, len(methods), figsize=(18, 6), sharey=True)
+# 2 rows × 3 columns
+fig, axes = plt.subplots(2, 3, figsize=(18, 10), sharey=True)
+axes = axes.flatten()
 
 for i, method in enumerate(methods):
     col = f'trust_{method}'
-    data_by_age = [df[df['age_group'] == g][col].dropna().values for g in age_order]
-    bp = axes[i].boxplot(data_by_age, patch_artist=True, widths=0.6,
-                         medianprops=dict(color='black', linewidth=1.5))
-    for patch, c in zip(bp['boxes'], [colors[j % len(colors)] for j in range(len(age_order))]):
+
+    data_by_age = [
+        df[df['age_group'] == g][col].dropna().values
+        for g in age_order
+    ]
+
+    bp = axes[i].boxplot(
+        data_by_age,
+        patch_artist=True,
+        widths=0.6,
+        medianprops=dict(color='black', linewidth=1.5)
+    )
+
+    for patch, c in zip(
+        bp['boxes'],
+        [colors[j % len(colors)] for j in range(len(age_order))]
+    ):
         patch.set_facecolor(c)
         patch.set_alpha(0.8)
+
     axes[i].set_xticks(range(1, len(age_order) + 1))
-    axes[i].set_xticklabels(display_labels, rotation=30, ha='right', fontsize=9)
+    axes[i].set_xticklabels(
+        display_labels,
+        rotation=30,
+        ha='right',
+        fontsize=9
+    )
+
     axes[i].set_title(method, fontsize=12)
     axes[i].set_xlabel("Age Group")
     axes[i].set_ylim(0.5, 5.5)
     axes[i].yaxis.grid(True, linestyle='--', alpha=0.7)
     axes[i].set_axisbelow(True)
-    if i == 0:
-        axes[i].set_ylabel("Mean Trust Score (1–5)")
 
-fig.suptitle("Mean Trust per Method by Age Group", fontsize=14, y=1.02)
+    # ylabel only on left column
+    if i % 3 == 0:
+        axes[i].set_ylabel("Mean Trust Score (1–5)")
+    else:
+        axes[i].set_ylabel("")
+
+# Hide unused subplot
+axes[-1].set_visible(False)
+
+fig.suptitle("Mean Trust per Method by Age Group", fontsize=14, y=0.98)
+
 plt.tight_layout()
 plt.savefig("age_trust_boxplot.png", dpi=150, bbox_inches='tight')
 plt.show()
+
 print("Saved: age_trust_boxplot.png")
 
 # ============================================================

@@ -4,7 +4,7 @@ import textwrap
 
 
 # ---- CONFIG ----
-DB_FILE = "database.db"
+DB_FILE = "../survey/database.db"
 
 columns = [
     "llm_used_bard", "llm_used_chatGpt", "llm_used_claud", "llm_used_command", "llm_used_copilot",
@@ -53,11 +53,11 @@ wrapped_labels = [textwrap.fill(label, 20) for label in labels]
 plt.figure(figsize=(12, 6))
 plt.bar(wrapped_labels, values)
 
-plt.title("Which of these LLMs have you tried so far?")
-plt.xlabel("LLM")
-plt.ylabel("Count")
+plt.title("Which of these LLMs have you tried so far?", fontsize=14)
+plt.xlabel("LLM", fontsize=12)
+plt.ylabel("Count", fontsize=12)
 
-plt.xticks(rotation=45, ha="right")
+plt.xticks(rotation=45, ha="right", fontsize=12)
 plt.tight_layout()
 
 plt.savefig("not_used_llm_reasons.png")
