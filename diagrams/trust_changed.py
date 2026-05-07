@@ -41,7 +41,7 @@ colors = {
 counts = [ (df['trust_changed'] == cat).sum() for cat in order ]
 
 # --- PLOT PIE CHART ---
-fig, ax = plt.subplots(figsize=(7, 6))
+fig, ax = plt.subplots(figsize=(5, 4))
 
 wedges, texts, autotexts = ax.pie(
     counts,
