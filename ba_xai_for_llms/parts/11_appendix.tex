@@ -7,15 +7,23 @@
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
 
-\section{Survey Instrument}
+\section{Survey Instrument (UniPark Export)}
 \label{appendix:survey}
+% First page with title on same page
+\begin{center}
+  \centering
+    \includegraphics[page=1,width=1\textwidth]
+    {resources/full_questionnaire_cropped.pdf}
+\end{center}
+%TODO: uncomment for final render
+%\includepdf[pages={2-30,32-},scale=0.99]{resources/full_questionnaire_cropped}
+
 \section{Additional Survey Results}
 \label{appendix:survey_result_addons}
 \begin{figure}[htbp]
     \centering
-    \makebox[\textwidth][c]{%
-  \includegraphics[width=1.3\textwidth]{diagrams/survey_diagrams/age_trust_boxplot.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/age_trust_boxplot.png}
+  
     \caption{Mean Trust per Method by Age Group}
 \end{figure}
 
@@ -27,17 +35,15 @@
 
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=1.3\textwidth]{diagrams/survey_diagrams/gender_trust_aspect_bars.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/gender_trust_aspect_bars.png}
+  
   \caption{Mean Trust per Aspect, Method and Gender}
 \end{figure}
 
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=1.3\textwidth]{diagrams/survey_diagrams/gender_trust_boxplot.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/gender_trust_boxplot.png}
+  
   \caption{Mean Trust per Method by Gender}
 \end{figure}
 
@@ -58,6 +64,3 @@
   \includegraphics[width=\textwidth]{diagrams/survey_diagrams/typeofai_barplot.png}
   \caption{Applications considered to be AI by Participants}
 \end{figure}
-
-%TODO: uncomment for final render
-%\includepdf[pages={1-30,32-},scale=0.99]{resources/full_questionnaire}

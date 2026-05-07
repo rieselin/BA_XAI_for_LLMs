@@ -45,29 +45,25 @@ among them, the most frequently cited barrier was \emph{not yet having seen a ne
 ($n=37$), followed by a preference for traditional search engines ($n=21$) and privacy or
 security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
  
-\begin{figure}[htbp]
+\begin{center}
+\begin{minipage}{0.48\textwidth}
   \centering
-
-  \begin{subfigure}{0.45\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{diagrams/survey_diagrams/know_llms.png}
-    \caption{Self-reported familiarity with generative AI tools}
-    \label{fig:familiar}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
-    \caption{Self-reported prior use of a generative AI tool at least once.}
-    \label{fig:used}
-  \end{subfigure}
-\end{figure}
+  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/know_llms.png}
+  \captionof{figure}{Self-reported familiarity with generative AI tools}
+  \label{fig:familiar}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
+  \captionof{figure}{Self-reported prior use of a generative AI tool at least once.}
+  \label{fig:used}
+\end{minipage}
+\end{center}
  
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=0.85\textheight]{diagrams/survey_diagrams/not_used_reasoning.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/not_used_reasoning.png}
   \caption{Reasons given by participants who had never used a large language model.}
   \label{fig:nonusers}
 \end{figure}
@@ -77,9 +73,7 @@ followed by Gemini (Google DeepMind, $n = 85$) and Microsoft Copilot ($n = 52$)(
  
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=0.85\textheight]{diagrams/survey_diagrams/llms_used.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/llms_used.png}
   \caption{LLMs tried by participants}
   \label{fig:llms_tried}
 \end{figure}
@@ -155,7 +149,7 @@ exposing the model's reasoning process frequently caused participants to revise 
 \subsection{Trust by Aspect and Method}
 \label{sec:heatmap}
  
-The heatmap in Figure~\ref{fig:heatmap} disaggregates trust into the five individual
+The heat-map in Figure~\ref{fig:heatmap} disaggregates trust into the five individual
 aspects across methods. Three patterns stand out:
  
 \begin{enumerate}
@@ -194,8 +188,7 @@ attribution} is persistently rated more charitably than \emph{practical reliance
 
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=1.1\textwidth]{diagrams/survey_diagrams/changeOfTrust.png}}
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/changeOfTrust.png}
   \caption{Trust trajectories across explanation methods, one line per trust aspect.}
   \label{fig:lineplot}
 \end{figure}
@@ -208,7 +201,7 @@ around levels 3 and 4, and the dip at CoT is apparent even at the individual lev
 Participants who began with high trust under LLM (level\,5) showed the sharpest drops at
 CoT, while those who started at level\,3 or below were less affected. This suggests a
 \emph{prior-expectation effect}: CoT disrupts the trust of initially confident users more
-than that of skeptical ones.
+than that of sceptical ones.
  
 \subsection{Trust Variation by Number of LLMs Used}
  
@@ -221,20 +214,18 @@ experience levels for most aspects, suggesting that prior LLM exposure does not
 substantially moderate the effect of explanation type on trust.
  
 \begin{figure}[htbp]
+// todo unterenand + grösseri schrift + nid über text breiti use
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=1.3\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
   \caption{Distribution of trust levels per trust aspect, segmented by the number of
            distinct LLMs previously used by each participant.}
   \label{fig:violin}
 \end{figure}
 
 \subsection{Change in Trust in LLMs After the Survey}
-
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.48\textwidth]{diagrams/survey_diagrams/trust_changed_piechart.png}
+  \includegraphics[width=0.6\textwidth]{diagrams/survey_diagrams/trust_changed_piechart.png}
   \caption{Trust change after Survey completion}
   \label{fig:trust_changed_survey}
 \end{figure}
@@ -254,7 +245,7 @@ Increased Trust &
 Trust increased; more positive view; more trustworthy; may use it more often; improved perception. \\
 
 Decreased Trust &
-More skeptical; trust worsened; credibility decreased; less trust because it does not always provide facts; more fear or uncertainty. \\
+More sceptical; trust worsened; credibility decreased; less trust because it does not always provide facts; more fear or uncertainty. \\
 
 Conditional Trust &
 Useful tool, but not everything should be believed; still prefer own judgment; would verify or rewrite outputs. \\
@@ -268,7 +259,7 @@ Better understanding of how LLMs work; clearer explanation of mechanisms; increa
 \label{tb:example_responses_trust}
 \end{table}
 
-Overall, responses indicate that the survey influenced participants in different ways: some reported increased trust due to improved understanding, others became more skeptical after learning about limitations such as hallucinations, while several participants expressed a more nuanced or conditional trust.
+Overall, responses indicate that the survey influenced participants in different ways: some reported increased trust due to improved understanding, others became more sceptical after learning about limitations such as hallucinations, while several participants expressed a more nuanced or conditional trust.
 
 \section{Perceived Helpfulness Rankings of XAI Methods}
 \label{sec:rankings}
@@ -280,7 +271,7 @@ rank them from most to least helpful. Figure~\ref{fig:ranking} shows the distrib
  
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\linewidth]{diagrams/survey_diagrams/ranked_xai_methods.png}
+    \includegraphics[width=0.8\linewidth]{diagrams/survey_diagrams/ranked_xai_methods.png}
     \caption{Stacked bar chart of helpfulness rankings for the three XAI methods. Each
            participant ranked SHAP, CoT, and Confidence from most (1) to least (3)
            helpful.}
@@ -289,11 +280,11 @@ rank them from most to least helpful. Figure~\ref{fig:ranking} shows the distrib
  
 The juxtaposition of low trust with high perceived helpfulness for CoT is noteworthy.
 
-It suggests that participants found CoT \emph{informative}, it exposed reasoning steps they could evaluate, but that this very transparency revealed uncertainty or errors that reduced their trust in the answers. This pattern aligns with the concept of \emph{appropriate calibration} in human-centered XAI: an explanation that lowers inflated trust may still be considered useful if it aids decision-making \cite{zhang_effect_2020}.
+It suggests that participants found CoT \emph{informative}, it exposed reasoning steps they could evaluate, but that this very transparency revealed uncertainty or errors that reduced their trust in the answers. This pattern aligns with the concept of \emph{appropriate calibration} in human-centred XAI: an explanation that lowers inflated trust may still be considered useful if it aids decision-making \cite{zhang_effect_2020}.
 
 CoT can therefore be characterized as a \emph{high-information, trust-calibrating} explanation type, whereas confidence scores appear to function as a more \emph{trust-preserving} but lower-information signal.
  
-SHAP's low helpfulness ranking, despite producing intermediate trust scores, is consistent with prior literature suggesting that feature-importance visualizations are poorly understood by non-technical audiences \cite{chromik_i_2021, kaur_interpreting_2020}. Given the demographic composition of this sample (dominated by administrative, healthcare, and retired participants) the relatively technical nature of SHAP values likely contributed to its unfavorable reception.
+SHAP's low helpfulness ranking, despite producing intermediate trust scores, is consistent with prior literature suggesting that feature-importance visualizations are poorly understood by non-technical audiences \cite{chromik_i_2021, kaur_interpreting_2020}. Given the demographic composition of this sample (dominated by administrative, healthcare, and retired participants) the relatively technical nature of SHAP values likely contributed to its unfavourable reception.
 
 In addition, further generated result diagrams and plots can be found in Appendix~\ref{appendix:survey_result_addons}, while the complete dataset is available in the accompanying repository.
 
