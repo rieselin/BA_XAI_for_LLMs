@@ -6,6 +6,8 @@
 % !TEX TS-program = pdflatexmk
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
+
+% TODO: 4 or 5 dimensions of trust?
  
 \begin{quote}
 \textit{``Is it [the LLM-Model's output] not only correct, but actually, can I trust it?''}\\
@@ -16,12 +18,12 @@
 research curiosity to everyday tool with remarkable speed.
 Since the public release of ChatGPT in November 2022, awareness of AI-powered
 applications has spread widely: a 2025 survey by gfs.bern commissioned by the Swiss
-Federal Chancellery found that 96~\% of the Swiss population had heard of
+Federal Chancellery found that 96\% of the Swiss population had heard of
 LLM-based tools such as ChatGPT, Gemini, or Copilot \cite{bern_chance_2025}.
-Of those familiar with these applications, 59~\% reported using them at least
-occasionally, and 59~\% of users also employ them in a professional context
+Of those familiar with these applications, 59\% reported using them at least
+occasionally, and 59\% of users also employ them in a professional context
 \cite{bern_chance_2025}.
-These figures illustrate that LLMs are no longer a niche technology: they are embedded
+These figures illustrate that LLMs are no longer a niche technology; instead they are embedded
 in the daily routines of a broad and diverse population, the majority of whom are not
 AI specialists.
  
@@ -43,7 +45,7 @@ whether a user can assess \emph{when} to trust a system's output.
 Public awareness of this gap appears to be growing.
 The same gfs.bern study found that the Swiss population identifies transparency,
 accountability, and data security as the foremost conditions under which AI use
-by public institutions would be considered acceptable \cite{bern_chance_2025}.
+by public institutions would be considered acceptable.\cite{bern_chance_2025}
 This demand for interpretability is not confined to the public sector.
 Across domains, regulators, practitioners, and researchers are increasingly asking
 how AI systems can be made to explain their reasoning in terms that non-expert users
@@ -66,27 +68,24 @@ Research into LLM explainability has expanded rapidly in response to the broad
 deployment of these systems.
 Existing approaches can be broadly categorized along three axes.
  
-Post-hoc attribution methods, most notably SHAP \cite{lundberg_unified_2017} and LIME,
+\textbf{Post-hoc attribution methods}, most notably SHAP \cite{lundberg_unified_2017} and LIME\cite{ribeiro_why_2016},
 treat the model as a black box and assign importance scores to input features after
 a prediction has been made.
 Recent work has extended gradient-based, perturbation-based, surrogate-based, and
 decomposition-based techniques to the token level, allowing individual words or phrases
 to be highlighted as drivers of a model's output \cite{wu_usable_2025, smilkov_smoothgrad_2017, ancona_towards_2018, zhou_learning_2015, selvaraju_grad-cam_2020, binder_layer-wise_2016, grosse_studying_2023}.
  
-Intrinsic interpretability methods embed transparency into the model's own generation process.
+\textbf{Intrinsic interpretability methods} embed transparency into the model's own generation process.
 While rule-based models such as Generalized Additive Models \cite{caruana_intelligible_2015},
 Explainable Boosting Machines \cite{lou_accurate_2013}, and Interpretable Decision Sets
 \cite{lakkaraju_interpretable_2016} achieve transparency by design, these approaches are
 fundamentally incompatible with the dense, high-dimensional parameter spaces of neural
 networks; they cannot be applied to LLMs without abandoning the representational capacity
 that makes such models effective.
-
 Chain-of-Thought prompting is the most prominent example: by instructing a model
 to articulate its reasoning step by step before arriving at a conclusion, CoT makes
 the inferential process visible as part of the response itself \cite{wu_usable_2025}. 
-
-Both ChatGPT \cite{guan_monitoring_2025} and Claude \cite{lindsey_biology_nodate} surface step-by-step reasoning traces as a standard
-transparency mechanism, making CoT the most widely deployed explanation paradigm
+Both ChatGPT \cite{guan_monitoring_2025} and Claude \cite{lindsey_biology_nodate} surface step-by-step reasoning traces as a standard transparency mechanism, making CoT the most widely deployed explanation paradigm
 in production systems today.
 More technically ambitious variants operate directly on the model's internal hidden-state
 representations. For example, SelfIE \cite{chen_selfie_2024} enables LLMs to
@@ -94,7 +93,7 @@ interpret their own embeddings in natural language without additional training, 
 such approaches require white-box access to model weights and remain opaque to
 non-technical audiences.
  
-Human-centred and narrative explanations represent a third strand, in which
+\textbf{Human-centred and narrative explanations} represent a third strand, in which
 LLMs generate natural language accounts of their own behaviour, either through
 direct self-explanation or through a dedicated secondary model \cite{wu_usable_2025,you_gamifying_2024}.
 A notable sub-class are counterfactual explanations, which characterize a model's
@@ -107,7 +106,7 @@ Gamification frameworks have further explored how narrative and interactive
 presentation can increase engagement with explanations among lay users
 \cite{you_gamifying_2024}.
  
-Human-AI Collaboration (HAIC) research has drawn attention to additional dimensions
+\textbf{Human-AI Collaboration (HAIC)} research has drawn attention to additional dimensions
 of the problem, emphasizing that effective collaboration depends not only on the quality
 of explanations but also on mutual understanding, appropriate role allocation,
 and calibrated trust between the human and the system

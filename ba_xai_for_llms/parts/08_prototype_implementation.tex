@@ -1,7 +1,7 @@
 The empirical results presented in Chapter~\ref{ch:results} establish a clear tension at the
 heart of LLM explainability for lay users. Chain-of-Thought prompting emerged as the most
 preferred explanation method, receiving the highest number of first-place helpfulness rankings
-($n = 45$), yet simultaneously produced the lowest median trust scores (Mdn = 3.0)
+($n = 45$), yet simultaneously produced, together with Confidence Indication, the lowest median trust scores (Mdn = 3.0)
 of all methods tested. Confidence indication ranked a close second in perceived helpfulness
 ($n = 43$ first-place votes) while also yielding a median trust score of 3.0. SHAP, despite
 producing intermediate trust scores, was ranked least helpful by the majority of participants,
@@ -26,32 +26,31 @@ its advantages, carries structural limitations that make such a complementary si
 As established in Chapter~\ref{ch:theory}, XAI methods for LLMs can be broadly divided into post-hoc, intrinsic, and human-centred categories, with the latter consistently outperforming more formal representations in comprehension and perceived usefulness for non-expert audiences \cite{chromik_i_2021}, a pattern confirmed by the low helpfulness ranking of SHAP in the present study. Within the human-centred
 category, Chain-of-Thought prompting has emerged as the dominant paradigm and is the method most widely deployed in production systems, with both ChatGPT and Claude surfacing step-by-step reasoning traces as a transparency mechanism.
 
-An alternative to full CoT is the \emph{top-k} or highlight-based self-explanation, in which the model identifies only the few most important words or phrases. \cite{huang_can_2023} find that such LLM-generated self-explanations perform on par with traditional post-hoc methods such as LIME and occlusion saliency on faithfulness metrics, while being far cheaper to produce, since they are generated alongside the prediction itself rather than requiring thousands of additional model queries.
+An alternative to full CoT is the \emph{top-k} or highlight-based self-explanation, in which the model identifies only the few most important words or phrases. Such LLM-generated self-explanations perform on par with traditional post-hoc methods such as LIME and occlusion saliency on faithfulness metrics, while being far cheaper to produce, since they are generated alongside the prediction itself rather than requiring thousands of additional model queries \cite{huang_can_2023}.
 
 \subsection{The Faithfulness Problem}
 \label{sec:faithfulness_problem}
 
 Despite its advantages for lay users, CoT carries a fundamental structural limitation:
 \emph{faithfulness}, that is, whether the stated reasoning accurately represents the process
-by which the model actually arrived at its answer. This limitation helps explain the paradox
+by which the model actually arrived at its answer. This limitation helps illustrate the paradox
 observed in the study results, where CoT was simultaneously the most preferred and the
 least trust-inducing explanation.
 
-\cite{lanham_measuring_2023} propose a suite of tests for measuring CoT faithfulness by
-intervening on the stated reasoning and observing whether the model's final answer changes.
-Their findings reveal substantial variation across tasks: for some tasks the model changes its
+Using a suite of tests for measuring CoT faithfulness by
+intervening on the stated reasoning and observing whether the model's final answer changes, reveals a substantial variation across tasks: for some tasks the model changes its
 answer more than 60\% of the time when the chain of thought is truncated or corrupted; for
 others, the final answer is almost entirely unaffected, suggesting the reasoning is largely
 post-hoc. Crucially, they find that \textbf{faithfulness shows inverse scaling with model
 size}: on most tasks, larger and more capable models produce \emph{less} faithful reasoning
-than smaller ones, because more capable models can arrive at a confident answer without
-needing to rely on the generated trace.
+than smaller ones because more capable models can arrive at a confident answer without
+needing to rely on the generated trace.\cite{lanham_measuring_2023}
 
-The faithfulness problem has a deeper dimension beyond post-hoc rationalization. \cite{turpin_language_2023} demonstrate that CoT reasoning can be systematically biased by features of the input, such as the position of an answer option or the presence of a suggestive statement, while the stated reasoning provides a different explanation that does not reference the actual cause of the answer shift. The model therefore produces a plausible-sounding but misleading account of its own behaviour.
-This concern is compounded by findings on dishonesty in alignment: \cite{huang_dishonesty_2024} show that LLMs trained with RLHF learn to produce responses whose internal representations score low on honesty metrics, particularly in the initial tokens of a refusal or safety response, suggesting that output text can diverge from the model's internal state even during normal operation.
+The faithfulness problem has a deeper dimension beyond post-hoc rationalization.  CoT reasoning can be systematically biased by features of the input, such as the position of an answer option or the presence of a suggestive statement, while the stated reasoning provides a different explanation that does not reference the actual cause of the answer shift \cite{turpin_language_2023}. The model therefore produces a plausible-sounding but misleading account of its behaviour.
+This concern is compounded by findings on dishonesty in alignment: LLMs trained with RLHF learn to produce responses whose internal representations score low on honesty metrics, particularly in the initial tokens of a refusal or safety response, suggesting that output text can diverge from the model's internal state even during normal operation \cite{huang_dishonesty_2024}.
 
-A related issue concerns the granularity of LLM-generated attributions. \cite{huang_can_2023} observe that when ChatGPT assigns importance scores to individual words, the values cluster on a small number of rounded levels rather than exhibiting the fine-grained variation produced by traditional methods. The authors interpret this as a consequence of alignment: the model produces saliency values
-plausible for a human to generate, even though a human would not be able to introspect at that level of granularity. This may constitute a faithfulness and understandability trade-off, where the explanation is more accessible but less precisely tied to the model's computation.
+A related issue concerns the granularity of LLM-generated attributions. When ChatGPT assigns importance scores to individual words, the values cluster on a few rounded levels rather than exhibiting the fine-grained variation produced by traditional methods. This might be due to alignment: the model produces saliency values
+plausible for a human to generate, even though a human would not be able to introspect at that level of granularity. This may constitute a faithfulness and understandability trade-off, where the explanation is more accessible but less precisely tied to the model's computation \cite{huang_can_2023}.
 
 These considerations together characterize CoT as a high-information, trust-calibrating explanation type that is, however, structurally prone to unfaithfulness, particularly in larger models and on tasks where the model can answer confidently without explicit reasoning. The paradox identified in the present data,
 namely that CoT is simultaneously the most preferred and the least trust-inducing explanation, may therefore reflect an empirically appropriate response by participants: transparency about a reasoning process that contains errors or inconsistencies reduces trust, even if that reasoning is not a faithful account of what the model actually did.
@@ -65,7 +64,7 @@ prompting the model to summarize or repeat the information encoded at that layer
 
 SelfIE's interpretations additionally open avenues for targeted model control: \emph{Supervised Control} edits a single layer's parameters to redirect the model's internal concept representation, while \emph{Reinforcement Control} extends RLHF to the embedding level, allowing harmful knowledge to be erased without supervised targets. In one reported experiment, Reinforcement Control reduced the success rate of prompt-injection attacks eliciting harmful responses from 89\% to 4.4\%, while preserving 95.85\% of the model's factual accuracy. Despite these strengths, SelfIE requires white-box access to model weights and activations, operates at a layer-by-layer granularity that is opaque to non-technical users, and has so far been evaluated primarily on a single large open-source model family (LLaMA-2-Chat), leaving its generalisability across architectures and deployment contexts an open question.
 
-An alternative strand of research has explored \textbf{neural template} generation as a human-interpretable explanation mechanism for AI systems. \cite{li_generate_2020} propose NETE (Neural Template Explanations), a framework originally developed for explainable recommender systems that bridges template-based and free-form natural language generation. Rather than relying on manually predefined sentence templates, which constrain expressiveness and cannot adapt to item-specific features, NETE learns \emph{neural templates} from data via a novel Gated Fusion Recurrent Unit (GFRU). The GFRU runs two parallel GRU decoders: a \emph{context GRU} that generates the surrounding sentence structure, and a \emph{feature GRU} that inserts a specified item feature at the appropriate position; a gated fusion unit then combines their outputs at each decoding step. This architecture allows the system to generate targeted, controllable explanations such as \emph{``The ramen was delicious''} when given the feature \emph{ramen}, closely matching ground-truth user reviews. Empirically, NETE produces substantially more unique and feature-diverse explanations than prior neural generation baselines (Att2Seq, NRT), with improvements exceeding 100\% on BLEU-4 and ROUGE-2 n-gram metrics across hotel, restaurant, and movie review datasets.
+An alternative strand of research has explored \textbf{neural template} generation as a human-interpretable explanation mechanism for AI systems. NETE (Neural Template Explanations),is a framework originally developed for explainable recommender systems that bridges template-based and free-form natural language generation. Rather than relying on manually predefined sentence templates, which constrain expressiveness and cannot adapt to item-specific features, NETE learns \emph{neural templates} from data via a novel Gated Fusion Recurrent Unit (GFRU). The GFRU runs two parallel GRU decoders: a \emph{context GRU} that generates the surrounding sentence structure, and a \emph{feature GRU} that inserts a specified item feature at the appropriate position; a gated fusion unit then combines their outputs at each decoding step. This architecture allows the system to generate targeted, controllable explanations such as \emph{``The ramen was delicious''} when given the feature \emph{ramen}, closely matching ground-truth user reviews. Empirically, NETE produces substantially more unique and feature-diverse explanations than prior neural generation baselines (Att2Seq, NRT), with improvements exceeding 100\% on BLEU-4 and ROUGE-2 n-gram metrics across hotel, restaurant, and movie review datasets.\cite{li_generate_2020}
 
 However, the neural template paradigm carries several limitations that constrain its transferability to general-purpose LLM explainability. First, NETE requires structured training data in which each user-item interaction is paired with both a ground-truth feature label and a reference explanation sentence, a requirement that is not met in most LLM deployment settings. Second, the GFRU architecture is task-specific: it is designed to slot a single feature word into a recommendation-oriented sentence template, and does not straightforwardly generalize to the open-ended reasoning traces or multi-step factual answers that characterize LLM outputs. Third, like CoT, the generated text remains an output-level artefact and carries no guarantee of faithfulness to the model's internal computation; the template constrains surface form but not the accuracy of the underlying reasoning.
 
@@ -101,7 +100,7 @@ making the model's reasoning transparent while keeping it simple to understand f
  
 \subsection{Design Rationale}
  
-The prototype moves away from a forced JSON output format used in the survey app (Section~\ref{sec:stimulusGeneration}) of CoT extraction, which proved brittle and difficult to parse consistently. Instead, steps are structured as a simpler, delimited sequence, which is both easier for the model to produce reliably and easier to parse programmatically. Each reasoning step is assigned an
+The prototype moves away from a forced JSON output format used in the survey app (Section~\ref{sec:stimulusGeneration}) of CoT extraction, which proved brittle and difficult to parse consistently. Instead, steps are structured as a simpler, delimited sequence, which is both easier for the model to produce reliably and of similar ease to parse programmatically. Each reasoning step is assigned an
 average confidence score, derived from the token-level log-probabilities returned by the
 underlying language model. Steps whose mean confidence falls below a user-configurable
 threshold are automatically regenerated; users may also trigger manual regeneration of
@@ -158,7 +157,7 @@ the processing classes together with their methods.
 \subsubsection{Data and Schema Classes}
 
 The request pipeline begins with a \localtt{ReasoningRequest}, which carries the user's
-input string, a confidence threshold (float), and a maximum number of regeneration
+input string, a confidence threshold, and a maximum number of regeneration
 attempts. A \localtt{ReasoningRequest} is extended by \localtt{RegenerationRequest}, which
 additionally holds the list of reasoning steps, the token-level confidence data for each
 step (\localtt{List[TokenConfidence]}), the regeneration status of each step
@@ -178,7 +177,7 @@ answer (\localtt{StepConfidence}), and the regeneration status of every step and
 final answer.
  
 Two auxiliary value types support the confidence representation. A
-\localtt{TokenConfidence} pairs a decoded token string with its probability (float). A
+\localtt{TokenConfidence} pairs a decoded token string with its probability. A
 \localtt{StepConfidence} groups an entire reasoning step with its token list and the
 mean confidence across those tokens. Finally, \localtt{RegenerationType} is an enumeration
 with three values: \localtt{NOT\_REGENERATED}, \localtt{MANUAL}, and \localtt{AUTO},
@@ -190,7 +189,7 @@ The \localtt{model\_loader} module maintains a singleton model and tokenizer
 (\localtt{\_model}, \localtt{\_tokenizer}) together with an async lock (\localtt{\_model\_Lock})
 and exposes a single \localtt{get\_model()} method that returns both objects.
  
-Prompt construction is centralised in \localtt{prompt\_builder}, which provides three
+Prompt construction is centralised in the \localtt{prompt\_builder}, which provides three
 template methods: \localtt{build\_reasoning\_prompt()} for the initial CoT query,
 \localtt{build\_step\_regen\_prompt()} for single-step regeneration, and
 \localtt{build\_final\_regen\_prompt()} for regenerating the concluding answer.

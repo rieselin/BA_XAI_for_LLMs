@@ -11,7 +11,7 @@ This chapter presents the findings of the user study conducted to evaluate how d
 explainability methods affect user trust in large language model (LLM) outputs. The study
 compared five conditions: a plain LLM baseline, Chain-of-Thought reasoning (CoT), SHAP
 feature attributions, confidence scores (CONF), and an explanation on the working of an LLM.
-Trust was measured across five Likert-scaled items (1\,=\,strongly disagree,
+Trust was measured across five Likert scale items (1\,=\,strongly disagree,
 5\,=\,strongly agree). The following sections first characterize the participant sample,
 then report trust outcomes per method, and finally describe the relative helpfulness
 rankings provided by participants.
@@ -69,7 +69,7 @@ security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
 \end{figure}
  
 Among LLM users, ChatGPT (OpenAI) was by far the most widely tried model ($n = 152$),
-followed by Gemini (Google DeepMind, $n = 85$) and Microsoft Copilot ($n = 52$)(Figure~\ref{fig:llms_tried}). Claude (Anthropic) had been used by 12 participants. This distribution indicates that the sample had broad, realistic exposure to current commercial LLMs, though it was skewed toward the most mainstream tools.
+followed by Gemini (Google DeepMind, $n = 85$) and Copilot (Microsoft, $n = 52$). Claude (Anthropic) had been used by 12 participants (Figure~\ref{fig:llms_tried}). This distribution indicates that the sample had broad, realistic exposure to current commercial LLMs, though it was skewed toward the most mainstream tools.
  
 \begin{figure}[htbp]
   \centering
@@ -134,9 +134,9 @@ absolute population of secondary-level respondents in the panel.
 Figure~\ref{fig:boxplot_method} presents aggregated trust distributions for each of the
 five methods. The plain LLM baseline achieved the highest median trust (Mdn\,=\,4.0) and
 the tightest interquartile range, suggesting that in the absence of any explanation,
-participants defaulted to moderate-to-high trust in the system's outputs. The Chain of Thought (CoT) produced the \emph{lowest} median trust score (Mdn\,=\,3.0) across all methods, indicating that
-exposing the model's reasoning process frequently caused participants to revise their trust
-\emph{downward}. SHAP (Mdn\,=\,3.4) and the "How an LLM works" explanation (EXPL) (Mdn\,=\,3.6) occupied intermediate positions, while the confidence score (CONF) (Mdn\,=\,3.0) also remained below the LLM baseline.
+participants defaulted to moderate-to-high trust in the system's outputs. The methods Chain-of-Thought (CoT) and Confidence (CONF) produced the \emph{lowest} median trust score (Mdn\,=\,3.0) across all methods, indicating that
+exposing the model's reasoning process frequently or confidence scores caused participants to revise their trust
+\emph{downward}. SHAP (Mdn\,=\,3.4) and the "How an LLM works" explanation (EXPL) (Mdn\,=\,3.6) also remained below the LLM baseline.
  
 \begin{figure}[htbp]
   \centering
@@ -162,7 +162,7 @@ aspects across methods. Three patterns stand out:
   \item \textbf{EXPL outperforms SHAP and CONF on most aspects.} Particularly for
         perceived competence (3.9 vs.\ 3.4 for SHAP) and for reliability (3.7 vs.\ 3.3).
   \item \textbf{Participants have a consistent high trust that ``I believe the system has
-        tried to provide accurate answers''} which is not something a generative LLM does.
+        tried to provide accurate answers''} which is not something a generative LLM is capable of, instead this suggests a high antropomorphisation of LLMs.
 \end{enumerate}
  
 \begin{figure}[htbp]
@@ -198,8 +198,8 @@ attribution} is persistently rated more charitably than \emph{practical reliance
 Figure~\ref{fig:individual} plots per-participant trust trajectories across methods.
 Although considerable individual heterogeneity is visible, the majority of lines converge
 around levels 3 and 4, and the dip at CoT is apparent even at the individual level.
-Participants who began with high trust under LLM (level\,5) showed the sharpest drops at
-CoT, while those who started at level\,3 or below were less affected. This suggests a
+Participants who began with high trust under LLM (level 5) showed the sharpest drops at
+CoT, while those who started at level 3 or below were less affected. This suggests a
 \emph{prior-expectation effect}: CoT disrupts the trust of initially confident users more
 than that of sceptical ones.
  
@@ -212,7 +212,7 @@ systematically higher or lower trust, possibly because heavier users have formed
 nuanced, context-dependent judgments. Median trust remained consistently near 4.0 across
 experience levels for most aspects, suggesting that prior LLM exposure does not
 substantially moderate the effect of explanation type on trust.
- 
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
