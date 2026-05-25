@@ -40,14 +40,14 @@ Figure~\ref{fig:xai_categories} illustrates the taxonomy of XAI methods describe
 
 \textbf{Human-AI Collaboration frameworks} such as HITL and HOTL represent a system-level design philosophy rather than a discrete, implementable explanation method, and therefore fall outside the scope of what can be operationalized as a survey stimulus.
 
-\textbf{Gradient-based} and \textbf{decomposition-based} post-hoc methods such as SmoothGrad \cite{smilkov_smoothgrad_2017} and Layer-wise Relevance Propagation \cite{binder_layer-wise_2016} require access to the model's internal gradient computations and are not straightforwardly applicable in a black-box or quantized inference setting. They were therefore excluded in favour of the model-agnostic SHAP approximation.
+\textbf{Gradient-based} and \textbf{decomposition-based} post-hoc methods such as SmoothGrad \cite{smilkov_smoothgrad_2017} and Layer-wise Relevance Propagation \cite{binder_layer-wise_2016} require access to the model's internal gradient computations and are not straightforwardly applicable in a black-box or quantized inference setting.
 
 The three methods that were selected each satisfy all three criteria and together span non-overlapping explanation paradigms: post-hoc attribution, process transparency, and uncertainty quantification. Based on this categorization, the selected methods are: SHAP-based feature attribution combined with counterfactual reasoning, Chain-of-Thought (CoT) prompting, and confidence indication. As shown in Figure~\ref{fig:methodology_overview}, each method was implemented independently to allow their effects on user trust to be assessed separately.
 
 \paragraph{SHAP and Counterfactual Reasoning}
 SHAP (SHapley Additive exPlanations) \cite{lundberg_unified_2017} was selected as the representative of the post-hoc attribution category. Its grounding in cooperative game theory gives it a principled consistency guarantee that is absent from simpler perturbation heuristics, and its KernelExplainer variant is model-agnostic, making it applicable to a quantized open-source LLM without requiring gradient access. 
 
-Among the post-hoc sub-families described in Section~\ref{sec:xai_categories}, surrogate-based and decomposition-based methods were considered less suitable: surrogate models introduce an additional layer of approximation whose fidelity is difficult to communicate to lay users, while decomposition methods such as LRP depend on the specific network architecture and are not straightforwardly applicable to transformer-based LLMs. 
+Among the post-hoc sub-families described in Section~\ref{sec:xai_categories}, surrogate-based and decomposition-based methods were considered less suitable: surrogate models introduce an additional layer of approximation whose fidelity is difficult to communicate to lay users, while decomposition methods such as Layer-wise Relevance Propagation (LRP) depend on the specific network architecture and are not straightforwardly applicable to transformer-based LLMs. 
 
 SHAP scores are presented visually to indicate which parts of a prompt most strongly influenced the model's response. This is complemented by counterfactual reasoning, which illustrates how a change in the input would have altered the output, thereby offering an intuitive causal framing that bridges the gap between the technical attribution scores and a user-interpretable account of model behaviour. The implementation is described in Section~\ref{sec:shap} and a sample output is reproduced in Appendix~\ref{appendix:survey}.
 
@@ -75,7 +75,7 @@ The apps primary purpose was to generate the explanation outputs shown to survey
     \makebox[\textwidth][c]{%
     \includegraphics[width=1.\linewidth]{img/prototype_architecture.drawio.png}
     }
-    \caption{Backend Architecture}
+    \caption{Backend Architecture (called by Frontend)}
     \label{fig:prototype_backend}
 \end{figure}
 
@@ -219,7 +219,7 @@ The first category covers queries with potential legal implications, such as que
 \paragraph{Trust Measurement Instrument}
 \label{sec:trust_instrument}
 
-The construct of trust was operationalized based on a review of relevant literature on human-computer trust, as discussed in Section~\ref{sec:trust_theory}. Drawing on established theoretical distinctions, the instrument was designed to capture five different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources. \cite{castelfranchi_trust_2001, falcone_social_2001, jones_concept_2002}
+The construct of trust was operationalized based on a review of relevant literature on human-computer trust, as discussed in Section~\ref{sec:trust_theory}. Drawing on established theoretical distinctions, the instrument was designed to capture four different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources. \cite{castelfranchi_trust_2001, falcone_social_2001, jones_concept_2002}
 
 From these dimensions, a five-item scale was derived to assess trust responses to the system's outputs. Each item was rated on a five-point Likert scale ranging from \textit{stimme überhaupt nicht zu} (strongly disagree) to \textit{stimme voll zu} (strongly agree). The items were as follows:
 
@@ -231,7 +231,7 @@ From these dimensions, a five-item scale was derived to assess trust responses t
     \item \textit{Ich würde mich bei diesen Antworten auf die enthaltenen Informationen verlassen.} (I would rely on the information contained in these answers.)
 \end{itemize}
 
-These items collectively capture multiple facets of trust, including perceived accuracy, reliability, competence, intentionality, and behavioural reliance. This repeated-measures design allows the effect of each XAI method on the full trust construct to be assessed across all five dimensions simultaneously.
+These items collectively capture multiple facets of trust, including perceived accuracy, reliability, competence, intentionality, and behavioural reliance. This repeated-measures design allows the effect of each XAI method on the full trust construct to be assessed across all four dimensions simultaneously.
 
 \paragraph{Randomization into XAI Groups}
 \label{sec:random_xai_group}
@@ -243,7 +243,7 @@ After the baseline trust measurement, participants are informed about the concep
 
 Following the XAI exposure and trust ratings, participants are randomly assigned to receive either a short video or a written text explanation of how large language models work, with both formats covering equivalent content in approximately three minutes. 
 
-The aim is to convey a functional understanding of LLMs sufficient to contextualize the tasks they have completed, while avoiding overly technical language. Crucially, both formats emphasize that LLMs operate through statistical pattern matching rather than genuine understanding or intelligence, in order to correct potential anthropomorphisation. Based on the mentioned criteria, this \href{https://www.youtube.com/watch?v=8Rumn1O-RkY}{\underline{video}} and this \href{https://axels-technikblog.de/was-ist-ein-llm-large-language-models-einfach-erklaert/}{\underline{textual explanation}} were chosen.
+The aim is to convey a functional understanding of LLMs sufficient to contextualize the tasks they have completed, while avoiding overly technical language. Crucially, both formats emphasize that LLMs operate through statistical pattern matching rather than genuine understanding or intelligence, in order to correct potential anthropomorphisation. Based on the mentioned criteria, this \href{https://www.youtube.com/watch?v=8Rumn1O-RkY}{\underline{video}}\footnote{\url{https://www.youtube.com/watch?v=8Rumn1O-RkY}, accessed March 2026.} and this \href{https://axels-technikblog.de/was-ist-ein-llm-large-language-models-einfach-erklaert/}{\underline{textual explanation}}\footnote{\url{https://axels-technikblog.de/was-ist-ein-llm-large-language-models-einfach-erklaert/}, accessed March 2026.} were chosen.
 A final trust measurement is taken after this explanation, allowing any additional effect of the explanatory format, whether video or text, to be assessed.
 
 \paragraph{Reflection and Close}
