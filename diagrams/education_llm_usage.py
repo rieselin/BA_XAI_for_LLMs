@@ -4,7 +4,7 @@ import sqlite3
 import numpy as np
 
 # --- DB CONNECTION ---
-conn = sqlite3.connect("database.db")
+conn = sqlite3.connect("../survey/database.db")
 
 # --- LOAD DATA ---
 df = pd.read_sql("SELECT * FROM data_project", conn)
@@ -32,7 +32,7 @@ employment_role_labels = {
     "employment_role_expert": "Specialist / Expert",
     "employment_role_project_manager": "Project Manager",
     "employment_role_ingenieur": "Technical Staff / Engineer",
-    "employment_role_sales": "Sales",
+    "employment_role_sale": "Sales",
     "employment_role_marketing": "Marketing / Communications",
     "employment_role_administration": "Administration",
     "employment_role_research": "Research & Development",
@@ -82,8 +82,10 @@ role_counts = df[roles].sum().sort_values(ascending=False)
 role_counts.index = role_counts.index.map(lambda x: employment_role_labels.get(x, x))
 
 role_counts.plot(kind='barh', figsize=(12,8), color='coral')
-plt.xlabel("Number of LLM Users")
-plt.title("LLM Usage by Employment Role")
+plt.xlabel("Number of LLM Users", fontsize=14)
+plt.title("LLM Usage by Employment Role", fontsize=16)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
 plt.gca().invert_yaxis()
 plt.show()
 
