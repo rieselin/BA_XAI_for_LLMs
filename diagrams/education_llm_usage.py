@@ -12,20 +12,27 @@ df = pd.read_sql("SELECT * FROM data_project", conn)
 # --- FILTER ---
 df = df[(df['used_llm'] != 0) & (df['quota'] != 0)]
 
-# --- PLOT: LLM usage per schooling ---
-school_counts = df.groupby('schooling')['used_llm'].sum()
-
-schooling_order = ["Kein Abschluss", "Hauptschulabschluss", "Realschulabschluss", "Fachhochschulreife", "Abitur", "Bachelor-Abschluss", "Master-Abschluss"]
-
-school_counts = school_counts.reindex(schooling_order)
-school_counts.plot(kind='bar', figsize=(10,6), color='lightgreen')
-plt.xlabel("Education Level")
-plt.ylabel("Number of LLM Users")
-plt.title("LLM Usage per Education Level")
-plt.xticks(rotation=45)
-plt.show()
-
 # --- LABEL MAPPINGS ---
+schooling_order = [
+    "Kein Abschluss",
+    "Hauptschulabschluss",
+    "Realschulabschluss",
+    "Fachhochschulreife",
+    "Abitur",
+    "Bachelor-Abschluss",
+    "Master-Abschluss"
+]
+
+schooling_labels = {
+    "Kein Abschluss":        "No Qualification",
+    "Hauptschulabschluss":   "Lower Secondary\nCertificate",
+    "Realschulabschluss":    "Intermediate Secondary\nCertificate",
+    "Fachhochschulreife":    "University of Applied Sciences\nEntrance Qualification",
+    "Abitur":                "University Entrance\nQualification",
+    "Bachelor-Abschluss":    "Bachelor's Degree",
+    "Master-Abschluss":      "Master's Degree"
+}
+
 employment_role_labels = {
     "employment_role_ceo": "CEO / Executive",
     "employment_role_management": "Management / Executive",
@@ -73,7 +80,21 @@ sector_labels = {
     "sector_other": "Other"
 }
 
-# --- GET EMPLOYMENT ROLE COLUMNS ---
+# --- PLOT: LLM usage per schooling ---
+school_counts = df.groupby('schooling')['used_llm'].sum()
+school_counts = school_counts.reindex(schooling_order)
+school_counts.index = school_counts.index.map(lambda x: schooling_labels.get(x, x))
+
+school_counts.plot(kind='barh', figsize=(12,8), color='lightgreen')
+plt.ylabel("Education Level", fontsize=14)
+plt.xlabel("Number of LLM Users", fontsize=14)
+plt.title("LLM Usage per Education Level", fontsize=16)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.gca().invert_yaxis()
+plt.show()
+
+# --- PLOT: LLM usage by employment role ---
 roles = [col for col in df.columns if col.startswith('employment_role_')]
 for col in roles:
     df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
@@ -89,15 +110,18 @@ plt.yticks(fontsize=12)
 plt.gca().invert_yaxis()
 plt.show()
 
-# --- GET SECTOR COLUMNS ---
+# --- PLOT: LLM usage by sector ---
 sectors = [col for col in df.columns if col.startswith('sector_')]
 for col in sectors:
     df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
 
-sector_counts = df[sectors].sum().sort_values(ascending=True)
+sector_counts = df[sectors].sum().sort_values(ascending=False)
 sector_counts.index = sector_counts.index.map(lambda x: sector_labels.get(x, x))
 
 sector_counts.plot(kind='barh', figsize=(12,8), color='orchid')
-plt.xlabel("Number of LLM Users")
-plt.title("LLM Usage by Sector")
+plt.xlabel("Number of LLM Users", fontsize=14)
+plt.title("LLM Usage by Sector", fontsize=16)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.gca().invert_yaxis()
 plt.show()
