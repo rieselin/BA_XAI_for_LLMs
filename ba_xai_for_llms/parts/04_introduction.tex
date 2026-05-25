@@ -6,8 +6,6 @@
 % !TEX TS-program = pdflatexmk
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
-
-% TODO: 4 or 5 dimensions of trust?
  
 \begin{quote}
 \textit{``Is it [the LLM-Model's output] not only correct, but actually, can I trust it?''}\\
@@ -28,9 +26,7 @@ in the daily routines of a broad and diverse population, the majority of whom ar
 AI specialists.
  
 Widespread adoption, however, does not imply well-calibrated trust.
-LLMs are susceptible to two distinct failure modes (dishonesty, in which a model
-contradicts knowledge it has acquired during training, and hallucination, in which it
-fabricates information entirely \cite{wu_usable_2025}), yet their outputs are delivered
+LLMs are susceptible to several distinct failure modes (dishonesty, bias, neglect of relevant factors and hallucination \cite{wu_usable_2025}), yet their outputs are delivered
 with the same confident fluency regardless of whether they are accurate or not.
 Users who cannot easily distinguish a correct answer from a confident but incorrect one
 risk placing trust where it is not warranted; conversely, users who have experienced
@@ -45,7 +41,7 @@ whether a user can assess \emph{when} to trust a system's output.
 Public awareness of this gap appears to be growing.
 The same gfs.bern study found that the Swiss population identifies transparency,
 accountability, and data security as the foremost conditions under which AI use
-by public institutions would be considered acceptable.\cite{bern_chance_2025}
+by public institutions would be considered acceptable \cite{bern_chance_2025}.
 This demand for interpretability is not confined to the public sector.
 Across domains, regulators, practitioners, and researchers are increasingly asking
 how AI systems can be made to explain their reasoning in terms that non-expert users
@@ -180,7 +176,7 @@ It selects and implements three XAI approaches (SHAP-based token attribution com
 with counterfactual reasoning, Chain-of-Thought prompting, and confidence
 indication) in a functional web-based demonstrator running on an open-source LLM.
 It designs and conducts an empirical user study with \(n = 175\) prior LLM users,
-measuring trust across five dimensions before and after exposure to each explanation
+measuring trust across four aspects before and after exposure to each explanation
 method.
 Finally, it synthesizes the results into a prototype that combines the two
 best-performing methods and derives concrete design recommendations for

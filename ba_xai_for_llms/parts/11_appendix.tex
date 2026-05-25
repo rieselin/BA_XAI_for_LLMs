@@ -12,11 +12,13 @@
 % First page with title on same page
 \begin{center}
   \centering
-    \includegraphics[page=1,width=1\textwidth]
-    {resources/full_questionnaire_cropped.pdf}
+  \makebox[\textwidth][c]{%
+
+    \includegraphics[page=1,width=1.3\textwidth]    {resources/full_questionnaire_cropped.pdf}
+    }
 \end{center}
 %TODO: uncomment for final render
-%\includepdf[pages={2-30,32-},scale=0.99]{resources/full_questionnaire_cropped}
+\includepdf[pages={2-30,32-},scale=0.99]{resources/full_questionnaire_cropped}
 
 \section{Additional Survey Results}
 \label{appendix:survey_result_addons}
