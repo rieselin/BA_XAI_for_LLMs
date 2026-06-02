@@ -17,7 +17,8 @@ dependencies = [
     "shap (>=0.50.0,<0.51.0)",
     "pydantic (>=2.12.5,<3.0.0)",
     "fastapi (>=0.134.0,<0.135.0)",
-    "uvicorn[standard] (>=0.41.0,<0.42.0)"
+    "uvicorn[standard] (>=0.41.0,<0.42.0)",
+    "seaborn (>=0.13.2,<0.14.0)"
 ]
 
 [tool.poetry]

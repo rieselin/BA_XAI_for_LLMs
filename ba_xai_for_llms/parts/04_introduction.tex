@@ -8,7 +8,7 @@
 % !TEX root = ../doc.tex
  
 \begin{quote}
-\textit{``Is it [the GenAI Model's output] not only correct, but actually, can I trust it?''}\\
+\textit{``Is it [the LLM-Model's output] not only correct, but actually, can I trust it?''}\\
 \hspace*{\fill}--- Thomas Kuster, Partner at LEXR, GenAI ZH 2026
 \end{quote}
  
@@ -16,23 +16,21 @@
 research curiosity to everyday tool with remarkable speed.
 Since the public release of ChatGPT in November 2022, awareness of AI-powered
 applications has spread widely: a 2025 survey by gfs.bern commissioned by the Swiss
-Federal Chancellery found that 96~percent of the Swiss population had heard of
-LLM-based tools such as ChatGPT, Gemini, or Co-Pilot \cite{bern_chance_2025}.
-Of those familiar with these applications, 59~percent reported using them at least
-occasionally, and 59~percent of users also employ them in a professional context
+Federal Chancellery found that 96\% of the Swiss population had heard of
+LLM-based tools such as ChatGPT, Gemini, or Copilot \cite{bern_chance_2025}.
+Of those familiar with these applications, 59\% reported using them at least
+occasionally, and 59\% of users also employ them in a professional context
 \cite{bern_chance_2025}.
-These figures illustrate that LLMs are no longer a niche technology: they are embedded
+These figures illustrate that LLMs are no longer a niche technology; instead they are embedded
 in the daily routines of a broad and diverse population, the majority of whom are not
 AI specialists.
  
 Widespread adoption, however, does not imply well-calibrated trust.
-LLMs are susceptible to two distinct failure modes (dishonesty, in which a model
-contradicts knowledge it has acquired during training, and hallucination, in which it
-fabricates information entirely \cite{wu_usable_2025}), yet their outputs are delivered
+LLMs are susceptible to several distinct failure modes (dishonesty, bias, neglect of relevant factors and hallucination \cite{wu_usable_2025}), yet their outputs are delivered
 with the same confident fluency regardless of whether they are accurate or not.
 Users who cannot easily distinguish a correct answer from a confident but incorrect one
 risk placing trust where it is not warranted; conversely, users who have experienced
-model errors first-hand may develop excessive skepticism that prevents them from
+model errors first-hand may develop excessive scepticism that prevents them from
 benefiting from the technology's genuine capabilities.
 The stakes are especially high in domains such as law and medicine, where decisions
 grounded in incorrect information can carry serious personal consequences.
@@ -50,10 +48,10 @@ how AI systems can be made to explain their reasoning in terms that non-expert u
 can act on.
  
 Explainable AI (XAI) has emerged as the principal research response to this challenge.
-XAI encompasses methods and techniques designed to make AI behavior more
+XAI encompasses methods and techniques designed to make AI behaviour more
 interpretable, spanning post-hoc attribution methods such as SHAP and LIME,
 intrinsic approaches such as Chain-of-Thought (CoT) prompting, and
-human-centered techniques that leverage LLMs' own language generation capabilities
+human-centred techniques that leverage LLMs' own language generation capabilities
 to produce natural language explanations \cite{wu_usable_2025}.
 Yet despite the breadth of the XAI literature, a meaningful gap remains:
 most existing work is oriented towards technical audiences, and there is limited
@@ -66,27 +64,24 @@ Research into LLM explainability has expanded rapidly in response to the broad
 deployment of these systems.
 Existing approaches can be broadly categorized along three axes.
  
-Post-hoc attribution methods, most notably SHAP \cite{lundberg_unified_2017} and LIME,
+\textbf{Post-hoc attribution methods}, most notably SHAP \cite{lundberg_unified_2017} and LIME\cite{ribeiro_why_2016},
 treat the model as a black box and assign importance scores to input features after
 a prediction has been made.
 Recent work has extended gradient-based, perturbation-based, surrogate-based, and
 decomposition-based techniques to the token level, allowing individual words or phrases
 to be highlighted as drivers of a model's output \cite{wu_usable_2025, smilkov_smoothgrad_2017, ancona_towards_2018, zhou_learning_2015, selvaraju_grad-cam_2020, binder_layer-wise_2016, grosse_studying_2023}.
  
-Intrinsic interpretability methods embed transparency into the model's own generation process.
+\textbf{Intrinsic interpretability methods} embed transparency into the model's own generation process.
 While rule-based models such as Generalized Additive Models \cite{caruana_intelligible_2015},
 Explainable Boosting Machines \cite{lou_accurate_2013}, and Interpretable Decision Sets
 \cite{lakkaraju_interpretable_2016} achieve transparency by design, these approaches are
 fundamentally incompatible with the dense, high-dimensional parameter spaces of neural
 networks; they cannot be applied to LLMs without abandoning the representational capacity
 that makes such models effective.
-
 Chain-of-Thought prompting is the most prominent example: by instructing a model
 to articulate its reasoning step by step before arriving at a conclusion, CoT makes
 the inferential process visible as part of the response itself \cite{wu_usable_2025}. 
-
-Both ChatGPT \cite{noauthor_chatgpt_nodate} and Claude \cite{noauthor_claude_nodate} surface step-by-step reasoning traces as a standard
-transparency mechanism, making CoT the most widely deployed explanation paradigm
+Both ChatGPT \cite{guan_monitoring_2025} and Claude \cite{lindsey_biology_nodate} surface step-by-step reasoning traces as a standard transparency mechanism, making CoT the most widely deployed explanation paradigm
 in production systems today.
 More technically ambitious variants operate directly on the model's internal hidden-state
 representations. For example, SelfIE \cite{chen_selfie_2024} enables LLMs to
@@ -94,8 +89,8 @@ interpret their own embeddings in natural language without additional training, 
 such approaches require white-box access to model weights and remain opaque to
 non-technical audiences.
  
-Human-centered and narrative explanations represent a third strand, in which
-LLMs generate natural language accounts of their own behavior, either through
+\textbf{Human-centred and narrative explanations} represent a third strand, in which
+LLMs generate natural language accounts of their own behaviour, either through
 direct self-explanation or through a dedicated secondary model \cite{wu_usable_2025,you_gamifying_2024}.
 A notable sub-class are counterfactual explanations, which characterize a model's
 decision boundary by describing the minimal change to an input that would alter
@@ -107,7 +102,7 @@ Gamification frameworks have further explored how narrative and interactive
 presentation can increase engagement with explanations among lay users
 \cite{you_gamifying_2024}.
  
-Human-AI Collaboration (HAIC) research has drawn attention to additional dimensions
+\textbf{Human-AI Collaboration (HAIC)} research has drawn attention to additional dimensions
 of the problem, emphasizing that effective collaboration depends not only on the quality
 of explanations but also on mutual understanding, appropriate role allocation,
 and calibrated trust between the human and the system
@@ -156,6 +151,7 @@ such signals, and understanding which of them work for whom and in what
 context is therefore a practically urgent question.
  
 \section{Research Questions and Thesis Contribution}
+\label{sec:research_questions_and_thesis}
  
 Building on the motivation outlined above, this thesis addresses the following
 research questions:
@@ -177,10 +173,10 @@ research questions:
 To answer these questions, the thesis makes the following contributions.
 It reviews the relevant theoretical foundations spanning LLM architectures, XAI taxonomies, and the psychology of trust in AI systems.
 It selects and implements three XAI approaches (SHAP-based token attribution combined
-with counterfactual reasoning, Chain-of -Thought prompting, and confidence
+with counterfactual reasoning, Chain-of-Thought prompting, and confidence
 indication) in a functional web-based demonstrator running on an open-source LLM.
 It designs and conducts an empirical user study with \(n = 175\) prior LLM users,
-measuring trust across five dimensions before and after exposure to each explanation
+measuring trust across four aspects before and after exposure to each explanation
 method.
 Finally, it synthesizes the results into a prototype that combines the two
 best-performing methods and derives concrete design recommendations for
@@ -194,5 +190,6 @@ The remainder of this thesis is organized as follows
     \item \hyperref[ch:theory]{Chapter 2} provides the theoretical background, covering the architecture and life-cycle of LLMs, the taxonomy of XAI methods, and the multidimensional construct of trust in AI systems.
     \item \hyperref[ch:methods]{Chapter 3} describes the methodology, including the selection of the LLM and XAI methods, the implementation of the demonstrator, and the design of the user study.
     \item \hyperref[ch:results]{Chapter 4} presents the empirical results, including sample characteristics, trust outcomes per explanation method, and perceived helpfulness rankings.
-    \item \hyperref[ch:discussion]{Chapter 5} discusses the findings, limitations, and future research directions.
+    \item \hyperref[ch:prototype]{Chapter 5} Describes the implementation of a prototype that using a combination of the best rated XAI methods.
+    \item \hyperref[ch:discussion]{Chapter 6} Discusses the findings, limitations, and future research directions.
 \end{itemize}

@@ -6,5 +6,10 @@
 % !TEX TS-program = pdflatexmk
 % !TEX encoding = UTF-8 Unicode
 % !TEX root = ../doc.tex
+Large Language Models (LLMs) are now used daily by millions of non-specialist users, yet they remain prone to hallucination and overconfident outputs, making trust calibration a practical challenge. This study investigates how three Explainable AI (XAI) methods—Chain-of-Thought (CoT) prompting, SHAP-based token attribution with counterfactual reasoning, and confidence indication—affect lay users' trust in LLM outputs. 
 
-\lipsum[1]
+A functional web-based demonstrator running on Llama~3.1 was built to generate explanation stimuli across legal, medical, and general factual queries; an empirical user study with $n = 175$ prior LLM users then measured trust across five Likert-scale items before and after exposure to each method, using a repeated-measures design with randomisation into single-method and all-methods conditions. 
+
+All three XAI methods reduced trust relative to a plain LLM baseline, reflecting appropriate recalibration rather than failure. CoT received the highest perceived helpfulness rankings while producing the lowest median trust scores, suggesting its transparency exposes errors that correctly deflate inflated trust; confidence indication achieved comparable helpfulness at lower information overhead; SHAP produced intermediate trust scores but was ranked least helpful, consistent with prior literature on the inaccessibility of feature-importance visualisations to non-technical audiences. 
+
+A combined CoT and per-step confidence prototype is presented, targeting the tension between reasoning transparency and lay interpretability.

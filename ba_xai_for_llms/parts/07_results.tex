@@ -11,7 +11,7 @@ This chapter presents the findings of the user study conducted to evaluate how d
 explainability methods affect user trust in large language model (LLM) outputs. The study
 compared five conditions: a plain LLM baseline, Chain-of-Thought reasoning (CoT), SHAP
 feature attributions, confidence scores (CONF), and an explanation on the working of an LLM.
-Trust was measured across five Likert-scaled items (1\,=\,strongly disagree,
+Trust was measured across five Likert scale items (1\,=\,strongly disagree,
 5\,=\,strongly agree). The following sections first characterize the participant sample,
 then report trust outcomes per method, and finally describe the relative helpfulness
 rankings provided by participants.
@@ -45,41 +45,35 @@ among them, the most frequently cited barrier was \emph{not yet having seen a ne
 ($n=37$), followed by a preference for traditional search engines ($n=21$) and privacy or
 security concerns ($n=17$) (Figure~\ref{fig:nonusers}).
  
-\begin{figure}[htbp]
+\begin{center}
+\begin{minipage}{0.48\textwidth}
   \centering
-
-  \begin{subfigure}{0.45\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{diagrams/survey_diagrams/know_llms.png}
-    \caption{Self-reported familiarity with generative AI tools}
-    \label{fig:familiar}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}{0.48\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
-    \caption{Self-reported prior use of a generative AI tool at least once.}
-    \label{fig:used}
-  \end{subfigure}
-\end{figure}
+  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/know_llms.png}
+  \captionof{figure}{Self-reported familiarity with generative AI tools}
+  \label{fig:familiar}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{diagrams/survey_diagrams/ever_used_an_llm.png}
+  \captionof{figure}{Self-reported prior use of a generative AI tool at least once.}
+  \label{fig:used}
+\end{minipage}
+\end{center}
  
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=0.85\textheight]{diagrams/survey_diagrams/not_used_reasoning.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/not_used_reasoning.png}
   \caption{Reasons given by participants who had never used a large language model.}
   \label{fig:nonusers}
 \end{figure}
  
 Among LLM users, ChatGPT (OpenAI) was by far the most widely tried model ($n = 152$),
-followed by Gemini (Google DeepMind, $n = 85$) and Microsoft Copilot ($n = 52$)(Figure~\ref{fig:llms_tried}). Claude (Anthropic) had been used by 12 participants. This distribution indicates that the sample had broad, realistic exposure to current commercial LLMs, though it was skewed toward the most mainstream tools.
+followed by Gemini (Google DeepMind, $n = 85$) and Copilot (Microsoft, $n = 52$). Claude (Anthropic) had been used by 12 participants (Figure~\ref{fig:llms_tried}). This distribution indicates that the sample had broad, realistic exposure to current commercial LLMs, though it was skewed toward the most mainstream tools.
  
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=0.85\textheight]{diagrams/survey_diagrams/llms_used.png}
-  }
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/llms_used.png}
   \caption{LLMs tried by participants}
   \label{fig:llms_tried}
 \end{figure}
@@ -140,9 +134,9 @@ absolute population of secondary-level respondents in the panel.
 Figure~\ref{fig:boxplot_method} presents aggregated trust distributions for each of the
 five methods. The plain LLM baseline achieved the highest median trust (Mdn\,=\,4.0) and
 the tightest interquartile range, suggesting that in the absence of any explanation,
-participants defaulted to moderate-to-high trust in the system's outputs. The Chain of Thought (CoT) produced the \emph{lowest} median trust score (Mdn\,=\,3.0) across all methods, indicating that
-exposing the model's reasoning process frequently caused participants to revise their trust
-\emph{downward}. SHAP (Mdn\,=\,3.4) and the "How an LLM works" explanation (EXPL) (Mdn\,=\,3.6) occupied intermediate positions, while the confidence score (CONF) (Mdn\,=\,3.0) also remained below the LLM baseline.
+participants defaulted to moderate-to-high trust in the system's outputs. The methods Chain-of-Thought (CoT) and Confidence (CONF) produced the \emph{lowest} median trust score (Mdn\,=\,3.0) across all methods, indicating that
+exposing the model's reasoning process frequently or confidence scores caused participants to revise their trust
+\emph{downward}. SHAP (Mdn\,=\,3.4) and the "How an LLM works" explanation (EXPL) (Mdn\,=\,3.6) also remained below the LLM baseline.
  
 \begin{figure}[htbp]
   \centering
@@ -155,7 +149,7 @@ exposing the model's reasoning process frequently caused participants to revise 
 \subsection{Trust by Aspect and Method}
 \label{sec:heatmap}
  
-The heatmap in Figure~\ref{fig:heatmap} disaggregates trust into the five individual
+The heat-map in Figure~\ref{fig:heatmap} disaggregates trust into the five individual
 aspects across methods. Three patterns stand out:
  
 \begin{enumerate}
@@ -168,7 +162,7 @@ aspects across methods. Three patterns stand out:
   \item \textbf{EXPL outperforms SHAP and CONF on most aspects.} Particularly for
         perceived competence (3.9 vs.\ 3.4 for SHAP) and for reliability (3.7 vs.\ 3.3).
   \item \textbf{Participants have a consistent high trust that ``I believe the system has
-        tried to provide accurate answers''} which is not something a generative LLM does.
+        tried to provide accurate answers''} which is not something a generative LLM is capable of, instead this suggests a high antropomorphisation of LLMs.
 \end{enumerate}
  
 \begin{figure}[htbp]
@@ -184,10 +178,17 @@ sharply at CoT for every aspect, recovers partially at SHAP, then narrows again 
 before recovering at EXPL. The gap between the \emph{best-performing aspect} (``I believe the system has tried to provide accurate answers'') and the worst (``I would rely on the
 information'') is consistent across all methods, suggesting that \emph{intention
 attribution} is persistently rated more charitably than \emph{practical reliance}.
- 
+
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/changeOfTrust.png}
+  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/individual_trust_trajectories.png}
+  \caption{Individual trust trajectories across all five methods.}
+  \label{fig:individual}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/changeOfTrust.png}
   \caption{Trust trajectories across explanation methods, one line per trust aspect.}
   \label{fig:lineplot}
 \end{figure}
@@ -197,17 +198,10 @@ attribution} is persistently rated more charitably than \emph{practical reliance
 Figure~\ref{fig:individual} plots per-participant trust trajectories across methods.
 Although considerable individual heterogeneity is visible, the majority of lines converge
 around levels 3 and 4, and the dip at CoT is apparent even at the individual level.
-Participants who began with high trust under LLM (level\,5) showed the sharpest drops at
-CoT, while those who started at level\,3 or below were less affected. This suggests a
+Participants who began with high trust under LLM (level 5) showed the sharpest drops at
+CoT, while those who started at level 3 or below were less affected. This suggests a
 \emph{prior-expectation effect}: CoT disrupts the trust of initially confident users more
-than that of skeptical ones.
- 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/individual_trust_trajectories.png}
-  \caption{Individual trust trajectories across all five methods.}
-  \label{fig:individual}
-\end{figure}
+than that of sceptical ones.
  
 \subsection{Trust Variation by Number of LLMs Used}
  
@@ -218,22 +212,18 @@ systematically higher or lower trust, possibly because heavier users have formed
 nuanced, context-dependent judgments. Median trust remained consistently near 4.0 across
 experience levels for most aspects, suggesting that prior LLM exposure does not
 substantially moderate the effect of explanation type on trust.
- 
+
 \begin{figure}[htbp]
   \centering
-  \makebox[\textwidth][c]{%
-  \includegraphics[width=1.3\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
-  }
-  \caption{Distribution of trust levels per trust aspect, segmented by the number of
-           distinct LLMs previously used by each participant.}
+  \includegraphics[width=1\textwidth]{diagrams/survey_diagrams/trust_llms_number_used.png}
+  \caption{Distribution of trust levels (y-axis) per trust aspect, segmented by the number of distinct LLMs previously used by each participant (x-axis).}
   \label{fig:violin}
 \end{figure}
 
 \subsection{Change in Trust in LLMs After the Survey}
-
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.48\textwidth]{diagrams/survey_diagrams/trust_changed_piechart.png}
+  \includegraphics[width=0.6\textwidth]{diagrams/survey_diagrams/trust_changed_piechart.png}
   \caption{Trust change after Survey completion}
   \label{fig:trust_changed_survey}
 \end{figure}
@@ -253,7 +243,7 @@ Increased Trust &
 Trust increased; more positive view; more trustworthy; may use it more often; improved perception. \\
 
 Decreased Trust &
-More skeptical; trust worsened; credibility decreased; less trust because it does not always provide facts; more fear or uncertainty. \\
+More sceptical; trust worsened; credibility decreased; less trust because it does not always provide facts; more fear or uncertainty. \\
 
 Conditional Trust &
 Useful tool, but not everything should be believed; still prefer own judgment; would verify or rewrite outputs. \\
@@ -264,9 +254,10 @@ Better understanding of how LLMs work; clearer explanation of mechanisms; increa
 \hline
 \end{tabular}
 \caption{Summary of qualitative responses regarding changes in trust toward LLMs after the survey.}
+\label{tb:example_responses_trust}
 \end{table}
 
-Overall, responses indicate that the survey influenced participants in different ways: some reported increased trust due to improved understanding, others became more skeptical after learning about limitations such as hallucinations, while several participants expressed a more nuanced or conditional trust.
+Overall, responses indicate that the survey influenced participants in different ways: some reported increased trust due to improved understanding, others became more sceptical after learning about limitations such as hallucinations, while several participants expressed a more nuanced or conditional trust.
 
 \section{Perceived Helpfulness Rankings of XAI Methods}
 \label{sec:rankings}
@@ -278,7 +269,7 @@ rank them from most to least helpful. Figure~\ref{fig:ranking} shows the distrib
  
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\linewidth]{diagrams/survey_diagrams/ranked_xai_methods.png}
+    \includegraphics[width=0.9\textwidth]{diagrams/survey_diagrams/ranked_xai_methods.png}
     \caption{Stacked bar chart of helpfulness rankings for the three XAI methods. Each
            participant ranked SHAP, CoT, and Confidence from most (1) to least (3)
            helpful.}
@@ -287,11 +278,11 @@ rank them from most to least helpful. Figure~\ref{fig:ranking} shows the distrib
  
 The juxtaposition of low trust with high perceived helpfulness for CoT is noteworthy.
 
-It suggests that participants found CoT \emph{informative}, it exposed reasoning steps they could evaluate, but that this very transparency revealed uncertainty or errors that reduced their trust in the answers. This pattern aligns with the concept of \emph{appropriate calibration} in human-centered XAI: an explanation that lowers inflated trust may still be considered useful if it aids decision-making \cite{zhang_effect_2020}.
+It suggests that participants found CoT \emph{informative}, it exposed reasoning steps they could evaluate, but that this very transparency revealed uncertainty or errors that reduced their trust in the answers. This pattern aligns with the concept of \emph{appropriate calibration} in human-centred XAI: an explanation that lowers inflated trust may still be considered useful if it aids decision-making \cite{zhang_effect_2020}.
 
 CoT can therefore be characterized as a \emph{high-information, trust-calibrating} explanation type, whereas confidence scores appear to function as a more \emph{trust-preserving} but lower-information signal.
  
-SHAP's low helpfulness ranking, despite producing intermediate trust scores, is consistent with prior literature suggesting that feature-importance visualizations are poorly understood by non-technical audiences \cite{chromik_i_2021, kaur_interpreting_2020}. Given the demographic composition of this sample (dominated by administrative, healthcare, and retired participants) the relatively technical nature of SHAP values likely contributed to its unfavorable reception.
+SHAP's low helpfulness ranking, despite producing intermediate trust scores, is consistent with prior literature suggesting that feature-importance visualizations are poorly understood by non-technical audiences \cite{chromik_i_2021, kaur_interpreting_2020}. Given the demographic composition of this sample (dominated by administrative, healthcare, and retired participants) the relatively technical nature of SHAP values likely contributed to its unfavourable reception.
 
 In addition, further generated result diagrams and plots can be found in Appendix~\ref{appendix:survey_result_addons}, while the complete dataset is available in the accompanying repository.
 
