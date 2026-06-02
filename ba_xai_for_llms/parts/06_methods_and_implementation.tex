@@ -221,7 +221,7 @@ The first category covers queries with potential legal implications, such as que
 
 The construct of trust was operationalized based on a review of relevant literature on human-computer trust, as discussed in Section~\ref{sec:trust_theory}. Drawing on established theoretical distinctions, the instrument was designed to capture four different dimensions of trust: trust in the environment and the sociotechnical infrastructure, trust in the agent and any mediating agents, trust in potential interaction partners, and trust in authoritative sources. \cite{castelfranchi_trust_2001, falcone_social_2001, jones_concept_2002}
 
-From these dimensions, a five-item scale was derived to assess trust responses to the system's outputs. Each item was rated on a five-point Likert scale ranging from \textit{stimme überhaupt nicht zu} (strongly disagree) to \textit{stimme voll zu} (strongly agree). The items were as follows:
+From these dimensions, a five-item scale was derived to assess trust responses to the system's outputs. While four dimensions informed the conceptual structure of the construct, a fifth item was added to capture behavioural reliance (the disposition to act on trusted information) which is theoretically distinct from the cognitive and affective components represented by the other items, yet essential for a complete operationalization of trust in an interactive system context \cite{mayer_integrative_1995}. Each item was rated on a five-point Likert scale ranging from \textit{stimme überhaupt nicht zu} (strongly disagree) to \textit{stimme voll zu} (strongly agree). The items were as follows:
 
 \begin{itemize}
     \item \textit{Ich vertraue darauf, dass diese Antworten faktisch korrekt sind.} (I trust that these answers are factually accurate.)
@@ -232,6 +232,34 @@ From these dimensions, a five-item scale was derived to assess trust responses t
 \end{itemize}
 
 These items collectively capture multiple facets of trust, including perceived accuracy, reliability, competence, intentionality, and behavioural reliance. This repeated-measures design allows the effect of each XAI method on the full trust construct to be assessed across all four dimensions simultaneously.
+
+\paragraph{Internal Consistency of the Trust Scale.}
+Before reporting results, the internal consistency of the five-item trust scale was assessed
+using Cronbach's~$\alpha$ separately for each of the five explanation conditions and across
+all 25~items combined. As shown in Table~\ref{tab:cronbach}, all per-method values fall in
+the \emph{good} ($\alpha \geq .80$) or \emph{excellent} ($\alpha \geq .90$) range. The
+overall coefficient across all 25~items ($\alpha = .945$) confirms that the items form a
+highly internally consistent composite, supporting the treatment of the five-item mean as
+a valid summary score for trust in the subsequent analyses.
+ 
+\begin{table}[h]
+\centering
+\caption{Cronbach's~$\alpha$ per explanation condition and overall.}
+\label{tab:cronbach}
+\begin{tabular}{lcc}
+\hline
+\textbf{Condition} & \textbf{Cronbach's $\alpha$} & \textbf{Interpretation} \\
+\hline
+LLM (Baseline) & .844 & good       \\
+CoT            & .894 & good       \\
+SHAP           & .907 & excellent  \\
+CONF           & .911 & excellent  \\
+EXPL           & .860 & good       \\
+\hline
+All 25 items   & .945 & excellent  \\
+\hline
+\end{tabular}
+\end{table}
 
 \paragraph{Randomization into XAI Groups}
 \label{sec:random_xai_group}
