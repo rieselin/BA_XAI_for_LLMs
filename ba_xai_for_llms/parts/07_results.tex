@@ -82,7 +82,7 @@ followed by Gemini (Google DeepMind, $n = 85$) and Copilot (Microsoft, $n = 52$)
 \label{sec:sample_demographics}
  
 Figure~\ref{fig:role} shows LLM usage broken down by employment role. Administration
-($n=26$), Retired ($n=21$), and Specialist/Expert ($n=19$) were the three most represented
+($n=26$), retired ($n=21$), and Specialist/Expert ($n=19$) were the three most represented
 groups, while technical roles such as IT/Software/Data ($n=15$) and Technical
 Staff/Engineer ($n=11$) together comprised a moderate share of users. The broad spread
 across non-technical roles suggests that the findings are not exclusively representative
@@ -112,9 +112,9 @@ These demographic patterns introduce a potential \textbf{response bias}: the ove
  
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]
+  \includegraphics[width=\textwidth, trim={2cm 0 0 0}, clip]
   {diagrams/survey_diagrams/llm_usage_per_education_level.png}
-  \caption{LLM usage per education level (German qualification labels).}
+  \caption{LLM usage per education level}
   \label{fig:edu}
 \end{figure}
 
@@ -132,11 +132,11 @@ absolute population of secondary-level respondents in the panel.
 \label{sec:trust_dist}
  
 Figure~\ref{fig:boxplot_method} presents aggregated trust distributions for each of the
-five methods. The plain LLM baseline achieved the highest median trust (Mdn\,=\,4.0) and
+five methods. The plain LLM baseline achieved the highest median trust ($\text{Mdn} = 4.0$) and
 the tightest interquartile range, suggesting that in the absence of any explanation,
-participants defaulted to moderate-to-high trust in the system's outputs. The methods Chain-of-Thought (CoT) and Confidence (CONF) produced the \emph{lowest} median trust score (Mdn\,=\,3.0) across all methods, indicating that
+participants defaulted to moderate-to-high trust in the system's outputs. The methods Chain-of-Thought (CoT) and Confidence (CONF) produced the \emph{lowest} median trust score ($\text{Mdn} = 3.0$) across all methods, indicating that
 exposing the model's reasoning process frequently or confidence scores caused participants to revise their trust
-\emph{downward}. SHAP (Mdn\,=\,3.4) and the "How an LLM works" explanation (EXPL) (Mdn\,=\,3.6) also remained below the LLM baseline.
+\emph{downward}. SHAP ($\text{Mdn} = 3.4$) and the "How an LLM works" explanation (EXPL) ($\text{Mdn} = 3.6$) also remained below the LLM baseline.
  
 \begin{figure}[htbp]
   \centering
@@ -162,7 +162,7 @@ aspects across methods. Three patterns stand out:
   \item \textbf{EXPL outperforms SHAP and CONF on most aspects.} Particularly for
         perceived competence (3.9 vs.\ 3.4 for SHAP) and for reliability (3.7 vs.\ 3.3).
   \item \textbf{Participants have a consistent high trust that ``I believe the system has
-        tried to provide accurate answers''} which is not something a generative LLM is capable of, instead this suggests a high antropomorphisation of LLMs.
+        tried to provide accurate answers''} which is not something a generative LLM is capable of, instead this suggests a high anthropomorphisation of LLMs.
 \end{enumerate}
  
 \begin{figure}[htbp]
@@ -258,6 +258,57 @@ Better understanding of how LLMs work; clearer explanation of mechanisms; increa
 \end{table}
 
 Overall, responses indicate that the survey influenced participants in different ways: some reported increased trust due to improved understanding, others became more sceptical after learning about limitations such as hallucinations, while several participants expressed a more nuanced or conditional trust.
+
+\subsection{Inferential Statistics: Friedman Test and Pairwise Comparisons}
+\label{sec:inferential}
+ 
+To test whether the observed differences in trust across the five conditions are statistically
+significant, a Friedman test was conducted on the $N = 93$ participants who provided complete
+trust ratings for all five conditions. The test was significant,
+$\chi^2(4) = 110.83$, $p < .001$, confirming that trust differed systematically across
+conditions and was not attributable to random variation alone.
+ 
+Pairwise follow-up comparisons were conducted using Wilcoxon signed-rank tests with
+Holm correction for multiple comparisons. Table~\ref{tb:wilcoxon} reports the test statistic,
+uncorrected $p$-value, and Holm-adjusted $p$-value for all ten pairs.
+ 
+\begin{table}[h]
+\centering
+
+
+\begin{tabular}{lrrrl}
+\hline
+\textbf{Pair} & \textbf{$W$} & \textbf{$p$ (raw)} & \textbf{$p$ (Holm)} & \textbf{Sig.} \\
+\hline
+LLM vs.\ CoT   &   52.0 & $<.001$ & $<.001$ & $^{**}$ \\
+LLM vs.\ SHAP  &  420.5 & $<.001$ & $<.001$ & $^{**}$ \\
+LLM vs.\ CONF  &  234.0 & $<.001$ & $<.001$ & $^{**}$ \\
+LLM vs.\ EXPL  & 1080.0 &    .097 &    .097 & n.s.    \\
+CoT vs.\ SHAP  &  456.0 & $<.001$ & $<.001$ & $^{**}$ \\
+CoT vs.\ CONF  &  893.5 &    .012 &    .024 & $^{*}$  \\
+CoT vs.\ EXPL  &  145.0 & $<.001$ & $<.001$ & $^{**}$ \\
+SHAP vs.\ CONF &  697.0 &    .002 &    .007 & $^{**}$ \\
+SHAP vs.\ EXPL &  527.0 & $<.001$ & $<.001$ & $^{**}$ \\
+CONF vs.\ EXPL &  426.5 & $<.001$ & $<.001$ & $^{**}$ \\
+\hline
+\end{tabular}
+\caption{Pairwise Wilcoxon signed-rank tests with Holm correction ($N = 93$).
+Significance levels: $^{**}p < .01$, $^{*}p < .05$, n.s.\ $p \geq .05$.}
+\label{tb:wilcoxon}
+\end{table}
+ 
+The pattern of pairwise differences closely mirrors the descriptive findings reported in
+Section~\ref{sec:trust_dist}. Trust under the plain LLM baseline ($M = 3.82$,
+$\text{Mdn} = 4.0$) was significantly higher than under all three XAI conditions, but did not
+differ significantly from the EXPL condition ($M = 3.70$, $\text{Mdn} = 3.6$, $p = .097$).
+Among the XAI methods, CoT produced the lowest trust ($M = 2.94$, $\text{Mdn} = 3.0$) and
+differed significantly from SHAP ($p < .001$), CONF ($p = .024$), and EXPL ($p < .001$).
+CONF ($M = 3.13$, $\text{Mdn} = 3.0$) was significantly lower than SHAP ($M = 3.39$,
+$\text{Mdn} = 3.4$, $p =.007$) and EXPL ($p < .001$). SHAP in turn was significantly
+lower than EXPL (p < .001). Taken together, these results confirm that the trust ordering
+LLM $>$ EXPL $>$ SHAP $>$ CONF $\approx$ CoT is statistically robust, with the sole
+non-significant gap between LLM and EXPL indicating that a general conceptual explanation
+of how LLMs work produces trust levels statistically comparable to the uninformed baseline.
 
 \section{Perceived Helpfulness Rankings of XAI Methods}
 \label{sec:rankings}
